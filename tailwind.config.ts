@@ -8,15 +8,16 @@ const config: Config = {
   ],
   theme: {
     extend: {},
+    colors: {},
     fontFamily: {
-      clashDisplay_extraLight: ['ClashDisplay-Extralight'],
-      clashDisplay_light: ['ClashDisplay-Light'],
-      clashDisplay_regular: ['ClashDisplay-Regular'],
-      clashDisplay_medium: ['ClashDisplay-Medium'],
-      clashDisplay_semibold: ['ClashDisplay-Semibold'],
-      clashDisplay_bold: ['ClashDisplay-Bold'],
+      notosans: ['var(--sans)'],
+      roboto: ['var(--roboto)'],
+      oranienbaum: ['var(--oranienbaum)'],
     },
   },
-  plugins: [],
+  plugins: [require('daisyui')],
+  daisyui: {
+    themes: ['cupcake'],
+  },
 };
 export default config;
