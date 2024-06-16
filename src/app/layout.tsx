@@ -30,8 +30,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
-      <body className={[notoSansKr.variable, roboto.variable, oranienbaum.variable].join(' ')}>{children}</body>
+    <html lang='en' className='scrollbar-hide'>
+      <body className={`${[notoSansKr.variable, roboto.variable, oranienbaum.variable].join(' ')} font-notosans`}>
+        {children}
+      </body>
     </html>
   );
 }

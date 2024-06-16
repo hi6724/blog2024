@@ -33,9 +33,10 @@ const config: Config = {
       );
     }),
     require('daisyui'),
+    require('tailwind-scrollbar-hide'),
   ],
   daisyui: {
-    themes: ['autumn'],
+    themes: ['emerald'],
   },
 };
 export default config;

@@ -48,7 +48,7 @@ function CarouselItem({ src, index, scrollY }: { src: string; index: number; scr
     <>
       <motion.h1
         className='text-6xl w-full text-center font-oranienbaum top-20 sticky z-10
-          bg-neutral text-neutral-content mix-blend-luminosity bg-opacity-80'
+          bg-neutral text-neutral-content mix-blend-luminosity bg-opacity-80 p-2'
         initial={{ opacity: 0 }}
         animate={{ opacity: isShow ? 1 : 0 }}
       >

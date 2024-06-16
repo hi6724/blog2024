@@ -36,6 +36,9 @@ export default function NavBar() {
             <li>
               <Link href={'/'}>BLOG</Link>
             </li>
+            <li>
+              <Link href={'/'}>GUESTBOOK</Link>
+            </li>
           </ul>
         </div>
       </div>

@@ -5,8 +5,8 @@ import React, { useMemo, useRef, useState } from 'react';
 const DUMMY = [
   'https://cdn.prod.website-files.com/650478fbd32707701e101c64/6512fd12cdb632e3a9ceef18_pexels.webp',
   'https://cdn.prod.website-files.com/650478fbd32707701e101c64/6533e2c432e997a1c5845e47_safari-condo-website%20(3).webp',
-  'https://cdn.prod.website-files.com/650478fbd32707701e101c64/6533e2c220d28e426debe1d0_safari-condo-website%20(1).webp',
-  'https://cdn.prod.website-files.com/650478fbd32707701e101c64/6533e2c497cd72e2104fcd62_safari-condo-website%20(2).webp',
+  // 'https://cdn.prod.website-files.com/650478fbd32707701e101c64/6533e2c220d28e426debe1d0_safari-condo-website%20(1).webp',
+  // 'https://cdn.prod.website-files.com/650478fbd32707701e101c64/6533e2c497cd72e2104fcd62_safari-condo-website%20(2).webp',
 ];
 
 function Projects() {
@@ -14,7 +14,7 @@ function Projects() {
   const showRef = useRef(null);
   const isInview = useInView(scrollRef, { amount: 'some' });
   const isInviewShow = useInView(showRef, { amount: 'some' });
-  const [projects, setProjects] = useState([1, 2, 3, 4, 5, 6]);
+  const [projects, setProjects] = useState([1, 2, 3]);
 
   return (
     <div>
@@ -33,6 +33,7 @@ function Projects() {
           <Project project={project} key={i} />
         ))}
       </div>
+      <button className='btn btn-outline w-full mt-8'>VIEW ALL PROJECTS</button>
     </div>
   );
 }
@@ -42,21 +43,20 @@ export default Projects;
 function Project({ project }: any) {
   const scrollRef = useRef(null);
   const [animationY, setAnimationY] = useState(0);
-  const { scrollYProgress } = useScroll({ target: scrollRef, offset: ['start end', 'end start'] });
+  const { scrollYProgress } = useScroll({ target: scrollRef, offset: ['start end', 'end end'] });
   const [projectContents, setProjectContents] = useState(DUMMY);
+  const startView = animationY > 1 / (projectContents.length * 2);
   useMotionValueEvent(scrollYProgress, 'change', setAnimationY);
   if (!projectContents) return null;
 
   return (
     <div>
-      <motion.div className='p-2  z-20 sticky top-16 bg-base-100 text-base-content bg-opacity-30 backdrop-blur-lg flex justify-between'>
-        <motion.h1
-          className=' text-3xl font-oranienbaum text-center'
-          initial={{ opacity: 0 }}
-          animate={{ opacity: animationY > 1 / (projectContents.length * 2) && animationY < 1 ? 1 : 0 }}
-        >
-          {`TITLE-${project}`}
-        </motion.h1>
+      <motion.div
+        className='p-2 z-20 sticky top-16 bg-base-100 text-base-content bg-opacity-30 backdrop-blur-lg flex justify-between'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: startView ? 1 : 0 }}
+      >
+        <motion.h1 className=' text-3xl font-oranienbaum text-center'>{`TITLE-${project}`}</motion.h1>
         <div>
           <button className='btn btn-xs btn-link'>LINK</button>
           <button className='btn btn-xs btn-outline '>DETAIL</button>

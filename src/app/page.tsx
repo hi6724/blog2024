@@ -1,69 +1,34 @@
 'use client';
-import Link from 'next/link';
-import { useState } from 'react';
+import Footer from '@/components/Footer';
+import NavBar from '@/components/NavBar';
+import AboutMe from '@/components/main/AboutMe';
+import Blog from '@/components/main/Blog';
+import ContactMe from '@/components/main/ContactMe';
+import GuestBook from '@/components/main/GuestBook';
+import Projects from '@/components/main/Projects';
 
 export default function Home() {
   return (
     <Container>
-      <Header />
-    </Container>
-  );
-}
+      <NavBar />
+      <div className='z-10 relative mt-12'>
+        <h1 className='text-6xl font-normal font-oranienbaum'>HELLO!</h1>
+        <h1 className='text-6xl font-normal font-oranienbaum'>{"I'M HUNMOK"}</h1>
+      </div>
 
-function Header() {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className='navbar bg-base-100'>
-      <div className='flex-none'></div>
-      <div className='flex-1'>
-        <a className='btn btn-ghost text-3xl font-oranienbaum'>HUNMOK</a>
-      </div>
-      <div className='flex-none sm:hidden'>
-        <div className='dropdown dropdown-end'>
-          <div tabIndex={0} role='button' className='btn btn-ghost btn-circle'>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              className='h-5 w-5'
-              fill='none'
-              viewBox='0 0 24 24'
-              stroke='currentColor'
-            >
-              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h16M4 18h7' />
-            </svg>
-          </div>
-          <ul
-            tabIndex={0}
-            className='menu menu-lg dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 font-oranienbaum text-2xl'
-          >
-            <li>
-              <a>HOME</a>
-            </li>
-            <li>
-              <a>ABOUT ME</a>
-            </li>
-            <li>
-              <a>PROJECTS</a>
-            </li>
-            <li>
-              <a>BLOG</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      {/* desktop */}
-      <div className='hidden sm:flex gap-4 font-oranienbaum text-2xl *:link *:link-hover'>
-        <Link href={'/'}>HOME</Link>
-        <Link href={'/'}>ABOUT ME</Link>
-        <Link href={'/'}>PROJECTS</Link>
-        <Link href={'/'}>BLOG</Link>
-      </div>
-    </div>
+      <AboutMe />
+      <Projects />
+      <Blog />
+      <GuestBook />
+      <div className='h-16'></div>
+      <Footer />
+    </Container>
   );
 }
 
 function Container({ children }: any) {
   return (
-    <div className='flex justify-center w-[100vw]'>
+    <div className='flex justify-center w-full scrollbar-hide'>
       <div className='max-w-5xl px-4 w-full'>{children}</div>
     </div>
   );
