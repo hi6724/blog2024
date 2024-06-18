@@ -34,7 +34,11 @@ export default function RootLayout({
   return (
     <html lang='en' className='scrollbar-hide' suppressHydrationWarning>
       <body className={`${[notoSansKr.variable, roboto.variable, oranienbaum.variable].join(' ')} font-notosans`}>
-        <ThemeProvider storageKey='hunmok-theme' defaultTheme='system' value={{ dark: 'dracula', light: 'emerald' }}>
+        <ThemeProvider
+          storageKey='hunmok-theme'
+          defaultTheme='system'
+          value={{ lighten: 'emerald', light: 'garden', dark: 'dim', darken: 'night' }}
+        >
           {children}
         </ThemeProvider>
       </body>

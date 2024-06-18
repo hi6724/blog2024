@@ -32,11 +32,11 @@ const config: Config = {
         { values: theme('textShadow') }
       );
     }),
-    require('daisyui'),
     require('tailwind-scrollbar-hide'),
+    require('daisyui'),
   ],
   daisyui: {
-    themes: ['light', 'dracula', 'emerald'],
+    themes: ['emerald', 'garden', 'night', 'dim'],
   },
 };
 export default config;
