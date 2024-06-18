@@ -8,7 +8,7 @@ const DUMMY = [
   { tags: ['FE', '구름톤'], title: 'DUMMY TITLE', content: '', id: 'ask312jld9' },
   { tags: ['SQL'], title: 'DUMMY TITLE', content: '', id: 'askzvxjld9' },
   { tags: ['FE', 'SSAFY'], title: 'DUMMY TITLE', content: '', id: 'askja2fgld9' },
-  { tags: ['일상', 'SSAFY'], title: 'DUMMY TITLE', content: '', id: 'askja2fgld9' },
+  { tags: ['일상', 'SSAFY'], title: 'DUMMY TITLE', content: '', id: 'askjazxvas2fgld9' },
 ];
 
 function Blog() {
@@ -41,7 +41,7 @@ function BlogItem({ data }: any) {
   const router = useRouter();
   return (
     <motion.div
-      className='card card-compact w-full bg-base-100 shadow-xl'
+      className='card card-compact sm:card-normal w-full bg-base-100 shadow-xl'
       onClick={() => router.push(`/blog/${data.id}`)}
     >
       <figure className='h-32 hidden'>
@@ -70,7 +70,7 @@ function BlogItem({ data }: any) {
           ))}
         </div>
         {/* footer */}
-        <p className='text-sm font-semibold text-secondary-content text-opacity-50'>2024년 6월 7일 | 2개의 댓글</p>
+        <p className='text-sm font-semibold opacity-40'>2024년 6월 7일 | 2개의 댓글</p>
       </div>
     </motion.div>
   );

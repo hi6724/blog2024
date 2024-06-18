@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Roboto, Noto_Sans_KR, Oranienbaum } from 'next/font/google'; // Roboto와 한글 NotoSans를 사용합니다.
+import Theme from '@/components/Theme';
+import { ThemeProvider } from 'next-themes';
 
 const notoSansKr = Noto_Sans_KR({
   preload: false,
@@ -30,9 +32,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' className='scrollbar-hide'>
+    <html lang='en' className='scrollbar-hide' suppressHydrationWarning>
       <body className={`${[notoSansKr.variable, roboto.variable, oranienbaum.variable].join(' ')} font-notosans`}>
-        {children}
+        <ThemeProvider storageKey='hunmok-theme' defaultTheme='system' value={{ dark: 'dracula', light: 'emerald' }}>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
