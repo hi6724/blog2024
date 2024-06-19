@@ -1,12 +1,14 @@
 'use client';
 import { useMobile } from '@/hooks/useMobile';
-import { IGuestBook, useGuestBookList } from '@/react-query/guestbook';
+import { useGuestBookList } from '@/react-query/guestbook';
 import { motion } from 'framer-motion';
 import dayjs from 'dayjs';
+import { IGuestBook } from '@/react-query/types';
 
 function GuestBook() {
   const isMobile = useMobile();
   const { data } = useGuestBookList({ cursor: undefined, page_size: isMobile ? 6 : 9, sort: 'descending' });
+
   return (
     <div>
       <div className='h-[25vh]' />
@@ -19,7 +21,7 @@ function GuestBook() {
         GUESTBOOK
       </motion.h1>
       <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-        {data && data.map((chat, i) => <ChatItem data={chat} key={chat.id} />)}
+        {data && data.results?.map((chat, i) => <ChatItem data={chat} key={chat.id} />)}
       </div>
       <button className='btn btn-outline w-full mt-4'>READ MORE</button>
     </div>

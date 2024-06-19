@@ -1,20 +1,14 @@
 import { useProjectOverviewList } from '@/react-query/project';
 import { IProjectOverView } from '@/react-query/types';
 import { motion, useInView, useMotionValueEvent, useScroll } from 'framer-motion';
-import { loremIpsum } from 'lorem-ipsum';
 import Image from 'next/image';
-import React, { useMemo, useRef, useState } from 'react';
-
-const DUMMY = [
-  'https://cdn.prod.website-files.com/650478fbd32707701e101c64/6512fd12cdb632e3a9ceef18_pexels.webp',
-  'https://cdn.prod.website-files.com/650478fbd32707701e101c64/6533e2c432e997a1c5845e47_safari-condo-website%20(3).webp',
-];
+import React, { useRef, useState } from 'react';
 
 function Projects() {
   const scrollRef = useRef(null);
   const showRef = useRef(null);
   const isInviewShow = useInView(showRef, { amount: 'some' });
-  const { data: projects } = useProjectOverviewList({ page_size: 3, sort: 'descending' });
+  const { data } = useProjectOverviewList({ page_size: 3, sort: 'descending' });
 
   return (
     <div>
@@ -29,7 +23,7 @@ function Projects() {
       <div className='h-[35vh]' />
       <div ref={showRef} />
       <div className='flex flex-col *:pt-12 bg-base-100'>
-        {projects?.map((project, i) => (
+        {data?.results?.map((project, i) => (
           <Project project={project} key={i} />
         ))}
       </div>

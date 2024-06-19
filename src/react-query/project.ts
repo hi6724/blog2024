@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import axios, { AxiosResponse } from 'axios';
-import { IListQueryParams, IProjectOverView } from './types';
+import { IListQueryParams, IListResponse, IProjectOverView } from './types';
 
-export const getProjectList = (params: IListQueryParams): Promise<AxiosResponse<IProjectOverView[]>> => {
+export const getProjectList = (params: IListQueryParams): Promise<AxiosResponse<IListResponse<IProjectOverView>>> => {
   return axios.get('/api/project', { params });
 };
 

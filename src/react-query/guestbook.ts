@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import axios, { AxiosResponse } from 'axios';
-import { IGuestBook, IListQueryParams } from './types';
+import { IGuestBook, IListQueryParams, IListResponse } from './types';
 
-export const getGuestBookList = (params: IListQueryParams): Promise<AxiosResponse<IGuestBook[]>> => {
+export const getGuestBookList = (params: IListQueryParams): Promise<AxiosResponse<IListResponse<IGuestBook>>> => {
   return axios.get('/api/guestbook', { params });
 };
 

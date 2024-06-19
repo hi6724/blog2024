@@ -5,6 +5,11 @@ export interface IListQueryParams {
   filter?: string;
 }
 
+export interface IListResponse<T> {
+  has_more: boolean;
+  next_cursor?: string;
+  results: T[];
+}
 export interface IGuestBook {
   content: string;
   createdAt: string;
@@ -29,4 +34,14 @@ export interface IProjectOverView {
   overview: string;
   overview2: string;
   overviewImg: string;
+}
+
+export interface IBlogOverview {
+  id: string;
+  createdAt: string;
+  icon: string;
+  tags: string[];
+  title: string;
+  overview: string;
+  thumbImageUri?: string;
 }

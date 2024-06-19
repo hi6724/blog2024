@@ -1,20 +1,17 @@
 'use client';
+import { useMobile } from '@/hooks/useMobile';
+import { useBlogOverviewList } from '@/react-query/blog';
+import { IBlogOverview } from '@/react-query/types';
 import { motion, useInView } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
-
-const DUMMY = [
-  { tags: ['FE', 'BE', 'DEV', '구름톤'], title: 'DUMMY TITLE', content: '', id: 'askjld9' },
-  { tags: ['FE', '구름톤'], title: 'DUMMY TITLE', content: '', id: 'ask312jld9' },
-  { tags: ['SQL'], title: 'DUMMY TITLE', content: '', id: 'askzvxjld9' },
-  { tags: ['FE', 'SSAFY'], title: 'DUMMY TITLE', content: '', id: 'askja2fgld9' },
-  { tags: ['일상', 'SSAFY'], title: 'DUMMY TITLE', content: '', id: 'askjazxvas2fgld9' },
-];
+import { useRef } from 'react';
 
 function Blog() {
-  const [blogItems, setBlogItems] = useState(DUMMY);
+  const isMobile = useMobile();
+  const { data } = useBlogOverviewList({ page_size: isMobile ? 4 : 12, sort: 'descending' });
   const ref = useRef<HTMLDivElement>(null);
   const isShowTitle = useInView(ref);
+
   return (
     <>
       <div className='h-[25vh]' />
@@ -26,7 +23,7 @@ function Blog() {
         BLOG
       </motion.h1>
       <div ref={ref} className='grid gap-4 p-2 sm:grid-cols-2 md:grid-cols-3 '>
-        {blogItems.map((data, index) => (
+        {data?.results?.map((data, index) => (
           <BlogItem key={data.id} data={data} />
         ))}
       </div>
@@ -37,29 +34,25 @@ function Blog() {
 
 export default Blog;
 
-function BlogItem({ data }: any) {
+function BlogItem({ data }: { data: IBlogOverview }) {
   const router = useRouter();
   return (
     <motion.div
       className='card card-compact sm:card-normal w-full bg-base-100 shadow-xl'
       onClick={() => router.push(`/blog/${data.id}`)}
     >
-      <figure className='h-32 hidden'>
-        <img src='https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg' alt='Shoes' />
-      </figure>
-      <div className='card-body'>
+      {data.thumbImageUri && (
+        <figure className='h-32 hidden'>
+          <img src={data.thumbImageUri} alt='thumbImageUri' />
+        </figure>
+      )}
+      <div className='card-body justify-end'>
         {/* title */}
-        <h2 className='card-title'>Card title!</h2>
+        <h2 className='card-title'>{data.title}</h2>
         {/* contents */}
-        <p className='line-clamp-2'>
-          If a dog chews shoes whose shoes does he choose?If a dog chews shoes whose shoes does he choose?If a dog chews
-          shoes whose shoes does he choose? If a dog chews shoes whose shoes does he choose? If a dog chews shoes whose
-          shoes does he choose? If a dog chews shoes whose shoes does he choose? If a dog chews shoes whose shoes does
-          he choose?If a dog chews shoes whose shoes does he choose?If a dog chews shoes whose shoes does he choose? If
-          a dog chews shoes whose shoes does he choose?If a dog chews shoes whose shoes does he choose?If a dog chews
-          shoes whose shoes does he choose?If a dog chews shoes whose shoes does he choose?If a dog chews shoes whose
-          shoes does he choose?
-        </p>
+        <div>
+          <p className='line-clamp-2'>{data.overview}</p>
+        </div>
         <div className='divider my-1'></div>
         {/* tags */}
         <div className='flex gap-1'>
@@ -70,7 +63,7 @@ function BlogItem({ data }: any) {
           ))}
         </div>
         {/* footer */}
-        <p className='text-sm font-semibold opacity-40'>2024년 6월 7일 | 2개의 댓글</p>
+        <p className='text-sm font-semibold opacity-40 flex-grow-0'>2024년 6월 7일 | 2개의 댓글</p>
       </div>
     </motion.div>
   );

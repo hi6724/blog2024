@@ -54,5 +54,9 @@ export async function GET(request: NextRequest) {
     };
   });
 
-  return NextResponse.json(returnObj);
+  return NextResponse.json({
+    next_cursor: projects.next_cursor,
+    has_more: projects.has_more,
+    results: returnObj,
+  });
 }

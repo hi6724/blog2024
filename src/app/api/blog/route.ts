@@ -39,12 +39,15 @@ export async function GET(request: NextRequest) {
   const returnObj = page.results.map((result: any) => {
     const id = result.id;
     const createdAt = result.properties?.createdAt?.created_time;
-    const icon = result.icon ?? '🥳';
-    const type = result.properties?.type?.select?.name;
+    const iconType = result.icon?.type;
+    const icon = result.icon[iconType] ?? '🥳';
+    const tags = result.properties?.type['multi_select'].map((el: any) => el.name);
     const title = result.properties?.name?.title?.[0]?.plain_text;
     const coverType = result.cover?.type;
     const thumbImageUri = result.cover?.[coverType]?.url;
-    return { id, createdAt, icon, type, title, thumbImageUri };
+    const overview = result.properties?.overview?.['rich_text']?.[0]?.['plain_text'];
+
+    return { id, createdAt, icon, tags, title, thumbImageUri, overview };
   });
 
   return NextResponse.json({

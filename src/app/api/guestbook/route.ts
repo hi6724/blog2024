@@ -42,5 +42,9 @@ export async function GET(request: NextRequest) {
       user: JSON.parse(user),
     };
   });
-  return NextResponse.json(returnObj);
+  return NextResponse.json({
+    next_cursor: guestBooks.next_cursor,
+    has_more: guestBooks.has_more,
+    results: returnObj,
+  });
 }
