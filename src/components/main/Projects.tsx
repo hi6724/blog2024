@@ -50,7 +50,7 @@ function Project({ project }: { project: IProjectOverView }) {
   return (
     <div>
       <motion.div
-        className='p-2 z-20 sticky top-16 bg-base-100 text-base-content bg-opacity-30 backdrop-blur-lg flex justify-between items-center border-b-2 border-opacity-30 mb-16'
+        className='p-2 z-20 sticky top-16 bg-base-100 text-base-content bg-opacity-30 backdrop-blur-lg flex justify-between items-center border-b-2 border-opacity-30 mb-8'
         initial={{ opacity: 0 }}
         animate={{ opacity: startView ? 1 : 0 }}
       >
@@ -70,13 +70,15 @@ function Project({ project }: { project: IProjectOverView }) {
 
 function ProjectContent({ src, content, reverse }: { src: string; content: string; reverse?: boolean }) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLParagraphElement>(null);
   const inView = useInView(scrollRef);
+  const [viewAll, setViewAll] = useState(false);
 
   return (
     <div className='relative'>
       <div ref={scrollRef} className='top-1/2 absolute z-50'></div>
       <motion.div
-        className={`flex w-full flex-col sm:flex-row sm:relative sm:mb-16 ${reverse && 'sm:flex-row-reverse'}`}
+        className={`flex w-full flex-col mb-8 sm:flex-row sm:relative sm:mb-16 ${reverse && 'sm:flex-row-reverse'}`}
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{
           opacity: inView ? 1 : 0,
@@ -86,12 +88,13 @@ function ProjectContent({ src, content, reverse }: { src: string; content: strin
         <Image
           width={400}
           height={400}
-          className='sm:w-2/3 shadow-xl w-full rounded-xl aspect-video object-cover sm:mb-[10%]'
+          className={`sm:w-2/3 shadow-xl w-full rounded-xl aspect-video object-cover sm:mb-[10%]`}
           src={src}
           alt=''
         />
         <motion.p
-          className={`whitespace-break-spaces sm:absolute sm:right-4 sm:bottom-4 sm:w-1/2 sm:backdrop-blur-sm bg-primary text-primary-content rounded-xl sm:p-8 bg-opacity-60 ${
+          ref={contentRef}
+          className={`whitespace-break-spaces backdrop-blur-sm bg-base-300 text-base-content rounded-xl p-2 bg-opacity-60 -translate-y-1/3 sm:translate-y-0 sm:absolute sm:right-4 sm:bottom-4 sm:w-1/2 sm:p-8  ${
             reverse && 'sm:left-4'
           }`}
           initial={{ opacity: 0 }}
