@@ -41,8 +41,6 @@ export default AboutMe;
 
 function CarouselItem({ src, index, scrollY }: { src: string; index: number; scrollY: number }) {
   const isShow = scrollY >= index / 4 && scrollY < (index + 1) / 4;
-  const title = useMemo(() => loremIpsum({ units: 'word' }), []);
-  const paragraphs = useMemo(() => loremIpsum({ count: 2, units: 'paragraph', paragraphUpperBound: 4 }), []);
 
   return (
     <>
@@ -51,7 +49,7 @@ function CarouselItem({ src, index, scrollY }: { src: string; index: number; scr
         initial={{ opacity: 0 }}
         animate={{ opacity: isShow ? 1 : 0 }}
       >
-        <h1 className='text-title text-center text-neutral-content p-2'>{title.toUpperCase()}</h1>
+        <h1 className='text-title text-center text-neutral-content p-2'>{'title'.toUpperCase()}</h1>
       </motion.div>
 
       <motion.div
@@ -61,9 +59,7 @@ function CarouselItem({ src, index, scrollY }: { src: string; index: number; scr
       >
         <img src={src} loading='lazy' alt='' className='rounded-xl object-cover  w-full sm:h-96' />
         <div className='mt-4 flex flex-col gap-4'>
-          {paragraphs.split('\n').map((paragraph, i) => (
-            <p key={i}>{paragraph}</p>
-          ))}
+          <p>{'paragraph'}</p>
         </div>
       </motion.div>
     </>

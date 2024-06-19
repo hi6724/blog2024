@@ -5,8 +5,15 @@ import AboutMe from '@/components/main/AboutMe';
 import Blog from '@/components/main/Blog';
 import GuestBook from '@/components/main/GuestBook';
 import Project from '@/components/main/Project';
-
-export default function Home() {
+import { Suspense } from 'react';
+export default function Main() {
+  return (
+    <Suspense fallback={<div>loading...</div>}>
+      <Home />
+    </Suspense>
+  );
+}
+function Home() {
   return (
     <Container>
       <NavBar />

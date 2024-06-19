@@ -1,9 +1,10 @@
+'use client';
 import { motion, useInView, useMotionValueEvent, useScroll } from 'framer-motion';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { loremIpsum } from 'lorem-ipsum';
+import { useRef, useState } from 'react';
 import { useProjectOverviewList } from '@/react-query/project';
 import { IProjectOverView } from '@/react-query/types';
 import { useMobile } from '@/hooks/useMobile';
+import Image from 'next/image';
 
 function calculateArray(arr?: IProjectOverView[]) {
   if (!arr) return [0];
@@ -22,7 +23,7 @@ function calculateArray(arr?: IProjectOverView[]) {
   return result;
 }
 
-function Project2() {
+function Project() {
   const isMobile = useMobile();
   const scrollRef = useRef(null);
   const showTitleRef = useRef(null);
@@ -50,9 +51,13 @@ function Project2() {
       <div ref={scrollRef}>
         <motion.div className='w-full h-full flex justify-center mt-10 top-16 sticky *:absolute'>
           {projects?.results.map((project, index) => (
-            <>
-              <CarouselItem scrollY={animationY} index={index} lengthList={lengthList} project={project} />
-            </>
+            <CarouselItem
+              scrollY={animationY}
+              index={index}
+              lengthList={lengthList}
+              project={project}
+              key={project.id}
+            />
           ))}
         </motion.div>
         <motion.div
@@ -65,7 +70,7 @@ function Project2() {
   );
 }
 
-export default Project2;
+export default Project;
 
 function CarouselItem({
   project,
@@ -106,14 +111,15 @@ function CarouselItem({
           animate={{ opacity: isShow ? 1 : 0 }}
           className='flex w-full h-full flex-col mt-20'
         >
-          <img
+          <Image
             src={project.thumbImageUri}
-            loading='lazy'
             alt=''
             className='rounded-xl object-cover w-full max-h-60 sm:h-96 sm:max-h-96'
+            width={400}
+            height={400}
           />
           <div className='mt-4 flex flex-col gap-4'>
-            <p>{project.overview}</p>
+            <p className='whitespace-break-spaces'>{project.overview}</p>
           </div>
         </motion.div>
       )}
