@@ -16,9 +16,8 @@ const config: Config = {
     },
     colors: {},
     fontFamily: {
-      notosans: ['var(--sans)'],
-      roboto: ['var(--roboto)'],
-      oranienbaum: ['var(--oranienbaum)'],
+      letter: ['var(--oranienbaum)', 'eunbyul', 'g-sans', 'var(--ibm-sans)', 'var(--sans)', 'var(--roboto)'],
+      sans: ['g-sans', 'var(--ibm-sans)', 'var(--sans)', 'var(--roboto)'],
     },
   },
   plugins: [

@@ -1,20 +1,26 @@
 import { Client } from '@notionhq/client';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 const database_id = 'cf6dea8440b04e5c85cf9bc986f546b7';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const notion = new Client({
     auth: process.env.NOTION_API_KEY,
   });
 
+  const cursor = request.nextUrl.searchParams.get('cursor');
+  const page_size = +(request.nextUrl.searchParams.get('page_size') ?? '10');
+  const sort = request.nextUrl.searchParams.get('sort') ?? 'descending';
+
   const guestBooks = await notion.databases.query({
     database_id,
     auth: process.env.NOTION_API_KEY,
+    page_size,
+    ...(!!cursor && { start_cursor: cursor }),
     sorts: [
       {
         property: 'createdAt',
-        direction: 'descending',
+        direction: sort === 'ascending' ? 'ascending' : 'descending',
       },
     ],
   });

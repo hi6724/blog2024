@@ -13,7 +13,7 @@ export default function NavBar() {
     <div className='navbar bg-base-100 sticky top-0 z-50'>
       <div className='flex-none'></div>
       <div className='flex-1'>
-        <a className='btn btn-ghost text-3xl font-oranienbaum'>HUNMOK</a>
+        <a className='btn btn-ghost text-3xl font-letter'>HUNMOK</a>
       </div>
 
       <div className='flex-none flex items-center gap-4'>
@@ -64,7 +64,7 @@ export default function NavBar() {
 
           <ul
             tabIndex={0}
-            className='menu menu-lg dropdown-content top-8 z-[1] p-2 shadow-lg shadow-neutral bg-base-100 rounded-box w-52 font-oranienbaum text-2xl'
+            className='menu menu-lg dropdown-content top-8 z-[1] p-2 shadow-lg shadow-neutral bg-base-100 rounded-box w-52 font-letter text-2xl'
           >
             <li>
               <Link href={'/'}>HOME</Link>
@@ -85,7 +85,7 @@ export default function NavBar() {
         </div>
       </div>
       {/* desktop */}
-      <div className='hidden sm:flex gap-4 font-oranienbaum text-2xl *:link *:link-hover'>
+      <div className='hidden sm:flex gap-4 font-letter text-2xl *:link *:link-hover'>
         <Link href={'/'}>HOME</Link>
         <Link href={'/'}>ABOUT ME</Link>
         <Link href={'/'}>PROJECTS</Link>
@@ -105,7 +105,12 @@ function ToggleTheme({ desktop }: { desktop?: boolean }) {
     setTheme(nextTheme);
   }
   return (
-    <label onClick={toggleTheme} className={`${desktop ? 'hidden sm:flex sm:w-6 sm:h-6 sm:relative' : 'sm:hidden'}`}>
+    <label
+      onClick={toggleTheme}
+      className={`${
+        desktop ? 'hidden sm:flex sm:w-6 sm:h-6 sm:relative' : 'sm:hidden relative w-5 h-5'
+      } cursor-pointer`}
+    >
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: currentTheme === 'lighten' ? 1 : 0 }}>
         <SunSvg fill />
       </motion.div>
@@ -126,8 +131,6 @@ function ToggleTheme({ desktop }: { desktop?: boolean }) {
 }
 
 function SunSvg({ fill }: { fill?: boolean }) {
-  const { theme } = useTheme();
-
   if (fill)
     return (
       <svg
@@ -136,7 +139,7 @@ function SunSvg({ fill }: { fill?: boolean }) {
         viewBox='0 0 24 24'
         xmlns='http://www.w3.org/2000/svg'
         aria-hidden='true'
-        className='absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2'
+        className='absolute w-5 h-5 sm:w-6 sm:h-6 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2'
       >
         <path d='M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.757a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z'></path>
       </svg>
@@ -150,7 +153,7 @@ function SunSvg({ fill }: { fill?: boolean }) {
       viewBox='0 0 24 24'
       xmlns='http://www.w3.org/2000/svg'
       aria-hidden='true'
-      className='absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2'
+      className='absolute w-5 h-5 sm:w-6 sm:h-6 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2'
     >
       <path
         stroke-linecap='round'
@@ -170,7 +173,7 @@ function MoonSvg({ fill }: { fill?: boolean }) {
         viewBox='0 0 24 24'
         xmlns='http://www.w3.org/2000/svg'
         aria-hidden='true'
-        className='absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2'
+        className='absolute w-5 h-5 sm:w-6 sm:h-6 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2'
       >
         <path
           clip-rule='evenodd'
@@ -188,7 +191,7 @@ function MoonSvg({ fill }: { fill?: boolean }) {
       viewBox='0 0 24 24'
       xmlns='http://www.w3.org/2000/svg'
       aria-hidden='true'
-      className='absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2'
+      className='absolute w-5 h-5 sm:w-6 sm:h-6 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2'
     >
       <path
         stroke-linecap='round'

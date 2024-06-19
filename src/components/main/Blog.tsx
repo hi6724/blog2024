@@ -19,7 +19,7 @@ function Blog() {
     <>
       <div className='h-[25vh]' />
       <motion.h1
-        className='text-6xl font-oranienbaum text-shadow shadow-base-content z-10 sticky top-16 bg-base-100 text-base-content bg-opacity-30 backdrop-blur-lg mb-6 p-2'
+        className='text-title z-10 sticky top-16 bg-base-100 text-base-content bg-opacity-30 backdrop-blur-lg mb-6 p-2'
         initial={{ opacity: 0 }}
         animate={{ opacity: isShowTitle ? 1 : 0 }}
       >

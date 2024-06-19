@@ -1,24 +1,30 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Roboto, Noto_Sans_KR, Oranienbaum } from 'next/font/google'; // Roboto와 한글 NotoSans를 사용합니다.
-import Theme from '@/components/Theme';
+import { Roboto, Noto_Sans_KR, Oranienbaum, IBM_Plex_Sans_KR } from 'next/font/google'; // Roboto와 한글 NotoSans를 사용합니다.
+
 import { ThemeProvider } from 'next-themes';
+import { ReactQueryClientProvider } from '@/components/common/ReactQueryClientProvider';
 
 const notoSansKr = Noto_Sans_KR({
   preload: false,
   weight: ['100', '400', '700', '900'], // 가변 폰트가 아닌 경우, 사용할 fontWeight 배열
-  variable: '--sans', // CSS 변수 방식으로 스타일을 지정할 경우에 사용합니다.
+  variable: '--sans',
 });
 const oranienbaum = Oranienbaum({
   subsets: ['latin'],
   weight: '400',
-  variable: '--oranienbaum', // CSS 변수 방식으로 스타일을 지정할 경우에 사용합니다.
+  variable: '--oranienbaum',
 });
 
 const roboto = Roboto({
-  subsets: ['latin'], // preload에 사용할 subsets입니다.
+  subsets: ['latin'],
   weight: ['100', '400', '700'],
-  variable: '--roboto', // CSS 변수 방식으로 스타일을 지정할 경우에 사용합니다.
+  variable: '--roboto',
+});
+const ibmSans = IBM_Plex_Sans_KR({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--ibm-sans',
 });
 
 export const metadata: Metadata = {
@@ -32,16 +38,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' className='scrollbar-hide' suppressHydrationWarning>
-      <body className={`${[notoSansKr.variable, roboto.variable, oranienbaum.variable].join(' ')} font-notosans`}>
-        <ThemeProvider
-          storageKey='hunmok-theme'
-          defaultTheme='system'
-          value={{ lighten: 'emerald', light: 'garden', dark: 'dim', darken: 'night' }}
+    <ReactQueryClientProvider>
+      <html lang='en' className='scrollbar-hide' suppressHydrationWarning>
+        <body
+          className={`${[notoSansKr.variable, roboto.variable, oranienbaum.variable, ibmSans.variable].join(
+            ' '
+          )} font-sans`}
         >
-          {children}
-        </ThemeProvider>
-      </body>
-    </html>
+          <ThemeProvider
+            storageKey='hunmok-theme'
+            defaultTheme='system'
+            value={{ lighten: 'emerald', light: 'garden', dark: 'dim', darken: 'night' }}
+          >
+            {children}
+          </ThemeProvider>
+        </body>
+      </html>
+    </ReactQueryClientProvider>
   );
 }

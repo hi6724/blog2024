@@ -3,7 +3,6 @@ import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
 import AboutMe from '@/components/main/AboutMe';
 import Blog from '@/components/main/Blog';
-import ContactMe from '@/components/main/ContactMe';
 import GuestBook from '@/components/main/GuestBook';
 import Projects from '@/components/main/Projects';
 
@@ -12,8 +11,8 @@ export default function Home() {
     <Container>
       <NavBar />
       <div className='z-10 relative mt-12'>
-        <h1 className='text-6xl font-normal font-oranienbaum'>HELLO!</h1>
-        <h1 className='text-6xl font-normal font-oranienbaum'>{"I'M HUNMOK"}</h1>
+        <h1 className='text-title'>HELLO!</h1>
+        <h1 className='text-title'>{"I'M HUNMOK"}</h1>
       </div>
 
       <AboutMe />
