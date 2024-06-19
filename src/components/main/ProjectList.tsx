@@ -20,14 +20,14 @@ function Projects() {
         PROJECTS
       </motion.h1>
       <div ref={scrollRef} />
-      <div className='h-[35vh]' />
+      <div className='h-16 sm:h-[35vh]' />
       <div ref={showRef} />
-      <div className='flex flex-col *:pt-12 bg-base-100'>
+      <div className='flex flex-col *:pt-4 sm:*:pt-12 bg-base-100'>
         {data?.results?.map((project, i) => (
           <Project project={project} key={i} />
         ))}
       </div>
-      <button className='btn btn-outline w-full mt-8'>VIEW ALL PROJECTS</button>
+      <button className='btn btn-outline w-full mt-0 sm:mt-8'>VIEW ALL PROJECTS</button>
     </div>
   );
 }
@@ -44,13 +44,17 @@ function Project({ project }: { project: IProjectOverView }) {
   return (
     <div>
       <motion.div
-        className='p-2 z-20 sticky top-16 bg-base-100 text-base-content bg-opacity-30 backdrop-blur-lg flex justify-between items-center border-b-2 border-opacity-30 mb-8'
+        className='p-2 z-20 sticky top-16 bg-base-100 text-base-content bg-opacity-30 backdrop-blur-lg flex justify-between items-center border-b-2 border-opacity-30 mb-4 sm:mb-8'
         initial={{ opacity: 0 }}
         animate={{ opacity: startView ? 1 : 0 }}
       >
         <motion.h1 className='text-sub-title text-center'>{project.title}</motion.h1>
         <div>
-          <button className='btn btn-xs btn-link'>LINK</button>
+          {project.link && (
+            <a href={project.link} target='_blank' className='btn btn-xs btn-link'>
+              LINK
+            </a>
+          )}
           <button className='btn btn-xs btn-outline '>DETAIL</button>
         </div>
       </motion.div>
@@ -66,13 +70,12 @@ function ProjectContent({ src, content, reverse }: { src: string; content: strin
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLParagraphElement>(null);
   const inView = useInView(scrollRef);
-  const [viewAll, setViewAll] = useState(false);
 
   return (
     <div className='relative'>
       <div ref={scrollRef} className='top-1/2 absolute z-50'></div>
       <motion.div
-        className={`flex w-full flex-col mb-8 sm:flex-row sm:relative sm:mb-16 ${reverse && 'sm:flex-row-reverse'}`}
+        className={`flex w-full flex-col mb-4 sm:flex-row sm:relative sm:mb-16 ${reverse && 'sm:flex-row-reverse'}`}
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{
           opacity: inView ? 1 : 0,
@@ -88,7 +91,7 @@ function ProjectContent({ src, content, reverse }: { src: string; content: strin
         />
         <motion.p
           ref={contentRef}
-          className={`whitespace-break-spaces backdrop-blur-sm bg-base-300 text-base-content rounded-xl p-2 bg-opacity-60 -translate-y-1/3 sm:translate-y-0 sm:absolute sm:right-4 sm:bottom-4 sm:w-1/2 sm:p-8  ${
+          className={`whitespace-break-spaces backdrop-blur-sm bg-base-300 text-base-content rounded-xl p-2 bg-opacity-60 -translate-y-8 sm:translate-y-0 sm:absolute sm:right-4 sm:bottom-4 sm:w-1/2 sm:p-8  ${
             reverse && 'sm:left-4'
           }`}
           initial={{ opacity: 0 }}

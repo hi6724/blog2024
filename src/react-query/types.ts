@@ -34,6 +34,7 @@ export interface IProjectOverView {
   overview: string;
   overview2: string;
   overviewImg: string;
+  link?: string;
 }
 
 export interface IBlogOverview {

@@ -14,7 +14,7 @@ function Blog() {
 
   return (
     <>
-      <div className='h-[25vh]' />
+      <div className='h-16 sm:h-[25vh]' />
       <motion.h1
         className='text-title z-10 sticky top-16 bg-base-100 text-base-content bg-opacity-30 backdrop-blur-lg mb-6 p-2'
         initial={{ opacity: 0 }}
@@ -38,6 +38,9 @@ function BlogItem({ data }: { data: IBlogOverview }) {
   const router = useRouter();
   return (
     <motion.div
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ delay: 0.2 }}
       className='card card-compact sm:card-normal w-full bg-base-100 shadow-xl'
       onClick={() => router.push(`/blog/${data.id}`)}
     >

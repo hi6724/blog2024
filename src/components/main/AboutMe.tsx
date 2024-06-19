@@ -32,7 +32,7 @@ function AboutMe() {
           src='https://cdn.prod.website-files.com/650478fbd32707701e101c64/6533e2c497cd72e2104fcd62_safari-condo-website%20(2).webp'
         />
       </motion.div>
-      <div className='h-[400vh]'></div>
+      <div className='h-[200vh] sm:h-[400vh]'></div>
     </div>
   );
 }

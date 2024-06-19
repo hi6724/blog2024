@@ -39,7 +39,7 @@ export default function RootLayout({
 }>) {
   return (
     <ReactQueryClientProvider>
-      <html lang='en' className='scrollbar-hide' suppressHydrationWarning>
+      <html lang='ko' className='scrollbar-hide sm:scrollbar-default' suppressHydrationWarning>
         <body
           className={`${[notoSansKr.variable, roboto.variable, oranienbaum.variable, ibmSans.variable].join(
             ' '

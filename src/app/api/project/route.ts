@@ -39,6 +39,7 @@ export async function GET(request: NextRequest) {
     const skills = result?.properties?.skills?.multi_select?.map((skill: any) => skill.name);
     const overview2 = result?.properties?.overview2?.rich_text?.[0]?.plain_text;
     const overviewImg = result?.properties?.overviewImg?.files?.[0]?.file?.url;
+    const link = result?.properties?.link?.url;
     return {
       id,
       icon,
@@ -51,6 +52,7 @@ export async function GET(request: NextRequest) {
       overview,
       overview2,
       overviewImg,
+      link,
     };
   });
 
