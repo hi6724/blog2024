@@ -1,9 +1,15 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import 'react-notion-x/src/styles.css';
+import 'prismjs/themes/prism-tomorrow.css';
+import 'katex/dist/katex.min.css';
+
 import { Roboto, Noto_Sans_KR, Oranienbaum, IBM_Plex_Sans_KR } from 'next/font/google'; // Roboto와 한글 NotoSans를 사용합니다.
 
 import { ThemeProvider } from 'next-themes';
 import { ReactQueryClientProvider } from '@/components/common/ReactQueryClientProvider';
+import Footer from '@/components/Footer';
+import NavBar from '@/components/NavBar';
 
 const notoSansKr = Noto_Sans_KR({
   preload: false,
@@ -50,10 +56,23 @@ export default function RootLayout({
             defaultTheme='system'
             value={{ lighten: 'emerald', light: 'garden', dark: 'dim', darken: 'night' }}
           >
-            {children}
+            <Container>
+              <NavBar />
+
+              {children}
+              <Footer />
+            </Container>
           </ThemeProvider>
         </body>
       </html>
     </ReactQueryClientProvider>
+  );
+}
+
+function Container({ children }: any) {
+  return (
+    <div className='flex justify-center w-full'>
+      <div className='max-w-5xl px-4 w-full'>{children}</div>
+    </div>
   );
 }

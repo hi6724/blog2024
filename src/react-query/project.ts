@@ -12,3 +12,14 @@ export const useProjectOverviewList = (params: IListQueryParams) =>
     queryFn: () => getProjectList(params),
     select: (res) => res.data,
   });
+
+export const getProjectDetail = (id: string): Promise<AxiosResponse<any>> => {
+  return axios.get(`/api/project/${id}`);
+};
+
+export const useProjectDetail = (id: string) =>
+  useQuery({
+    queryKey: ['project-detail', id],
+    queryFn: () => getProjectDetail(id),
+    select: (res) => res.data,
+  });

@@ -1,18 +1,15 @@
+import { notionClient } from '@/lib/notion';
 import { Client } from '@notionhq/client';
 import { NextRequest, NextResponse } from 'next/server';
 
 const database_id = '68009bd6df9640f9b09322eb70a3dee5';
 
 export async function GET(request: NextRequest) {
-  const notion = new Client({
-    auth: process.env.NOTION_API_KEY,
-  });
-
   const cursor = request.nextUrl.searchParams.get('cursor');
   const page_size = +(request.nextUrl.searchParams.get('page_size') ?? '10');
   const sort = request.nextUrl.searchParams.get('sort') ?? 'descending';
 
-  const projects = await notion.databases.query({
+  const projects = await notionClient.databases.query({
     database_id,
     auth: process.env.NOTION_API_KEY,
     page_size,

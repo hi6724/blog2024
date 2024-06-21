@@ -2,6 +2,7 @@
 import { useMobile } from '@/hooks/useMobile';
 import { useBlogOverviewList } from '@/react-query/blog';
 import { IBlogOverview } from '@/react-query/types';
+import dayjs from 'dayjs';
 import { motion, useInView } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
@@ -16,7 +17,7 @@ function Blog() {
     <>
       <div className='h-16 sm:h-[25vh]' />
       <motion.h1
-        className='text-title z-10 sticky top-16 bg-base-100 text-base-content bg-opacity-30 backdrop-blur-lg mb-6 p-2'
+        className='text-title z-10 sticky top-16 bg-base-100 text-base-content bg-opacity-60 backdrop-blur-lg mb-6 p-2'
         initial={{ opacity: 0 }}
         animate={{ opacity: isShowTitle ? 1 : 0 }}
       >
@@ -36,13 +37,15 @@ export default Blog;
 
 function BlogItem({ data }: { data: IBlogOverview }) {
   const router = useRouter();
+  const createdAt = dayjs(data.createdAt);
+  const today = dayjs();
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ delay: 0.2 }}
-      className='card card-compact sm:card-normal w-full bg-base-100 shadow-xl'
+      initial={{ opacity: 0, scale: 0.8 }}
+      whileInView={{ opacity: 1, scale: 0.9 }}
+      className='card card-compact sm:card-normal w-full bg-base-100 shadow-xl shadow-base-content/40 cursor-pointer'
       onClick={() => router.push(`/blog/${data.id}`)}
+      whileHover={{ scale: 1 }}
     >
       {data.thumbImageUri && (
         <figure className='h-32 hidden'>
@@ -66,7 +69,9 @@ function BlogItem({ data }: { data: IBlogOverview }) {
           ))}
         </div>
         {/* footer */}
-        <p className='text-sm font-semibold opacity-40 flex-grow-0'>2024년 6월 7일 | 2개의 댓글</p>
+        <p className='text-sm font-semibold opacity-40 flex-grow-0'>
+          {createdAt.format(createdAt.get('year') !== today.get('year') ? 'YYYY년 M월 D일' : 'M월 D일')}
+        </p>
       </div>
     </motion.div>
   );

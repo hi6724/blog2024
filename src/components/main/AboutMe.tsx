@@ -45,11 +45,11 @@ function CarouselItem({ src, index, scrollY }: { src: string; index: number; scr
   return (
     <>
       <motion.div
-        className='w-full top-20 sticky z-10 backdrop-blur-lg'
+        className='w-full top-20 sticky z-10 bg-base-300 bg-opacity-60'
         initial={{ opacity: 0 }}
         animate={{ opacity: isShow ? 1 : 0 }}
       >
-        <h1 className='text-title text-center text-neutral-content p-2'>{'title'.toUpperCase()}</h1>
+        <h1 className='text-title text-center text-base-content p-2'>{'title'.toUpperCase()}</h1>
       </motion.div>
 
       <motion.div

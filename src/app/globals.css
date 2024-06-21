@@ -35,3 +35,25 @@
 .text-sub-title {
   @apply text-2xl font-letter text-shadow shadow-base-content text-base-content sm:text-4xl;
 }
+
+.notion-frame,
+.notion-page-no-cover {
+  padding-top: 0rem !important;
+}
+.notion-header {
+  @apply !top-16 !text-base-content;
+}
+.notion-app,
+.notion-nav-header > .breadcrumbs > .breadcrumb {
+  @apply !text-base-content;
+}
+
+.notion-link {
+  @apply !text-primary !border-primary;
+}
+.notion-hr {
+  @apply !h-[1px] !bg-base-content !bg-opacity-60;
+}
+.notion-page-icon-hero {
+  display: none !important;
+}

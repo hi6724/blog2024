@@ -31,6 +31,7 @@ const config: Config = {
         { values: theme('textShadow') }
       );
     }),
+
     require('tailwind-scrollbar-hide'),
     require('daisyui'),
   ],

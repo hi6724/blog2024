@@ -15,8 +15,7 @@ export default function Main() {
 }
 function Home() {
   return (
-    <Container>
-      <NavBar />
+    <>
       <div className='z-10 relative mt-12'>
         <h1 className='text-title'>HELLO!</h1>
         <h1 className='text-title'>{"I'M HUNMOK"}</h1>
@@ -27,15 +26,6 @@ function Home() {
       <Blog />
       <GuestBook />
       <div className='h-16'></div>
-      <Footer />
-    </Container>
-  );
-}
-
-function Container({ children }: any) {
-  return (
-    <div className='flex justify-center w-full'>
-      <div className='max-w-5xl px-4 w-full'>{children}</div>
-    </div>
+    </>
   );
 }
