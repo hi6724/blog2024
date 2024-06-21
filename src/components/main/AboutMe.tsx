@@ -1,6 +1,5 @@
 import { motion, useMotionValueEvent, useScroll } from 'framer-motion';
-import { useMemo, useRef, useState } from 'react';
-import { loremIpsum } from 'lorem-ipsum';
+import { useRef, useState } from 'react';
 
 function AboutMe() {
   const scrollRef = useRef(null);
@@ -58,7 +57,7 @@ function CarouselItem({ src, index, scrollY }: { src: string; index: number; scr
         className='flex w-full h-full flex-col '
       >
         <img src={src} loading='lazy' alt='' className='rounded-xl object-cover  w-full sm:h-96' />
-        <div className='mt-4 flex flex-col gap-4'>
+        <div className='mt-4 flex flex-col gap-4 px-4'>
           <p>{'paragraph'}</p>
         </div>
       </motion.div>

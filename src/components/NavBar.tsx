@@ -13,7 +13,7 @@ export default function NavBar() {
     <div className='navbar bg-base-100 sticky top-0 z-50'>
       <div className='flex-none'></div>
       <div className='flex-1'>
-        <a className='btn btn-ghost text-3xl font-letter'>HUNMOK</a>
+        <a className='btn btn-ghost text-3xl font-letter p-0'>HUNMOK</a>
       </div>
 
       <div className='flex-none flex items-center gap-4'>

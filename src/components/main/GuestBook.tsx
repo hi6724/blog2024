@@ -4,26 +4,38 @@ import { useGuestBookList } from '@/react-query/guestbook';
 import { motion } from 'framer-motion';
 import dayjs from 'dayjs';
 import { IGuestBook } from '@/react-query/types';
+import Link from 'next/link';
 
 function GuestBook() {
   const isMobile = useMobile();
-  const { data } = useGuestBookList({ cursor: undefined, page_size: isMobile ? 6 : 9, sort: 'descending' });
+  const { data } = useGuestBookList({ cursor: undefined, page_size: 9, sort: 'descending' });
+  const guestBookItems = isMobile ? data?.results.slice(0, 4) : data?.results;
 
   return (
     <div>
       <div className='h-[25vh]' />
       <motion.h1
-        className='text-title bg-opacity-30 backdrop-blur-lg p-2 z-10 sticky top-16 bg-base-100 '
+        className='text-title p-2 z-20 sticky top-14 bg-base-100 '
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ delay: 0.1 }}
       >
         GUESTBOOK
       </motion.h1>
-      <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-        {data && data.results?.map((chat, i) => <ChatItem data={chat} key={chat.id} />)}
+      <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3 relative bg-base-100'>
+        {guestBookItems?.map((chat, i) => (
+          <ChatItem data={chat} key={chat.id} />
+        ))}
       </div>
-      <button className='btn btn-outline w-full mt-4'>READ MORE</button>
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        className='py-8 sm:py-16 bg-base-100 z-10 mt-4 mx-2 flex justify-center'
+      >
+        <Link href={'/blog'} className='btn btn-outline w-full self-center max-w-96'>
+          모든 방명록 보기
+        </Link>
+      </motion.div>
     </div>
   );
 }

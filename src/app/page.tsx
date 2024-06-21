@@ -16,7 +16,7 @@ export default function Main() {
 function Home() {
   return (
     <>
-      <div className='z-10 relative mt-12'>
+      <div className='z-10 relative mt-12 ml-2'>
         <h1 className='text-title'>HELLO!</h1>
         <h1 className='text-title'>{"I'M HUNMOK"}</h1>
       </div>

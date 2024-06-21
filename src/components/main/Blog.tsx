@@ -4,31 +4,43 @@ import { useBlogOverviewList } from '@/react-query/blog';
 import { IBlogOverview } from '@/react-query/types';
 import dayjs from 'dayjs';
 import { motion, useInView } from 'framer-motion';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 
 function Blog() {
   const isMobile = useMobile();
-  const { data } = useBlogOverviewList({ page_size: isMobile ? 4 : 12, sort: 'descending' });
+  const { data } = useBlogOverviewList({ page_size: 12, sort: 'descending' });
+  const blogItems = isMobile ? data?.results.slice(0, 4) : data?.results;
   const ref = useRef<HTMLDivElement>(null);
   const isShowTitle = useInView(ref);
 
   return (
     <>
-      <div className='h-16 sm:h-[25vh]' />
+      <div className='h-16 sm:h-[25vh] bg-base-100 z-10 relative' />
       <motion.h1
-        className='text-title z-10 sticky top-16 bg-base-100 text-base-content bg-opacity-60 backdrop-blur-lg mb-6 p-2'
+        className='text-title z-20 sticky top-14 bg-base-100 text-base-content p-2'
         initial={{ opacity: 0 }}
         animate={{ opacity: isShowTitle ? 1 : 0 }}
       >
         BLOG
       </motion.h1>
-      <div ref={ref} className='grid gap-4 p-2 sm:grid-cols-2 md:grid-cols-3 '>
-        {data?.results?.map((data, index) => (
+      <div ref={ref} className='grid gap-4 p-2 sm:grid-cols-2 md:grid-cols-3 bg-base-100 z-10 relative'>
+        {blogItems?.map((data, index) => (
           <BlogItem key={data.id} data={data} />
         ))}
       </div>
-      <button className='btn btn-outline w-full mt-4'>READ MORE</button>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        className='py-8 sm:py-16 bg-base-100 z-10 mt-4 mx-2 flex justify-center'
+      >
+        <Link href={'/blog'} className='btn btn-outline w-full self-center max-w-96'>
+          모든 블로그 보기
+        </Link>
+      </motion.div>
     </>
   );
 }
@@ -42,14 +54,14 @@ function BlogItem({ data }: { data: IBlogOverview }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
-      whileInView={{ opacity: 1, scale: 0.9 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       className='card card-compact sm:card-normal w-full bg-base-100 shadow-xl shadow-base-content/40 cursor-pointer'
       onClick={() => router.push(`/blog/${data.id}`)}
       whileHover={{ scale: 1 }}
     >
       {data.thumbImageUri && (
         <figure className='h-32 hidden'>
-          <img src={data.thumbImageUri} alt='thumbImageUri' />
+          <Image src={data.thumbImageUri} alt='thumbImageUri' width={400} height={400} />
         </figure>
       )}
       <div className='card-body justify-end'>

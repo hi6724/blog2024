@@ -4,23 +4,8 @@ import { IProjectOverView } from '@/react-query/types';
 import { motion, useInView, useMotionValueEvent, useScroll } from 'framer-motion';
 import { useRef, useState } from 'react';
 import ProjectItem from './ProjectItem';
-
-function calculateArray(arr?: IProjectOverView[]) {
-  if (!arr) return [0];
-  let result: number[] = [0];
-  let sum = 0;
-
-  arr.forEach((obj: IProjectOverView) => {
-    if (obj.overviewImg) {
-      sum += 2;
-    } else {
-      sum += 1;
-    }
-    result.push(sum);
-  });
-
-  return result;
-}
+import { calculateArray } from '@/lib/list';
+import Link from 'next/link';
 
 function Project() {
   const isMobile = useMobile();
@@ -28,11 +13,14 @@ function Project() {
   const showTitleRef = useRef(null);
   const isInviewShow = useInView(showTitleRef, { amount: 'some' });
   const [animationY, setAnimationY] = useState(0);
-  const { scrollYProgress } = useScroll({ target: scrollRef, offset: ['start start', 'end 70%'] });
+  const { scrollYProgress } = useScroll({ target: scrollRef, offset: ['start start', 'end 40%'] });
   useMotionValueEvent(scrollYProgress, 'change', setAnimationY);
 
-  const { data: projects } = useProjectOverviewList({ page_size: 3, sort: 'descending' });
-  const lengthList = calculateArray(projects?.results);
+  const { data } = useProjectOverviewList({ page_size: 3, sort: 'descending' });
+  const projects = isMobile ? data?.results.slice(0, 2) : data?.results;
+  const lengthList = calculateArray(projects, 'overviewImg');
+
+  console.log(animationY);
 
   return (
     <>
@@ -49,8 +37,8 @@ function Project() {
       <div className='h-8 sm:h-[15vh]' />
 
       <div ref={scrollRef}>
-        <motion.div className='w-full h-full flex justify-center mt-10 top-16 sticky *:absolute'>
-          {projects?.results.map((project, index) => (
+        <motion.div className='w-full h-full flex justify-center mt-10 top-16 sticky'>
+          {projects?.map((project, index) => (
             <ProjectItem
               scrollY={animationY}
               index={index}
@@ -61,12 +49,21 @@ function Project() {
           ))}
         </motion.div>
         <motion.div
-          className={`h-[200vh]`}
+          className={`min-h-[200vh]`}
           style={{
             height: `${lengthList[lengthList.length - 1] * (isMobile ? 50 : 100)}vh`,
           }}
         />
       </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: animationY > 0 ? 1 : 0 }}
+        className='sticky bottom-0 py-8 sm:py-16 bg-base-100 z-10 mt-32 mx-2 flex justify-center'
+      >
+        <Link href={'/project'} className='btn btn-outline w-full max-w-96'>
+          모든 프로젝트 보기
+        </Link>
+      </motion.div>
     </>
   );
 }

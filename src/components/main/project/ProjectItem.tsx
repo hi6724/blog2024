@@ -19,9 +19,9 @@ export default function ProjectItem({
   const showNext = scrollY >= (lengthList[index] + 1) / totalLength;
 
   return (
-    <>
+    <div className='absolute w-full *:absolute'>
       <motion.div
-        className='p-2 w-full z-20 sticky top-0 bg-base-100 text-base-content bg-opacity-30 flex justify-between items-center border-b-2 border-opacity-30 '
+        className='p-2 w-full z-20 sticky top-0 bg-base-100 text-base-content bg-opacity-30 flex justify-between items-center border-b-2 border-opacity-30 sm:h-16 h-12 '
         initial={{ opacity: 0, zIndex: -1 }}
         animate={{ opacity: isShow ? 1 : 0, zIndex: isShow ? 1 : -1 }}
       >
@@ -38,65 +38,23 @@ export default function ProjectItem({
         </div>
       </motion.div>
 
-      {!project.overviewImg && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isShow ? 1 : 0 }}
-          className='flex w-full h-full flex-col mt-20 min-h-screen'
-        >
-          <Image
-            src={project.thumbImageUri}
-            blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg=='
-            alt=''
-            className='rounded-xl object-cover h-60 w-full sm:h-96'
-            width={400}
-            height={240}
-          />
-          <div className='mt-4 flex flex-col gap-4'>
-            <p className='whitespace-break-spaces'>{project.overview}</p>
-          </div>
-        </motion.div>
-      )}
+      <ProjectContent src={project.thumbImageUri} content={project.overview} show={isShow && !showNext} />
+      <ProjectContent src={project.overviewImg} content={project.overview2} show={isShow && showNext} />
+    </div>
+  );
+}
 
-      {project.overviewImg && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isShow && !showNext ? 1 : 0 }}
-            className='flex w-full h-full flex-col mt-20 min-h-screen'
-          >
-            <Image
-              src={project.thumbImageUri}
-              blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg=='
-              alt=''
-              className='rounded-xl object-cover h-60 w-full sm:h-96'
-              width={400}
-              height={240}
-            />
-            <div className='mt-4 flex flex-col gap-4'>
-              <p className='whitespace-break-spaces'>{project.overview}</p>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isShow && showNext ? 1 : 0 }}
-            className='flex w-full h-full flex-col mt-20 min-h-screen'
-          >
-            <Image
-              src={project.overviewImg}
-              blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg=='
-              alt=''
-              className='rounded-xl object-cover h-60 w-full sm:h-96'
-              width={400}
-              height={240}
-            />
-            <div className='mt-4 flex flex-col gap-4'>
-              <p className='whitespace-break-spaces'>{project.overview2}</p>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </>
+function ProjectContent({ show, src, content }: { show: boolean; src: string; content: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: show ? 1 : 0 }}
+      className='flex w-full h-full flex-col mt-12 sm:mt-16 min-h-screen'
+    >
+      <Image src={src} alt='' className='rounded-xl object-cover h-60 w-full sm:h-96' width={1000} height={400} />
+      <div className='mt-4 flex flex-col gap-4 p-2'>
+        <p className='whitespace-break-spaces line-clamp-5 sm:line-clamp-none'>{content}</p>
+      </div>
+    </motion.div>
   );
 }
