@@ -1,6 +1,6 @@
 import { notionClient } from '@/lib/notion';
-import { Client } from '@notionhq/client';
 import { NextRequest, NextResponse } from 'next/server';
+import { unstable_cache as nextCache } from 'next/cache';
 
 const database_id = '68009bd6df9640f9b09322eb70a3dee5';
 
@@ -9,18 +9,27 @@ export async function GET(request: NextRequest) {
   const page_size = +(request.nextUrl.searchParams.get('page_size') ?? '10');
   const sort = request.nextUrl.searchParams.get('sort') ?? 'descending';
 
-  const projects = await notionClient.databases.query({
-    database_id,
-    auth: process.env.NOTION_API_KEY,
-    page_size,
-    sorts: [
-      {
-        property: 'date',
-        direction: sort === 'ascending' ? 'ascending' : 'descending',
+  const projects = await (
+    await fetch(`https://api.notion.com/v1/databases/${database_id}/query`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Notion-Version': '2022-06-28',
       },
-    ],
-    ...(!!cursor && { start_cursor: cursor }),
-  });
+      body: JSON.stringify({
+        page_size,
+        ...(!!cursor && { start_cursor: cursor }),
+        sorts: [
+          {
+            property: 'date',
+            direction: sort === 'ascending' ? 'ascending' : 'descending',
+          },
+        ],
+      }),
+      next: { revalidate: 3600 },
+    })
+  ).json();
 
   const returnObj = projects.results.map((result: any) => {
     const id = result.id;
@@ -53,6 +62,7 @@ export async function GET(request: NextRequest) {
     };
   });
 
+  // return NextResponse.json(tt);
   return NextResponse.json({
     next_cursor: projects.next_cursor,
     has_more: projects.has_more,

@@ -13,28 +13,27 @@ export async function GET(request: NextRequest) {
   const sort = request.nextUrl.searchParams.get('sort') ?? 'descending';
   // const filter = request.nextUrl.searchParams.get('filter') ?? 'all';
 
-  const page = await notion.databases.query({
-    auth: process.env.NOTION_API_KEY,
-    database_id,
-    page_size,
-    sorts: [
-      {
-        property: 'createdAt',
-        direction: sort === 'ascending' ? 'ascending' : 'descending',
+  const page = await (
+    await fetch(`https://api.notion.com/v1/databases/${database_id}/query`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Notion-Version': '2022-06-28',
       },
-    ],
-    ...(!!cursor && { start_cursor: cursor }),
-    // ...(filter !== 'all' && {
-    //   filter: {
-    //     and: [
-    //       {
-    //         property: 'type',
-    //         select: { equals: filter },
-    //       },
-    //     ],
-    //   },
-    // }),
-  });
+      body: JSON.stringify({
+        page_size,
+        ...(!!cursor && { start_cursor: cursor }),
+        sorts: [
+          {
+            property: 'createdAt',
+            direction: sort === 'ascending' ? 'ascending' : 'descending',
+          },
+        ],
+      }),
+      next: { revalidate: 3600 },
+    })
+  ).json();
 
   const returnObj = page.results.map((result: any) => {
     const id = result.id;

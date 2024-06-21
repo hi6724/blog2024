@@ -4,7 +4,7 @@ import NavBar from '@/components/NavBar';
 import AboutMe from '@/components/main/AboutMe';
 import Blog from '@/components/main/Blog';
 import GuestBook from '@/components/main/GuestBook';
-import Project from '@/components/main/Project';
+import Project from '@/components/main/project/Project';
 import { Suspense } from 'react';
 export default function Main() {
   return (

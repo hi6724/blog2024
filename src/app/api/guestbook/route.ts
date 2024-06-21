@@ -12,18 +12,27 @@ export async function GET(request: NextRequest) {
   const page_size = +(request.nextUrl.searchParams.get('page_size') ?? '10');
   const sort = request.nextUrl.searchParams.get('sort') ?? 'descending';
 
-  const guestBooks = await notion.databases.query({
-    database_id,
-    auth: process.env.NOTION_API_KEY,
-    page_size,
-    ...(!!cursor && { start_cursor: cursor }),
-    sorts: [
-      {
-        property: 'createdAt',
-        direction: sort === 'ascending' ? 'ascending' : 'descending',
+  const guestBooks = await (
+    await fetch(`https://api.notion.com/v1/databases/${database_id}/query`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Notion-Version': '2022-06-28',
       },
-    ],
-  });
+      body: JSON.stringify({
+        page_size,
+        ...(!!cursor && { start_cursor: cursor }),
+        sorts: [
+          {
+            property: 'createdAt',
+            direction: sort === 'ascending' ? 'ascending' : 'descending',
+          },
+        ],
+      }),
+      next: { revalidate: 600 },
+    })
+  ).json();
 
   const returnObj = guestBooks.results.map((result: any) => {
     const id = result.id;
