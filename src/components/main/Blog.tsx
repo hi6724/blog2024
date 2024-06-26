@@ -55,13 +55,15 @@ function BlogItem({ data }: { data: IBlogOverview }) {
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
       whileInView={{ opacity: 1, scale: 1 }}
-      className='card card-compact sm:card-normal w-full bg-base-100 shadow-xl shadow-base-content/40 cursor-pointer'
+      className='card card-compact sm:card-normal w-full bg-base-100 text-primary-content shadow-xl shadow-base-content/40 cursor-pointer'
       onClick={() => router.push(`/blog/${data.id}`)}
-      whileHover={{ scale: 1 }}
+      whileHover={{
+        scale: 1.05,
+      }}
     >
       {data.thumbImageUri && (
         <figure className='h-32 hidden'>
-          <Image src={data.thumbImageUri} alt='thumbImageUri' width={400} height={400} />
+          <Image src={data.thumbImageUri} alt='thumbImageUri' width={400} height={400} className='w-full' />
         </figure>
       )}
       <div className='card-body justify-end'>

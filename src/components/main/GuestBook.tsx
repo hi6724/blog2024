@@ -44,7 +44,7 @@ export default GuestBook;
 
 function ChatItem({ data }: { data: IGuestBook }) {
   return (
-    <div className='chat chat-start '>
+    <div className='chat chat-start max-w-96 whitespace-break-spaces'>
       <div className='chat-image avatar'>
         <div className='w-10 text-3xl text-center  rounded-full'>{data.icon}</div>
       </div>

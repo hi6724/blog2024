@@ -17,10 +17,8 @@ function Project() {
   useMotionValueEvent(scrollYProgress, 'change', setAnimationY);
 
   const { data } = useProjectOverviewList({ page_size: 3, sort: 'descending' });
-  const projects = isMobile ? data?.results.slice(0, 2) : data?.results;
+  const projects = isMobile ? data?.pages?.[0]?.results?.slice(0, 2) : data?.pages?.[0]?.results;
   const lengthList = calculateArray(projects, 'overviewImg');
-
-  console.log(animationY);
 
   return (
     <>
