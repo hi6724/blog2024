@@ -43,7 +43,6 @@ export default function NavBar() {
               viewBox='0 0 512 512'
               onClick={(e) => {
                 if (open) return;
-                console.log('햄버거');
                 setOpen(true);
               }}
             >

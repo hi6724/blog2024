@@ -208,7 +208,6 @@ export class MyNotionAPI {
           block.type === 'page')
       ) {
         const source = block.type === 'page' ? block.format?.page_cover : block.properties?.source?.[0]?.[0];
-        // console.log(block, source)
 
         if (source) {
           if (!source.includes('secure.notion-static.com')) {
@@ -435,22 +434,6 @@ export class MyNotionAPI {
       };
     }
 
-    // if (isBoardType) {
-    //   console.log(
-    //     JSON.stringify(
-    //       {
-    //         collectionId,
-    //         collectionViewId,
-    //         loader,
-    //         groupBy: groupBy || 'NONE',
-    //         collectionViewQuery: collectionView.query2 || 'NONE'
-    //       },
-    //       null,
-    //       2
-    //     )
-    //   )
-    // }
-
     return this.fetch<notion.CollectionInstance>({
       endpoint: 'queryCollection',
       body: {
@@ -565,7 +548,6 @@ export class MyNotionAPI {
       headers,
       ...gotOptions,
     }).then((res) => {
-      console.log(endpoint, res);
       return res.json();
     });
   }
