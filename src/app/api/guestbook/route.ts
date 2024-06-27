@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
           },
         ],
       }),
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600 * 24 * 7 },
     })
   ).json();
 
@@ -36,7 +36,8 @@ export async function GET(request: NextRequest) {
     const icon = result?.icon?.emoji ?? '🥳';
     const createdAt = result?.created_time;
     const title = result?.properties?.title?.title?.[0]?.plain_text;
-    const user = result.properties?.user?.rich_text?.[0]?.plain_text;
+    const username = result.properties?.username?.rich_text?.[0]?.plain_text;
+    const userId = result.properties?.userId?.rich_text?.[0]?.plain_text;
     const content = result.properties?.content?.rich_text?.[0]?.plain_text;
 
     return {
@@ -45,7 +46,8 @@ export async function GET(request: NextRequest) {
       title,
       createdAt,
       content,
-      user: JSON.parse(user),
+      username,
+      userId,
     };
   });
   return NextResponse.json({
@@ -56,15 +58,19 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const { title, content, user, icon } = await request.json();
+  const { title, content, icon, username, userId } = await request.json();
   revalidatePath('/api/guestbook');
   notionClient.pages.create({
     parent: { database_id },
     icon: { emoji: icon },
     properties: {
       title: { title: [{ text: { content: title } }] },
-      content: { rich_text: [{ text: { content } }] },
-      user: { rich_text: [{ text: { content: JSON.stringify(user) } }] },
+      userId: { rich_text: [{ text: { content: userId } }] },
+      content: { rich_text: [{ text: { content: content } }] },
+      username: { rich_text: [{ text: { content: username } }] },
+      user: {
+        rich_text: [{ text: { content: JSON.stringify({ username: username, password: 'password' }) } }],
+      },
     },
   });
   return NextResponse.json({ ok: true });

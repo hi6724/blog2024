@@ -1,57 +1,110 @@
 'use client';
+
 import { v4 as uuidv4 } from 'uuid';
 import { useMobile } from '@/hooks/useMobile';
 import { IGuestBook } from '@/react-query/types';
 import dayjs from 'dayjs';
 import { motion } from 'framer-motion';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useEffect, useRef, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+import useUser from '@/hooks/useUser';
 
 function SubmitForm({
   setItems,
   className,
+  setEditItems,
 }: {
-  setItems: React.Dispatch<React.SetStateAction<IGuestBook[] | undefined>>;
+  setItems: React.Dispatch<React.SetStateAction<IGuestBook[]>>;
+  setEditItems: React.Dispatch<React.SetStateAction<IGuestBook[]>>;
   className?: string;
 }) {
+  const { user, createOrUpdateUser } = useUser();
+
   const emojiList = ['🥳', '🤪', '⭐', '🐝', '👻', '🐷', '🐻'];
   const isMobile = useMobile();
   const [open, setOpen] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
-  const gap = isMobile ? '0.5rem' : '1rem';
-  const { handleSubmit, register, reset, setValue } = useForm();
-
-  useEffect(() => {
-    const randomEmoji = emojiList[Math.floor(Math.random() * emojiList.length)];
-    setValue('icon', randomEmoji);
-  }, []);
+  const gap = isMobile ? '0.5rem' : '0.5rem';
+  const { handleSubmit, register, reset, setValue, watch } = useFormContext();
 
   const onValid = (data: any) => {
+    if (data.isEdit) onValidEditPost(data);
+    else onValidNewPost(data);
+  };
+
+  const onValidNewPost = (data: any) => {
+    const userId = createOrUpdateUser({ icon: data.icon, username: data.username });
+    const newData = { ...data, userId };
     fetch('/api/guestbook', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify(newData),
     });
-    reset();
+    reset({ title: '', content: '' });
+
     setItems((p) => {
-      const newData = { id: uuidv4(), createdAt: dayjs(), ...data };
-      if (p) return [newData, ...p];
-      else return [newData];
+      const newSubmittedData = { createdAt: dayjs(), id: uuidv4(), icon: newData.icon, ...newData };
+      if (p) return [newSubmittedData, ...p];
+      else return [newSubmittedData];
     });
   };
 
+  const onValidEditPost = (data: any) => {
+    const { content, id, icon, title, userId, username } = data;
+    if (userId !== user?.userId) return;
+
+    fetch('/api/guestbook/edit', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    setEditItems((p) => [{ content, id, icon, title, userId, username, createdAt: dayjs().toString() }, ...p]);
+  };
+
+  useEffect(() => {
+    if (!user) return;
+    setValue('username', user.username);
+    setValue('userId', user.userId);
+    setValue('icon', user.icon);
+  }, [user]);
+
   return (
     <motion.form
-      className={`sticky bottom-0 z-20 p-4 w-full bg-base-200 flex flex-col ${className}`}
+      className={`sticky bottom-0 z-20 p-2 w-full bg-base-200 flex flex-col ${className}`}
       onSubmit={handleSubmit(onValid)}
       onFocus={() => setOpen(true)}
       onBlur={() => setOpen(false)}
       ref={formRef}
     >
+      {watch('isEdit') && (
+        <motion.div
+          className='flex justify-between items-baseline'
+          animate={{
+            height: open ? '3rem' : '0rem',
+            overflow: open ? 'hidden' : '0rem',
+          }}
+        >
+          <h2>수정하시겠습니까?</h2>
+          <div className='flex gap-2'>
+            <button
+              className='btn btn-outline btn-error btn-sm'
+              onClick={() => {
+                reset();
+                setValue('username', user!.username);
+                setValue('userId', user!.userId);
+                setValue('icon', user!.icon);
+                setOpen(false);
+              }}
+            >
+              취소
+            </button>
+            <button className='btn btn-outline btn-info btn-sm'>확인</button>
+          </div>
+        </motion.div>
+      )}
       <label className='input input-bordered flex items-center gap-2 !outline-primary sm:input-lg' tabIndex={0}>
         <input
           type='text'
           className='grow'
-          placeholder={open ? '제목' : '방명록을 남겨주세요'}
+          placeholder={!watch('isEdit') ? (open ? '제목' : '방명록을 남겨주세요') : watch('prevData.title')}
           required
           {...register('title', { required: true })}
         />
@@ -84,16 +137,16 @@ function SubmitForm({
         }}
       >
         <textarea
-          placeholder='내용'
+          placeholder={!watch('isEdit') ? '내용' : watch('prevData.content')}
           className='textarea textarea-bordered sm:textarea-lg  w-full h-full !outline-primary'
           required
           {...register('content', { required: true })}
         ></textarea>
       </motion.div>
       <motion.div
-        className='flex flex-col w-full *:w-full gap-2 sm:gap-4 sm:flex-row h-0 overflow-hidden'
+        className='flex flex-col w-full *:w-full gap-2 sm:flex-row h-0 overflow-hidden'
         animate={{
-          height: open ? '6rem' : 0,
+          height: open ? (isMobile ? '3rem' : '4rem') : 0,
           marginTop: open ? gap : 0,
           overflow: open ? 'visible' : 'hidden',
         }}
@@ -110,35 +163,13 @@ function SubmitForm({
             <input
               type='text'
               className='grow'
-              placeholder='이름'
+              placeholder={!watch('isEdit') ? '이름' : watch('prevData.username')}
               required
               maxLength={10}
-              {...register('user.username', { required: true, maxLength: 10 })}
+              {...register('username', { required: true, maxLength: 10 })}
             />
           </label>
         </div>
-        <label className='input input-bordered flex items-center gap-2 !outline-primary sm:input-lg'>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 16 16'
-            fill='currentColor'
-            className='h-4 w-4 opacity-70'
-          >
-            <path
-              fillRule='evenodd'
-              d='M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z'
-              clipRule='evenodd'
-            />
-          </svg>
-          <input
-            required
-            type='password'
-            className='grow'
-            defaultValue=''
-            placeholder='비밀번호 (수정 및 삭제시 필요합니다)'
-            {...register('user.password', { required: true })}
-          />
-        </label>
       </motion.div>
     </motion.form>
   );

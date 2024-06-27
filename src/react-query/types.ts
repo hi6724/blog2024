@@ -16,10 +16,8 @@ export interface IGuestBook {
   icon: string;
   id: string;
   title: string;
-  user: {
-    password: string;
-    username: string;
-  };
+  username: string;
+  userId: string;
 }
 
 export interface IProjectOverView {
