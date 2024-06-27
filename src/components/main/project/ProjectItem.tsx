@@ -49,7 +49,7 @@ function ProjectContent({ show, src, content }: { show: boolean; src: string; co
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: show ? 1 : 0 }}
-      className='flex w-full h-full flex-col mt-12 sm:mt-16 min-h-screen'
+      className='flex w-full h-full flex-col mt-16 sm:mt-20 min-h-screen'
     >
       <Image src={src} alt='' className='rounded-xl object-cover h-60 w-full sm:h-96' width={1000} height={400} />
       <div className='mt-4 flex flex-col gap-4 p-2'>

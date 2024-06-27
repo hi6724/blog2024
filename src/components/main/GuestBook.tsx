@@ -2,14 +2,16 @@
 import { useMobile } from '@/hooks/useMobile';
 import { useGuestBookList } from '@/react-query/guestbook';
 import { motion } from 'framer-motion';
-import dayjs from 'dayjs';
-import { IGuestBook } from '@/react-query/types';
 import Link from 'next/link';
+import ChatItem from '../guestbook/ChatItem';
+import SubmitForm from '../guestbook/SubmitForm';
+import { IGuestBook } from '@/react-query/types';
+import { useState } from 'react';
 
 function GuestBook() {
-  const isMobile = useMobile();
-  const { data } = useGuestBookList({ cursor: undefined, page_size: 9, sort: 'descending' });
-  const guestBookItems = isMobile ? data?.results.slice(0, 4) : data?.results;
+  const { data } = useGuestBookList({ page_size: 9, sort: 'descending' });
+  const guestBookItems = data?.pages.reduce((prev: IGuestBook[], crr) => [...prev, ...crr.results], []);
+  const [submittedItems, setSubmittedItems] = useState<IGuestBook[] | undefined>();
 
   return (
     <div>
@@ -22,7 +24,10 @@ function GuestBook() {
       >
         GUESTBOOK
       </motion.h1>
-      <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3 relative bg-base-100'>
+      <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3 relative bg-base-100 p-2'>
+        {submittedItems?.map((chat, i) => (
+          <ChatItem data={chat} key={chat.id} />
+        ))}
         {guestBookItems?.map((chat, i) => (
           <ChatItem data={chat} key={chat.id} />
         ))}
@@ -30,32 +35,15 @@ function GuestBook() {
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        className='py-8 sm:py-16 bg-base-100 z-10 mt-4 mx-2 flex justify-center'
+        className='py-8 sm:py-12 bg-base-100 z-10 mt-4 mx-2 flex justify-center'
       >
-        <Link href={'/blog'} className='btn btn-outline w-full self-center max-w-96'>
+        <Link href={'/guestbook'} className='btn btn-outline w-full self-center max-w-96'>
           모든 방명록 보기
         </Link>
       </motion.div>
+      <SubmitForm className='!relative' setItems={setSubmittedItems} />
     </div>
   );
 }
 
 export default GuestBook;
-
-function ChatItem({ data }: { data: IGuestBook }) {
-  return (
-    <div className='chat chat-start max-w-96 whitespace-break-spaces'>
-      <div className='chat-image avatar'>
-        <div className='w-10 text-3xl text-center  rounded-full'>{data.icon}</div>
-      </div>
-      <div className='chat-header self-end mb-1 ml-1'>
-        {data.user.username}
-        <time className='ml-2 text-xs opacity-50'>{dayjs(data.createdAt).format('YY.MM.DD')}</time>
-      </div>
-      <div className='chat-bubble w-full h-full'>
-        <h2 className='font-semibold mb-2'>{data.title}</h2>
-        <p className='line-clamp-3 sm:line-clamp-5 lg:line-clamp-none'>{data.content}</p>
-      </div>
-    </div>
-  );
-}

@@ -13,7 +13,9 @@ export default function NavBar() {
     <div className='navbar bg-base-100 sticky top-0 z-50'>
       <div className='flex-none'></div>
       <div className='flex-1'>
-        <a className='btn btn-ghost text-3xl font-letter p-0'>HUNMOK</a>
+        <Link href={'/'} className='btn btn-ghost text-3xl font-letter p-0'>
+          HUNMOK
+        </Link>
       </div>
 
       <div className='flex-none flex items-center gap-4'>
@@ -88,8 +90,10 @@ export default function NavBar() {
       <div className='hidden sm:flex gap-4 font-letter text-2xl *:link *:link-hover'>
         <Link href={'/'}>HOME</Link>
         <Link href={'/'}>ABOUT ME</Link>
-        <Link href={'/'}>PROJECTS</Link>
-        <Link href={'/'}>BLOG</Link>
+        <Link href={'/project'}>PROJECTS</Link>
+        <Link href={'/blog'}>BLOG</Link>
+        <Link href={'/guestbook'}>GUESTBOOK</Link>
+
         <ToggleTheme desktop />
       </div>
     </div>

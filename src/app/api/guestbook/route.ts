@@ -1,13 +1,10 @@
-import { Client } from '@notionhq/client';
+import { notionClient } from '@/lib/notion';
+import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
 const database_id = 'cf6dea8440b04e5c85cf9bc986f546b7';
 
 export async function GET(request: NextRequest) {
-  const notion = new Client({
-    auth: process.env.NOTION_API_KEY,
-  });
-
   const cursor = request.nextUrl.searchParams.get('cursor');
   const page_size = +(request.nextUrl.searchParams.get('page_size') ?? '10');
   const sort = request.nextUrl.searchParams.get('sort') ?? 'descending';
@@ -30,7 +27,7 @@ export async function GET(request: NextRequest) {
           },
         ],
       }),
-      next: { revalidate: 600 },
+      next: { revalidate: 3600 },
     })
   ).json();
 
@@ -38,9 +35,9 @@ export async function GET(request: NextRequest) {
     const id = result.id;
     const icon = result?.icon?.emoji ?? '🥳';
     const createdAt = result?.created_time;
-    const title = result.properties.title.title[0].plain_text;
-    const user = result.properties.user.rich_text[0].plain_text;
-    const content = result.properties.content.rich_text[0].plain_text;
+    const title = result?.properties?.title?.title?.[0]?.plain_text;
+    const user = result.properties?.user?.rich_text?.[0]?.plain_text;
+    const content = result.properties?.content?.rich_text?.[0]?.plain_text;
 
     return {
       id,
@@ -56,4 +53,19 @@ export async function GET(request: NextRequest) {
     has_more: guestBooks.has_more,
     results: returnObj,
   });
+}
+
+export async function POST(request: NextRequest) {
+  const { title, content, user, icon } = await request.json();
+  revalidatePath('/api/guestbook');
+  notionClient.pages.create({
+    parent: { database_id },
+    icon: { emoji: icon },
+    properties: {
+      title: { title: [{ text: { content: title } }] },
+      content: { rich_text: [{ text: { content } }] },
+      user: { rich_text: [{ text: { content: JSON.stringify(user) } }] },
+    },
+  });
+  return NextResponse.json({ ok: true });
 }

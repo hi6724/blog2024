@@ -4,10 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 const database_id = '8a3bdeb10ce94834a5ba6a8476f4d43c';
 
 export async function GET(request: NextRequest) {
-  const notion = new Client({
-    auth: process.env.NOTION_API_KEY,
-  });
-
   const cursor = request.nextUrl.searchParams.get('cursor');
   const page_size = +(request.nextUrl.searchParams.get('page_size') ?? '10');
   const sort = request.nextUrl.searchParams.get('sort') ?? 'descending';

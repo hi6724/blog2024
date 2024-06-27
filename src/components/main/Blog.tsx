@@ -12,7 +12,7 @@ import { useRef } from 'react';
 function Blog() {
   const isMobile = useMobile();
   const { data } = useBlogOverviewList({ page_size: 12, sort: 'descending' });
-  const blogItems = isMobile ? data?.results.slice(0, 4) : data?.results;
+  const blogItems = isMobile ? data?.pages?.[0]?.results?.slice(0, 4) : data?.pages?.[0]?.results;
   const ref = useRef<HTMLDivElement>(null);
   const isShowTitle = useInView(ref);
 
@@ -47,7 +47,7 @@ function Blog() {
 
 export default Blog;
 
-function BlogItem({ data }: { data: IBlogOverview }) {
+export function BlogItem({ data }: { data: IBlogOverview }) {
   const router = useRouter();
   const createdAt = dayjs(data.createdAt);
   const today = dayjs();
@@ -55,7 +55,7 @@ function BlogItem({ data }: { data: IBlogOverview }) {
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
       whileInView={{ opacity: 1, scale: 1 }}
-      className='card card-compact sm:card-normal w-full bg-base-100 text-primary-content shadow-xl shadow-base-content/40 cursor-pointer'
+      className='card card-compact sm:card-normal w-full shadow-xl shadow-base-content/40 cursor-pointer'
       onClick={() => router.push(`/blog/${data.id}`)}
       whileHover={{
         scale: 1.05,

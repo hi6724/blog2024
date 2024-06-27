@@ -25,7 +25,6 @@ function Home() {
       <Project />
       <Blog />
       <GuestBook />
-      <div className='h-16'></div>
     </>
   );
 }
