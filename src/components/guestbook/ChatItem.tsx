@@ -25,6 +25,7 @@ function ChatItem({ data }: { data: IGuestBook }) {
     setValue('title', data.title);
     setValue('content', data.content);
     setValue('isEdit', true);
+    setValue('open', true);
     setValue('id', data.id);
     setValue('username', data.username);
     setValue('icon', data.icon);
@@ -51,7 +52,7 @@ function ChatItem({ data }: { data: IGuestBook }) {
               viewBox='0 0 24 24'
               xmlns='http://www.w3.org/2000/svg'
               aria-hidden='true'
-              className={`w-5 h-5 ${!isMine && 'hidden'} text-neutral/60 hover:text-accent`}
+              className={`w-5 h-5 ${!isMine && 'hidden'} text-accent/50 hover:text-accent`}
             >
               <path
                 strokeLinecap='round'

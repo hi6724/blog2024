@@ -3,12 +3,10 @@ import { motion } from 'framer-motion';
 import { ALL_THEMES } from '@/lib/theme';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function NavBar() {
-  const ref = useRef<HTMLInputElement>(null);
-  const [open, setOpen] = useState(false);
-
   return (
     <div className='navbar bg-base-100 sticky top-0 z-50'>
       <div className='flex-none'></div>
@@ -20,81 +18,76 @@ export default function NavBar() {
 
       <div className='flex-none flex items-center gap-4'>
         <ToggleTheme />
-
-        <div className='dropdown dropdown-end flex sm:hidden'>
-          <label className='swap swap-rotate' tabIndex={0}>
-            {/* this hidden checkbox controls the state */}
-            <input
-              type='checkbox'
-              ref={ref}
-              checked={open}
-              onBlur={(e) => {
-                setOpen(false);
-              }}
-              onChange={() => {
-                if (!open) ref.current?.blur();
-              }}
-            />
-
-            {/* hamburger icon */}
-            <svg
-              className={`swap-off fill-current w-5 h-5 ${!open ? 'z-[1]' : 'z-0'}`}
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 512 512'
-              onClick={(e) => {
-                if (open) return;
-                setOpen(true);
-              }}
-            >
-              <path d='M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z' />
-            </svg>
-
-            {/* close icon */}
-            <svg
-              className={`swap-on fill-current w-5 h-5 ${open ? 'z-[1]' : 'z-0'}`}
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 512 512'
-              onClick={() => {
-                if (!open) return;
-                setOpen(false);
-              }}
-            >
-              <polygon points='400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49' />
-            </svg>
-          </label>
-
-          <ul
-            tabIndex={0}
-            className='menu menu-lg dropdown-content top-8 z-[1] p-2 shadow-lg shadow-neutral bg-base-100 rounded-box w-52 font-letter text-2xl'
-          >
-            <li>
-              <Link href={'/'}>HOME</Link>
-            </li>
-            <li>
-              <Link href={'/about-me'}>ABOUT ME</Link>
-            </li>
-            <li>
-              <Link href={'/projects'}>PROJECTS</Link>
-            </li>
-            <li>
-              <Link href={'/blog'}>BLOG</Link>
-            </li>
-            <li>
-              <Link href={'/guestbook'}>GUESTBOOK</Link>
-            </li>
-          </ul>
-        </div>
+        <MobileNav />
       </div>
       {/* desktop */}
       <div className='hidden sm:flex gap-4 font-letter text-2xl *:link *:link-hover'>
-        <Link href={'/'}>HOME</Link>
-        <Link href={'/'}>ABOUT ME</Link>
-        <Link href={'/project'}>PROJECTS</Link>
-        <Link href={'/blog'}>BLOG</Link>
-        <Link href={'/guestbook'}>GUESTBOOK</Link>
-
+        {NAV_DATA.map((el) => (
+          <Link key={el.href} href={el.href}>
+            {el.text}
+          </Link>
+        ))}
         <ToggleTheme desktop />
       </div>
+    </div>
+  );
+}
+
+const NAV_DATA = [
+  { href: '/', text: 'HOME' },
+  { href: '/about-me', text: 'ABOUT ME' },
+  { href: '/project', text: 'PROJECTS' },
+  { href: '/blog', text: 'BLOG' },
+  { href: '/guestbook', text: 'GUESTBOOK' },
+];
+
+function MobileNav() {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const handleScroll = (setOpen: any) => {
+      setOpen(false);
+    };
+    window.addEventListener('scroll', () => handleScroll(setOpen));
+    return () => window.removeEventListener('scroll', () => handleScroll(setOpen));
+  }, []);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+  return (
+    <div className='relative'>
+      <div className='w-5 h-5 relative' onClick={() => setOpen(!open)}>
+        <motion.div
+          initial={{ opacity: 1, zIndex: 1 }}
+          animate={{ opacity: open ? 0 : 1, zIndex: open ? 0 : 1, rotateX: open ? 90 : 0 }}
+        >
+          <HamburgerSvg className='absolute' />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, zIndex: 0 }}
+          animate={{ opacity: open ? 1 : 0, zIndex: open ? 1 : 0, rotateX: open ? 0 : 90 }}
+        >
+          <CloseSvg className='absolute' />
+        </motion.div>
+      </div>
+      <motion.div
+        className={`flex absolute top-7 right-0 flex-col overflow-hidden w-52 shadow-xl shadow-base-content/40 rounded-xl`}
+        initial={{ height: 0 }}
+        animate={{ height: open ? '13.75rem' : 0 }}
+      >
+        {NAV_DATA.map((el) => (
+          <div
+            className={`font-letter text-xl px-4 py-2 bg-base-300/80 text-base-content first:rounded-t-xl last:rounded-b-xl ${
+              pathname === el.href && 'bg-primary/80 text-primary-content'
+            }`}
+            key={el.text}
+          >
+            <Link href={el.href}>{el.text}</Link>
+          </div>
+        ))}
+      </motion.div>
     </div>
   );
 }
@@ -133,6 +126,20 @@ function ToggleTheme({ desktop }: { desktop?: boolean }) {
   );
 }
 
+function HamburgerSvg({ className }: { className?: string }) {
+  return (
+    <svg className={`fill-current w-5 h-5 ${className}`} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'>
+      <path d='M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z' />
+    </svg>
+  );
+}
+function CloseSvg({ className }: { className?: string }) {
+  return (
+    <svg className={`fill-current w-5 h-5 ${className}`} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'>
+      <polygon points='400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49' />
+    </svg>
+  );
+}
 function SunSvg({ fill }: { fill?: boolean }) {
   if (fill)
     return (

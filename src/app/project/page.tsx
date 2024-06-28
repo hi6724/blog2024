@@ -40,7 +40,7 @@ function ProjectList() {
             }
           >
             {projects?.map((project, i) => (
-              <Project project={project} key={project.id} />
+              <Project project={project} key={project.id} index={i} />
             ))}
           </InfiniteScroll>
         )}
@@ -51,37 +51,43 @@ function ProjectList() {
 
 export default ProjectList;
 
-function Project({ project }: { project: IProjectOverView }) {
+function Project({ project, index }: { project: IProjectOverView; index: number }) {
   const scrollRef = useRef(null);
   const [animationY, setAnimationY] = useState(0);
-  const { scrollYProgress } = useScroll({ target: scrollRef, offset: ['start end', 'end end'] });
-  const startView = animationY > 1 / (project.overviewImg ? 4 : 2);
+  const ref = useRef(null);
+  const inView = useInView(ref);
+  const { scrollYProgress } = useScroll({ target: scrollRef, offset: ['start end', 'end start'] });
   useMotionValueEvent(scrollYProgress, 'change', setAnimationY);
 
   return (
-    <div>
-      <motion.div
-        className='p-2 z-20 sticky top-16 bg-base-100 text-base-content bg-opacity-30 backdrop-blur-lg flex justify-between items-center border-b-2 border-opacity-30 mb-4 sm:mb-8'
-        initial={{ opacity: 0 }}
-        animate={{ opacity: startView ? 1 : 0 }}
-      >
-        <motion.h1 className='text-sub-title text-center'>{project.title}</motion.h1>
-        <div>
-          {project.link && (
-            <a href={project.link} target='_blank' className='btn btn-xs btn-link'>
-              LINK
-            </a>
-          )}
-          <Link href={`/project/${project.id}`} className='btn btn-xs btn-outline '>
-            DETAIL
-          </Link>
-        </div>
-      </motion.div>
-      <motion.div className='overflow-hidden flex flex-col gap-4' ref={scrollRef}>
-        <ProjectContent src={project.thumbImageUri} content={project.overview} />
-        {project.overviewImg && <ProjectContent reverse src={project.overviewImg} content={project.overview2} />}
-      </motion.div>
-    </div>
+    <>
+      <div ref={ref}></div>
+      <div className='h-28'></div>
+      <div className='h-16 border-t-2'></div>
+      <div>
+        <motion.div
+          className='p-2 z-20 fixed w-full top-16 bg-base-100 text-base-content backdrop-blur-lg flex justify-between items-center border-b-2 border-opacity-30 mb-4 sm:mb-8'
+          initial={{ opacity: 0 }}
+          animate={{ opacity: animationY < 1 && !inView && animationY > 0 ? 1 : 0, zIndex: 10 - index }}
+        >
+          <motion.h1 className='text-sub-title text-center'>{project.title}</motion.h1>
+          <div>
+            {project.link && (
+              <a href={project.link} target='_blank' className='btn btn-xs btn-link'>
+                LINK
+              </a>
+            )}
+            <Link href={`/project/${project.id}`} className='btn btn-xs btn-outline '>
+              DETAIL
+            </Link>
+          </div>
+        </motion.div>
+        <motion.div className='overflow-hidden flex flex-col gap-4' ref={scrollRef}>
+          <ProjectContent src={project.thumbImageUri} content={project.overview} />
+          {project.overviewImg && <ProjectContent reverse src={project.overviewImg} content={project.overview2} />}
+        </motion.div>
+      </div>
+    </>
   );
 }
 
@@ -112,7 +118,7 @@ function ProjectContent({ src, content, reverse }: { src: string; content: strin
         />
         <motion.div
           ref={contentRef}
-          className={`whitespace-break-spaces backdrop-blur-sm bg-base-300 text-base-content rounded-xl p-2 mx-2 bg-opacity-60 -translate-y-8 sm:translate-y-0 sm:absolute sm:right-4 sm:bottom-4 sm:w-1/2 sm:p-8 sm:mx-0  ${
+          className={`whitespace-break-spaces backdrop-blur-sm h-28 bg-base-300 text-base-content rounded-xl p-2 mx-2 bg-opacity-60 -translate-y-8 sm:translate-y-0 sm:absolute sm:right-4 sm:bottom-4 sm:w-1/2 sm:p-8 sm:mx-0  ${
             reverse && 'sm:left-4'
           }`}
           initial={{ opacity: 0 }}

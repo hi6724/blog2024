@@ -6,7 +6,7 @@ import Link from 'next/link';
 import ChatItem from '../guestbook/ChatItem';
 import SubmitForm from '../guestbook/SubmitForm';
 import { IGuestBook } from '@/react-query/types';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 function GuestBook() {
@@ -21,6 +21,9 @@ function GuestBook() {
   const [animationY, setAnimationY] = useState(0);
   const { scrollYProgress } = useScroll({ target: scrollRef, offset: ['start end', 'end end'] });
   useMotionValueEvent(scrollYProgress, 'change', setAnimationY);
+  useEffect(() => {
+    if (animationY < 0.25) methods.setValue('open', false);
+  }, [animationY]);
 
   return (
     <FormProvider {...methods}>
@@ -54,8 +57,8 @@ function GuestBook() {
           className='sticky bottom-0'
           initial={{ opacity: 0 }}
           animate={{
-            opacity: animationY > 0.5 ? 1 : 0,
-            scale: animationY > 0.5 ? 1 : 0.85,
+            opacity: animationY > 0.25 ? 1 : 0,
+            scale: animationY > 0.25 ? 1 : 0.85,
           }}
         >
           <SubmitForm setItems={setSubmittedItems} setEditItems={setEditItems} />
