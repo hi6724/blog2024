@@ -11,7 +11,7 @@ function BlogListPage() {
 
   return (
     <div>
-      <motion.h1 className='text-title z-20 sticky top-14 bg-base-100 text-base-content p-2'>BLOG</motion.h1>
+      <motion.h1 className='text-title sticky top-14 bg-base-100 text-base-content p-2'>BLOG</motion.h1>
 
       {blogItems && (
         <InfiniteScroll

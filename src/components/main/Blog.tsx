@@ -20,7 +20,7 @@ function Blog() {
     <>
       <div className='h-16 sm:h-[25vh] bg-base-100 z-10 relative' />
       <motion.h1
-        className='text-title z-20 sticky top-14 bg-base-100 text-base-content p-2'
+        className='text-title sticky top-14 bg-base-100 text-base-content p-2'
         initial={{ opacity: 0 }}
         animate={{ opacity: isShowTitle ? 1 : 0 }}
       >

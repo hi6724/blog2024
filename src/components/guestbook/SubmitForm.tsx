@@ -1,5 +1,6 @@
 'use client';
 
+import { animateScroll } from 'react-scroll';
 import { v4 as uuidv4 } from 'uuid';
 import { useMobile } from '@/hooks/useMobile';
 import { IGuestBook } from '@/react-query/types';
@@ -8,6 +9,7 @@ import { motion } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import useUser from '@/hooks/useUser';
+import { usePathname } from 'next/navigation';
 
 function SubmitForm({
   setItems,
@@ -19,6 +21,7 @@ function SubmitForm({
   className?: string;
 }) {
   const { user, createOrUpdateUser } = useUser();
+  const pathname = usePathname();
 
   const emojiList = ['🥳', '🤪', '⭐', '🐝', '👻', '🐷', '🐻'];
   const isMobile = useMobile();
@@ -29,6 +32,7 @@ function SubmitForm({
   const onValid = (data: any) => {
     if (data.isEdit) onValidEditPost(data);
     else onValidNewPost(data);
+    reset();
     setValue('open', false);
   };
 
@@ -46,12 +50,13 @@ function SubmitForm({
       if (p) return [newSubmittedData, ...p];
       else return [newSubmittedData];
     });
+    if (pathname === '/guestbook') animateScroll.scrollToTop;
   };
 
   const onValidEditPost = (data: any) => {
     const { content, id, icon, title, userId, username } = data;
     if (userId !== user?.userId) return;
-
+    createOrUpdateUser({ icon: data.icon, username: data.username });
     fetch('/api/guestbook/edit', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -66,10 +71,26 @@ function SubmitForm({
     setValue('icon', user.icon);
   }, [user]);
 
+  useEffect(() => {
+    const handleScroll = (setValue: any) => {
+      const scrollHandler = () => {
+        console.log('SCROLL');
+        setValue('open', false);
+      };
+      window.addEventListener('scroll', scrollHandler);
+
+      return () => {
+        window.removeEventListener('scroll', scrollHandler);
+      };
+    };
+
+    const cleanup = handleScroll(setValue);
+    return cleanup;
+  }, []);
   return (
     <>
       <motion.form
-        className={`sticky bottom-0 z-30 py-2 bg-base-200 flex flex-col w-full ${className}`}
+        className={`sticky bottom-0 z-50 pt-2 pb-6 bg-base-200 flex flex-col w-full max-w-[100vw] overflow-hidden ${className}`}
         onSubmit={handleSubmit(onValid)}
         onClick={() => {
           if (!watch('open')) setValue('open', true);

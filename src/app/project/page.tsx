@@ -62,13 +62,30 @@ function Project({ project, index }: { project: IProjectOverView; index: number 
   return (
     <>
       <div ref={ref}></div>
-      <div className='h-28'></div>
-      <div className='h-16 border-t-2'></div>
+      <div className='h-20'></div>
+      <div className='h-12 border-t-2 p-2 z-10 w-full bg-base-100 text-base-content backdrop-blur-lg flex justify-between items-center border-b-2 border-opacity-30 mb-4 sm:mb-8'>
+        <h1 className='text-sub-title text-center'>{project.title}</h1>
+        <div>
+          {project.link && (
+            <a href={project.link} target='_blank' className='btn btn-xs btn-link'>
+              LINK
+            </a>
+          )}
+          <Link href={`/project/${project.id}`} className='btn btn-xs btn-outline '>
+            DETAIL
+          </Link>
+        </div>
+      </div>
+
       <div>
         <motion.div
           className='p-2 z-20 fixed w-full top-16 bg-base-100 text-base-content backdrop-blur-lg flex justify-between items-center border-b-2 border-opacity-30 mb-4 sm:mb-8'
           initial={{ opacity: 0 }}
-          animate={{ opacity: animationY < 1 && !inView && animationY > 0 ? 1 : 0, zIndex: 10 - index }}
+          animate={{
+            opacity: animationY < 1 && !inView && animationY > 0 ? 1 : 0,
+            zIndex: 10 - index,
+            y: animationY < 1 && !inView && animationY > 0 ? 0 : -10,
+          }}
         >
           <motion.h1 className='text-sub-title text-center'>{project.title}</motion.h1>
           <div>

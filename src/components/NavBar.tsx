@@ -47,17 +47,25 @@ function MobileNav() {
 
   useEffect(() => {
     const handleScroll = (setOpen: any) => {
-      setOpen(false);
+      const scrollHandler = () => {
+        setOpen(false);
+      };
+      window.addEventListener('scroll', scrollHandler);
+
+      return () => {
+        window.removeEventListener('scroll', scrollHandler);
+      };
     };
-    window.addEventListener('scroll', () => handleScroll(setOpen));
-    return () => window.removeEventListener('scroll', () => handleScroll(setOpen));
+
+    const cleanup = handleScroll(setOpen);
+    return cleanup;
   }, []);
 
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
   return (
-    <div className='relative'>
+    <div className='relative sm:hidden'>
       <div className='w-5 h-5 relative' onClick={() => setOpen(!open)}>
         <motion.div
           initial={{ opacity: 1, zIndex: 1 }}
