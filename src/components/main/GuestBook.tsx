@@ -30,7 +30,7 @@ function GuestBook() {
       <div ref={scrollRef}>
         <div className='h-[25vh]' />
         <motion.h1
-          className='text-title p-2 z-0 sticky top-14 bg-base-100 '
+          className='text-title p-2 z-20 sticky top-14 bg-base-100 '
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.1 }}

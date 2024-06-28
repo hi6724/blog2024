@@ -85,3 +85,4 @@ function ChatItem({ data }: { data: IGuestBook }) {
     </div>
   );
 }
+export default ChatItem;
