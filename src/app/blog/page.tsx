@@ -1,5 +1,6 @@
 'use client';
-import { BlogItem } from '@/components/main/Blog';
+
+import BlogList from '@/components/blog/BlogList';
 import { useBlogOverviewList } from '@/react-query/blog';
 import { IBlogOverview } from '@/react-query/types';
 import { motion } from 'framer-motion';
@@ -19,16 +20,13 @@ function BlogListPage() {
           next={fetchNextPage}
           hasMore={hasNextPage}
           loader={<h4>Loading...</h4>}
-          className='grid gap-4 p-2 sm:grid-cols-2 md:grid-cols-3 bg-base-100 z-10 relative'
           endMessage={
             <p style={{ textAlign: 'center' }}>
               <b>Yay! You have seen it all</b>
             </p>
           }
         >
-          {blogItems?.map((blogData, i) => (
-            <BlogItem key={blogData.id} data={blogData} />
-          ))}
+          <BlogList blogItems={blogItems} />
         </InfiniteScroll>
       )}
     </div>

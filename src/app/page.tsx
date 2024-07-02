@@ -1,11 +1,10 @@
 'use client';
-import Footer from '@/components/Footer';
-import NavBar from '@/components/NavBar';
 import AboutMe from '@/components/main/AboutMe';
-import Blog from '@/components/main/Blog';
+import MainBlog from '@/components/main/MainBlog';
 import GuestBook from '@/components/main/GuestBook';
-import Project from '@/components/main/project/Project';
+import MainProject from '@/components/main/MainProject';
 import { Suspense } from 'react';
+
 export default function Main() {
   return (
     <Suspense fallback={<div>loading...</div>}>
@@ -13,6 +12,7 @@ export default function Main() {
     </Suspense>
   );
 }
+
 function Home() {
   return (
     <>
@@ -22,8 +22,8 @@ function Home() {
       </div>
 
       <AboutMe />
-      <Project />
-      <Blog />
+      <MainProject />
+      <MainBlog />
       <GuestBook />
     </>
   );

@@ -64,40 +64,33 @@ function SubmitForm({
     setEditItems((p) => [{ content, id, icon, title, userId, username, createdAt: dayjs().toString() }, ...p]);
   };
 
-  useEffect(() => {
+  const setUserInfo = () => {
     if (!user) return;
     setValue('username', user.username);
     setValue('userId', user.userId);
     setValue('icon', user.icon);
+  };
+  useEffect(() => {
+    setUserInfo();
   }, [user]);
 
-  useEffect(() => {
-    const handleScroll = (setValue: any) => {
-      const scrollHandler = () => {
-        console.log('SCROLL');
-        setValue('open', false);
-      };
-      window.addEventListener('scroll', scrollHandler);
+  const onClickBackdrop = () => {
+    setValue('open', false);
+    if (watch('isEdit')) {
+      reset();
+      setUserInfo();
+    }
+  };
 
-      return () => {
-        window.removeEventListener('scroll', scrollHandler);
-      };
-    };
-
-    const cleanup = handleScroll(setValue);
-    return cleanup;
-  }, []);
   return (
     <>
       <motion.form
-        className={`sticky bottom-0 z-50 pt-2 pb-6 bg-base-200 flex flex-col w-full max-w-[100vw] overflow-hidden ${className}`}
+        className={`fixed bottom-0 z-50 pt-2 pb-9 sm:pb-6 bg-base-200 flex flex-col w-full max-w-screen-lg overflow-hidden ${className}`}
         onSubmit={handleSubmit(onValid)}
         onClick={() => {
-          if (!watch('open')) setValue('open', true);
-          if (!user || watch('isEdit')) return;
-          setValue('username', user.username);
-          setValue('userId', user.userId);
-          setValue('icon', user.icon);
+          if (!watch('open')) {
+            setValue('open', true);
+          }
         }}
         ref={formRef}
       >
@@ -117,6 +110,11 @@ function SubmitForm({
                   e.stopPropagation();
                   setValue('open', false);
                   reset();
+                  if (user && !watch('isEdit')) {
+                    setValue('username', user.username);
+                    setValue('userId', user.userId);
+                    setValue('icon', user.icon);
+                  }
                 }}
               >
                 취소
@@ -198,10 +196,7 @@ function SubmitForm({
         </motion.div>
       </motion.form>
       {watch('open') && (
-        <div
-          className='z-20 fixed top-0 left-0 bg-neutral/60 w-full h-screen'
-          onClick={() => setValue('open', false)}
-        />
+        <div className='z-20 fixed top-0 left-0 bg-neutral/60 w-full h-screen' onClick={onClickBackdrop} />
       )}
     </>
   );

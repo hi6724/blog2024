@@ -1,17 +1,18 @@
 'use client';
+
+import React from 'react';
 import ProjectList from '@/components/project/ProjectList';
+
 import { useProjectOverviewList } from '@/react-query/project';
 import { IProjectOverView } from '@/react-query/types';
-import { useInView, motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
 
-function ProjectListPage() {
+function MainProject() {
   const scrollRef = useRef(null);
   const showRef = useRef(null);
   const isInviewShow = useInView(showRef, { amount: 'some' });
-  const { data, fetchNextPage, hasNextPage } = useProjectOverviewList({ page_size: 6, sort: 'descending' });
-
+  const { data } = useProjectOverviewList({ page_size: 2, sort: 'descending' });
   const projects = data?.pages.reduce((prev: IProjectOverView[], crr) => [...prev, ...crr.results], []);
   return (
     <>
@@ -25,23 +26,9 @@ function ProjectListPage() {
       <div ref={scrollRef} />
       <div className='h-16 sm:h-32' />
       <div ref={showRef} />
-      {projects && (
-        <InfiniteScroll
-          dataLength={projects.length}
-          next={fetchNextPage}
-          hasMore={hasNextPage}
-          loader={<h4>Loading...</h4>}
-          endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-          }
-        >
-          <ProjectList projects={projects} />
-        </InfiniteScroll>
-      )}
+      {projects && <ProjectList projects={projects} />}
     </>
   );
 }
 
-export default ProjectListPage;
+export default MainProject;
