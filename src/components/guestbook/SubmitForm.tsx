@@ -26,7 +26,6 @@ function SubmitForm({
   const emojiList = ['🥳', '🤪', '⭐', '🐝', '👻', '🐷', '🐻'];
   const isMobile = useMobile();
   const formRef = useRef<HTMLFormElement>(null);
-  const gap = isMobile ? '0.5rem' : '0.5rem';
   const { handleSubmit, register, reset, setValue, watch } = useFormContext();
 
   const onValid = (data: any) => {
@@ -85,7 +84,7 @@ function SubmitForm({
   return (
     <>
       <motion.form
-        className={`fixed bottom-0 z-50 pt-2 pb-9 sm:pb-6 bg-base-200 flex flex-col w-full max-w-screen-lg overflow-hidden ${className}`}
+        className={`fixed -bottom-48 sm:-bottom-60 z-50 pt-2 pb-9 sm:pb-6 bg-base-200 flex flex-col w-full max-w-screen-lg overflow-hidden ${className}`}
         onSubmit={handleSubmit(onValid)}
         onClick={() => {
           if (!watch('open')) {
@@ -93,12 +92,14 @@ function SubmitForm({
           }
         }}
         ref={formRef}
+        animate={{
+          bottom: watch('open') ? '0' : isMobile ? '-12rem' : '-15rem',
+        }}
       >
         {watch('isEdit') && (
           <motion.div
-            className='flex justify-between items-baseline'
+            className='flex justify-between items-baseline h-12'
             animate={{
-              height: watch('open') ? '3rem' : '0rem',
               overflow: watch('open') ? 'hidden' : '0rem',
             }}
           >
@@ -155,10 +156,8 @@ function SubmitForm({
           </label>
         </div>
         <motion.div
-          className='h-0 overflow-hidden px-2'
+          className='overflow-hidden px-2 h-24 sm:h-36 mt-2'
           animate={{
-            height: watch('open') ? (isMobile ? '6rem' : '9rem') : 0,
-            marginTop: watch('open') ? gap : 0,
             overflow: watch('open') ? 'visible' : 'hidden',
           }}
         >
@@ -170,10 +169,8 @@ function SubmitForm({
           ></textarea>
         </motion.div>
         <motion.div
-          className='flex w-screen max-w-screen-lg gap-2 sm:flex-row h-0 overflow-hidden px-2'
+          className='flex w-screen max-w-screen-lg gap-2 sm:flex-row overflow-hidden px-2 mt-2 h-12 sm:h-16'
           animate={{
-            height: watch('open') ? (isMobile ? '3rem' : '4rem') : 0,
-            marginTop: watch('open') ? gap : 0,
             overflow: watch('open') ? 'visible' : 'hidden',
           }}
         >
