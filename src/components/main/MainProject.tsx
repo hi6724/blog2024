@@ -7,6 +7,7 @@ import { useProjectOverviewList } from '@/react-query/project';
 import { IProjectOverView } from '@/react-query/types';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import Link from 'next/link';
 
 function MainProject() {
   const scrollRef = useRef(null);
@@ -15,7 +16,7 @@ function MainProject() {
   const { data } = useProjectOverviewList({ page_size: 2, sort: 'descending' });
   const projects = data?.pages.reduce((prev: IProjectOverView[], crr) => [...prev, ...crr.results], []);
   return (
-    <>
+    <div className='bg-base-100 relative z-10'>
       <motion.h1
         initial={{ opacity: 0 }}
         animate={{ opacity: isInviewShow ? 1 : 0 }}
@@ -27,7 +28,16 @@ function MainProject() {
       <div className='h-16 sm:h-32' />
       <div ref={showRef} />
       {projects && <ProjectList projects={projects} />}
-    </>
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        className='py-8 sm:py-16 bg-base-100 z-10 mt-4 mx-2 flex justify-center'
+      >
+        <Link href={'/project'} className='btn btn-primary w-full self-center max-w-96'>
+          모든 프로젝트 보기
+        </Link>
+      </motion.div>
+    </div>
   );
 }
 

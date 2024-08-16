@@ -49,7 +49,7 @@ function GuestBook() {
           whileInView={{ opacity: 1 }}
           className='py-8 sm:py-12 bg-base-100 z-10 mt-4 mx-2 flex justify-center'
         >
-          <Link href={'/guestbook'} className='btn btn-outline w-full self-center max-w-96'>
+          <Link href={'/guestbook'} className='btn btn-primary w-full self-center max-w-96'>
             모든 방명록 보기
           </Link>
         </motion.div>

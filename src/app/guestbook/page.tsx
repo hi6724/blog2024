@@ -3,11 +3,10 @@
 import ChatItem from '@/components/guestbook/ChatItem';
 import { useGuestBookList } from '@/react-query/guestbook';
 import { IGuestBook } from '@/react-query/types';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import SubmitForm from '@/components/guestbook/SubmitForm';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useMotionValueEvent, useScroll } from 'framer-motion';
 
 function GuestBookPage() {
   const { data, fetchNextPage, hasNextPage } = useGuestBookList({ page_size: 120, sort: 'descending' });
@@ -15,12 +14,7 @@ function GuestBookPage() {
   const [submittedItems, setSubmittedItems] = useState<IGuestBook[]>([]);
   const [editItems, setEditItems] = useState<IGuestBook[]>([]);
   const editItemsIds = editItems.map((el) => el.id);
-
   const scrollRef = useRef(null);
-  const [animationY, setAnimationY] = useState(0);
-  const { scrollYProgress } = useScroll({ target: scrollRef, offset: ['start end', 'end end'] });
-  useMotionValueEvent(scrollYProgress, 'change', setAnimationY);
-
   const methods = useForm();
   return (
     <FormProvider {...methods}>

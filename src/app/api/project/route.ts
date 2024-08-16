@@ -1,6 +1,4 @@
-import { notionClient } from '@/lib/notion';
 import { NextRequest, NextResponse } from 'next/server';
-import { unstable_cache as nextCache } from 'next/cache';
 
 const database_id = '68009bd6df9640f9b09322eb70a3dee5';
 
@@ -27,7 +25,7 @@ export async function GET(request: NextRequest) {
           },
         ],
       }),
-      next: { revalidate: 3200 },
+      next: { revalidate: 1200 },
     })
   ).json();
 

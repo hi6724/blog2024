@@ -34,7 +34,7 @@ function Blog() {
         whileInView={{ opacity: 1 }}
         className='py-8 sm:py-16 bg-base-100 z-10 mt-4 mx-2 flex justify-center'
       >
-        <Link href={'/blog'} className='btn btn-outline w-full self-center max-w-96'>
+        <Link href={'/blog'} className='btn btn-primary w-full self-center max-w-96'>
           모든 블로그 보기
         </Link>
       </motion.div>
