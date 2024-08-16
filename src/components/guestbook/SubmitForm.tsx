@@ -21,6 +21,7 @@ function SubmitForm({
   className?: string;
 }) {
   const { user, createOrUpdateUser } = useUser();
+  const [prevScrollY, setPrevScrollY] = useState(0);
   const pathname = usePathname();
 
   const emojiList = ['🥳', '🤪', '⭐', '🐝', '👻', '🐷', '🐻'];
@@ -32,7 +33,7 @@ function SubmitForm({
     if (data.isEdit) onValidEditPost(data);
     else onValidNewPost(data);
     reset();
-    setValue('open', false);
+    closeForm();
   };
 
   const onValidNewPost = (data: any) => {
@@ -74,26 +75,34 @@ function SubmitForm({
   }, [user]);
 
   const onClickBackdrop = () => {
-    setValue('open', false);
+    closeForm();
     if (watch('isEdit')) {
       reset();
       setUserInfo();
     }
   };
+  const openForm = () => {
+    if (watch('open')) return;
+    setPrevScrollY(window.scrollY);
+    setValue('open', true);
+  };
+
+  const closeForm = () => {
+    if (!watch('open')) return;
+    setValue('open', false);
+    window.scrollTo(0, prevScrollY);
+  };
 
   return (
     <>
       <motion.form
-        className={`fixed -bottom-48 sm:-bottom-60 z-50 pt-2 pb-9 sm:pb-6 bg-base-200 flex flex-col w-full max-w-screen-lg overflow-hidden ${className}`}
+        id='guestbook-form'
+        className={`fixed -bottom-44 sm:-bottom-60 z-50 py-2 bg-base-200 flex flex-col w-full max-w-screen-lg overflow-hidden gap-2 ${className}`}
         onSubmit={handleSubmit(onValid)}
-        onClick={() => {
-          if (!watch('open')) {
-            setValue('open', true);
-          }
-        }}
+        onClick={openForm}
         ref={formRef}
         animate={{
-          bottom: watch('open') ? '0' : isMobile ? '-12rem' : '-15rem',
+          bottom: watch('open') ? '0' : isMobile ? '-10rem' : '-14rem',
         }}
       >
         {watch('isEdit') && (
@@ -109,7 +118,7 @@ function SubmitForm({
                 className='btn btn-outline btn-error btn-sm'
                 onClick={(e) => {
                   e.stopPropagation();
-                  setValue('open', false);
+                  closeForm();
                   reset();
                   if (user && !watch('isEdit')) {
                     setValue('username', user.username);
@@ -124,7 +133,7 @@ function SubmitForm({
             </div>
           </motion.div>
         )}
-        <div className='px-2'>
+        <div className='px-2 pb-4'>
           <label className='input input-bordered flex items-center gap-2 !outline-primary sm:input-lg' tabIndex={0}>
             <input
               type='text'
@@ -156,7 +165,7 @@ function SubmitForm({
           </label>
         </div>
         <motion.div
-          className='overflow-hidden px-2 h-24 sm:h-36 mt-2'
+          className='overflow-hidden px-2 h-24 sm:h-36 '
           animate={{
             overflow: watch('open') ? 'visible' : 'hidden',
           }}
@@ -169,7 +178,7 @@ function SubmitForm({
           ></textarea>
         </motion.div>
         <motion.div
-          className='flex w-screen max-w-screen-lg gap-2 sm:flex-row overflow-hidden px-2 mt-2 h-12 sm:h-16'
+          className='flex w-screen max-w-screen-lg gap-2 sm:flex-row overflow-hidden px-2  h-12 sm:h-16'
           animate={{
             overflow: watch('open') ? 'visible' : 'hidden',
           }}
