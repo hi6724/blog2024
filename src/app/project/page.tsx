@@ -31,6 +31,7 @@ function ProjectListPage() {
           next={fetchNextPage}
           hasMore={hasNextPage}
           loader={<h4>Loading...</h4>}
+          className='!overflow-visible'
           endMessage={
             <p style={{ textAlign: 'center' }}>
               <b>Yay! You have seen it all</b>

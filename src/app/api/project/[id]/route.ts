@@ -5,7 +5,7 @@ export async function GET(req: NextRequest, { params: { id } }: { params: { id: 
   return NextResponse.json(
     await myNotionClient.getPage(id, {
       gotOptions: {
-        next: { revalidate: 3600 },
+        next: { revalidate: 1200 },
       },
     })
   );

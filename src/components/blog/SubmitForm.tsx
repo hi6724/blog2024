@@ -3,7 +3,7 @@
 import { animateScroll } from 'react-scroll';
 import { v4 as uuidv4 } from 'uuid';
 import { useMobile } from '@/hooks/useMobile';
-import { IGuestBook } from '@/react-query/types';
+import { IComment, IGuestBook } from '@/react-query/types';
 import dayjs from 'dayjs';
 import { motion } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
@@ -16,8 +16,8 @@ function SubmitForm({
   className,
   setEditItems,
 }: {
-  setItems: React.Dispatch<React.SetStateAction<any[]>>;
-  setEditItems: React.Dispatch<React.SetStateAction<any[]>>;
+  setItems: React.Dispatch<React.SetStateAction<IComment[]>>;
+  setEditItems: React.Dispatch<React.SetStateAction<IComment[]>>;
   className?: string;
 }) {
   const { user, createOrUpdateUser } = useUser();
@@ -39,10 +39,10 @@ function SubmitForm({
   const onValidNewPost = (data: any) => {
     const userId = createOrUpdateUser({ icon: data.icon, username: data.username });
     const newData = { ...data, userId };
-    fetch('/api/guestbook', {
-      method: 'POST',
-      body: JSON.stringify(newData),
-    });
+    // fetch('/api/guestbook', {
+    //   method: 'POST',
+    //   body: JSON.stringify(newData),
+    // });
     reset({ title: '', content: '' });
 
     setItems((p) => {
@@ -54,14 +54,14 @@ function SubmitForm({
   };
 
   const onValidEditPost = (data: any) => {
-    const { content, id, icon, title, userId, username } = data;
+    const { content, id, icon, userId, username } = data;
     if (userId !== user?.userId) return;
-    createOrUpdateUser({ icon: data.icon, username: data.username });
-    fetch('/api/guestbook/edit', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-    setEditItems((p) => [{ content, id, icon, title, userId, username, createdAt: dayjs().toString() }, ...p]);
+    createOrUpdateUser({ icon, username });
+    // fetch('/api/guestbook/edit', {
+    //   method: 'POST',
+    //   body: JSON.stringify(data),
+    // });
+    setEditItems(() => [{ content, icon, id, userId, username, createdAt: dayjs().toString() }]);
   };
 
   const setUserInfo = () => {
@@ -96,13 +96,12 @@ function SubmitForm({
   return (
     <>
       <motion.form
-        id='guestbook-form'
         className={`fixed -bottom-44 sm:-bottom-60 z-50 py-2 bg-base-200 flex flex-col w-full max-w-screen-lg overflow-hidden gap-2 ${className}`}
         onSubmit={handleSubmit(onValid)}
         onClick={openForm}
         ref={formRef}
         animate={{
-          bottom: watch('open') ? '0' : isMobile ? '-10rem' : '-14rem',
+          bottom: watch('open') ? '0' : isMobile ? '-4rem' : '-5rem',
         }}
       >
         {watch('isEdit') && (
@@ -133,18 +132,17 @@ function SubmitForm({
             </div>
           </motion.div>
         )}
-        <div className='px-2 pb-4'>
-          <label className='input input-bordered flex items-center gap-2 !outline-primary sm:input-lg' tabIndex={0}>
-            <input
-              type='text'
-              className='grow'
+        <div className='px-2 pb-4 relative'>
+          <label>
+            <textarea
+              className='textarea textarea-md text-[1rem] textarea-bordered sm:textarea-lg  w-full h-full !outline-primary resize-none overflow-hidden'
               placeholder={
-                !watch('isEdit') ? (watch('open') ? '제목' : '방명록을 남겨주세요') : watch('prevData.title')
+                !watch('isEdit') ? (watch('open') ? '내용' : '댓글을 남겨주세요') : watch('prevData.content')
               }
               required
-              {...register('title', { required: true })}
+              {...register('content', { required: true })}
             />
-            <button type='submit' tabIndex={9}>
+            <button type='submit' tabIndex={9} className='absolute right-3 top-4'>
               <svg
                 data-slot='icon'
                 fill='none'
@@ -164,19 +162,7 @@ function SubmitForm({
             </button>
           </label>
         </div>
-        <motion.div
-          className='overflow-hidden px-2 h-24 sm:h-36 '
-          animate={{
-            overflow: watch('open') ? 'visible' : 'hidden',
-          }}
-        >
-          <textarea
-            placeholder={!watch('isEdit') ? '내용' : watch('prevData.content')}
-            className='textarea textarea-md text-[1rem] textarea-bordered sm:textarea-lg  w-full h-full !outline-primary'
-            required
-            {...register('content', { required: true })}
-          ></textarea>
-        </motion.div>
+
         <motion.div
           className='flex w-screen max-w-screen-lg gap-2 sm:flex-row overflow-hidden px-2  h-12 sm:h-16'
           animate={{

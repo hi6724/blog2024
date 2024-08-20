@@ -37,7 +37,7 @@ function ProjectItem({ project, index }: { project: IProjectOverView; index: num
           initial={{ opacity: 0 }}
           animate={{
             opacity: animationY < 1 && !inView && animationY > 0 ? 1 : 0,
-            zIndex: 10 - index,
+            display: animationY < 1 && !inView && animationY > 0 ? 'flex' : 'none',
             y: animationY < 1 && !inView && animationY > 0 ? 0 : -10,
           }}
         >
@@ -53,10 +53,12 @@ function ProjectItem({ project, index }: { project: IProjectOverView; index: num
             </Link>
           </div>
         </motion.div>
-        <motion.div className='overflow-hidden flex flex-col gap-4' ref={scrollRef}>
-          <ProjectContent src={project.thumbImageUri} content={project.overview} />
-          {project.overviewImg && <ProjectContent reverse src={project.overviewImg} content={project.overview2} />}
-        </motion.div>
+        <Link href={`/project/${project.id}`}>
+          <motion.div className='flex flex-col gap-4' ref={scrollRef}>
+            <ProjectContent src={project.thumbImageUri} content={project.overview} />
+            {project.overviewImg && <ProjectContent reverse src={project.overviewImg} content={project.overview2} />}
+          </motion.div>
+        </Link>
       </div>
     </>
   );

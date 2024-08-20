@@ -19,6 +19,7 @@ function ProjectContent({ src, content, reverse }: { src: string; content: strin
           opacity: inView ? 1 : 0,
           scale: inView ? 1 : 0.9,
         }}
+        whileHover={{ scale: 1.05, transition: { duration: 0.5, type: 'spring' } }}
       >
         <Image
           width={1000}
@@ -35,7 +36,7 @@ function ProjectContent({ src, content, reverse }: { src: string; content: strin
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
         >
-          <p className='line-clamp-4 sm:line-clamp-none'>{content}</p>
+          <p className='line-clamp-4 sm:line-clamp-none break-keep'>{content}</p>
         </motion.div>
       </motion.div>
     </div>

@@ -44,3 +44,12 @@ export interface IBlogOverview {
   overview: string;
   thumbImageUri?: string;
 }
+
+export interface IComment {
+  id: string;
+  createdAt: string;
+  icon: string;
+  username: string;
+  userId: string;
+  content: string;
+}
