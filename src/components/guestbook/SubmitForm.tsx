@@ -7,7 +7,7 @@ import { IGuestBook } from '@/react-query/types';
 import dayjs from 'dayjs';
 import { motion } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { set, useFormContext } from 'react-hook-form';
 import useUser from '@/hooks/useUser';
 import { usePathname } from 'next/navigation';
 
@@ -39,16 +39,24 @@ function SubmitForm({
   const onValidNewPost = (data: any) => {
     const userId = createOrUpdateUser({ icon: data.icon, username: data.username });
     const newData = { ...data, userId };
-    fetch('/api/guestbook', {
-      method: 'POST',
-      body: JSON.stringify(newData),
-    });
+    const tempId = uuidv4();
+
     reset({ title: '', content: '' });
 
     setItems((p) => {
-      const newSubmittedData = { createdAt: dayjs(), id: uuidv4(), icon: newData.icon, ...newData };
+      const newSubmittedData = { createdAt: dayjs(), id: 'tempID:' + tempId, icon: newData.icon, ...newData };
       if (p) return [newSubmittedData, ...p];
       else return [newSubmittedData];
+    });
+
+    fetch('/api/guestbook', {
+      method: 'POST',
+      body: JSON.stringify(newData),
+    }).then(async (res) => {
+      const result = await res.json();
+      setItems((p) => {
+        return p.map((el) => (el.id === `tempID:${tempId}` ? { ...el, id: result.id } : el));
+      });
     });
     if (pathname === '/guestbook') animateScroll.scrollToTop;
   };
@@ -107,7 +115,7 @@ function SubmitForm({
       >
         {watch('isEdit') && (
           <motion.div
-            className='flex justify-between items-baseline h-12'
+            className='flex justify-between items-center h-12 px-2'
             animate={{
               overflow: watch('open') ? 'hidden' : '0rem',
             }}
@@ -185,6 +193,7 @@ function SubmitForm({
         <button
           type='submit'
           className='absolute right-4 top-7 hover:ring-2 focus:ring-2 ring-primary  outline-none rounded-md'
+          style={{ top: watch('isEdit') ? '5.25rem' : '1.75rem' }}
         >
           <svg
             data-slot='icon'

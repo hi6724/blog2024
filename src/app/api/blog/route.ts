@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
           },
         ],
       }),
-      next: { revalidate: 1200 },
+      next: { revalidate: 600 },
     })
   ).json();
 

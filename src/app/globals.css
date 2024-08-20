@@ -36,10 +36,19 @@
     @apply text-2xl font-letter text-shadow shadow-base-content text-base-content sm:text-4xl;
   }
 }
-
+* {
+  scroll-margin-top: 2rem !important;
+  scroll-behavior: smooth !important;
+}
 .notion-page-content-inner,
 .notion-page-content {
   @apply !w-full !max-w-screen-lg;
+}
+
+@media (max-width: 1700px) {
+  .notion-aside {
+    display: none !important;
+  }
 }
 
 .notion-aside {
@@ -57,9 +66,7 @@
 .notion-frame {
   @apply !p-0;
 }
-.notion-header {
-  @apply !top-16;
-}
+
 .notion-app,
 .notion-header,
 .notion-nav-header > .breadcrumbs > .breadcrumb {

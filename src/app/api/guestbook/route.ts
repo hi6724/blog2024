@@ -60,18 +60,22 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const { title, content, icon, username, userId } = await request.json();
   revalidatePath('/api/guestbook');
-  notionClient.pages.create({
-    parent: { database_id },
-    icon: { emoji: icon },
-    properties: {
-      title: { title: [{ text: { content: title } }] },
-      userId: { rich_text: [{ text: { content: userId } }] },
-      content: { rich_text: [{ text: { content: content } }] },
-      username: { rich_text: [{ text: { content: username } }] },
-      user: {
-        rich_text: [{ text: { content: JSON.stringify({ username: username, password: 'password' }) } }],
+  try {
+    const result = await notionClient.pages.create({
+      parent: { database_id },
+      icon: { emoji: icon },
+      properties: {
+        title: { title: [{ text: { content: title } }] },
+        userId: { rich_text: [{ text: { content: userId } }] },
+        content: { rich_text: [{ text: { content: content } }] },
+        username: { rich_text: [{ text: { content: username } }] },
+        user: {
+          rich_text: [{ text: { content: JSON.stringify({ username: username, password: 'password' }) } }],
+        },
       },
-    },
-  });
-  return NextResponse.json({ ok: true });
+    });
+    return NextResponse.json({ ok: true, id: result.id });
+  } catch (error) {
+    return NextResponse.error();
+  }
 }

@@ -87,12 +87,13 @@ function SubmitForm({
   return (
     <>
       <motion.form
-        className={`fixed -bottom-44 sm:-bottom-60 z-50 py-2 bg-transparent flex flex-col w-full max-w-screen-lg overflow-hidden gap-2 ${className}`}
+        className={`fixed -bottom-44 left-1/2 -translate-x-1/2 sm:-bottom-60 z-[301] py-2 bg-transparent flex flex-col w-full max-w-screen-lg overflow-hidden gap-2 ${className}`}
         onSubmit={handleSubmit(onValid)}
         onClick={openForm}
         ref={formRef}
         animate={{
           bottom: watch('open') ? '0' : isMobile ? '-4rem' : '-5rem',
+          backgroundColor: watch('open') ? 'var(--fallback-b2, oklch(var(--b2)' : 'rgba(255,255,255,0)',
         }}
       >
         <div className='px-2 pb-4'>
@@ -154,7 +155,7 @@ function SubmitForm({
         </button>
       </motion.form>
       {watch('open') && (
-        <div className='z-20 fixed top-0 left-0 bg-neutral/60 w-full h-screen' onClick={onClickBackdrop} />
+        <div className='z-[300] fixed top-0 left-0 bg-neutral/60 w-full h-screen' onClick={onClickBackdrop} />
       )}
     </>
   );

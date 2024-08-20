@@ -98,24 +98,28 @@ function BlogDetailPage({ params: { id } }: { params: { id: string } }) {
                 <CommentItem comment={comment} key={comment.id} />
               ))}
             </FormProvider>
-            <div className='flex justify-between'>
-              {nextPrevData?.prev && (
+            <div className='flex justify-between gap-2'>
+              {nextPrevData?.prev ? (
                 <Link
                   href={`/blog/${nextPrevData.prev.id}`}
                   className='w-72 bg-success bg-opacity-10 flex flex-col p-4 hover:bg-opacity-30 transition-all rounded-md'
                 >
                   <p className='text-sm'>이전 글</p>
-                  <h2 className='font-bold'>{nextPrevData.prev.title}</h2>
+                  <h2 className='font-bold line-clamp-1'>{nextPrevData.prev.title}</h2>
                 </Link>
+              ) : (
+                <div className='w-72'></div>
               )}
-              {nextPrevData?.next && (
+              {nextPrevData?.next ? (
                 <Link
                   href={`/blog/${nextPrevData.next.id}`}
                   className='w-72 max-w-64 flex flex-col items-end p-4 bg-success bg-opacity-10 hover:bg-opacity-30 transition-all rounded-md'
                 >
                   <p className='text-sm'>다음 글</p>
-                  <h2 className='font-bold'>{nextPrevData.next.title}</h2>
+                  <h2 className='font-bold line-clamp-1'>{nextPrevData.next.title}</h2>
                 </Link>
+              ) : (
+                <div className='w-72'></div>
               )}
             </div>
           </motion.div>
