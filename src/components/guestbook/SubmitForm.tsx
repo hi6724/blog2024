@@ -102,7 +102,7 @@ function SubmitForm({
         onClick={openForm}
         ref={formRef}
         animate={{
-          bottom: watch('open') ? '0' : isMobile ? '-10rem' : '-14rem',
+          bottom: !watch('open') ? (isMobile ? '-10rem' : '-14rem') : '0',
         }}
       >
         {watch('isEdit') && (
@@ -133,8 +133,8 @@ function SubmitForm({
             </div>
           </motion.div>
         )}
-        <div className='px-2 pb-4'>
-          <label className='input input-bordered flex items-center gap-2 !outline-primary sm:input-lg' tabIndex={0}>
+        <div className='px-2 mb-4'>
+          <label className='input input-bordered flex items-center gap-2 !outline-primary sm:input-lg'>
             <input
               type='text'
               className='grow'
@@ -144,24 +144,6 @@ function SubmitForm({
               required
               {...register('title', { required: true })}
             />
-            <button type='submit' tabIndex={9}>
-              <svg
-                data-slot='icon'
-                fill='none'
-                strokeWidth='1.5'
-                stroke='currentColor'
-                viewBox='0 0 24 24'
-                xmlns='http://www.w3.org/2000/svg'
-                aria-hidden='true'
-                className='w-6 h-6 cursor-pointer'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5'
-                ></path>
-              </svg>
-            </button>
           </label>
         </div>
         <motion.div
@@ -200,6 +182,27 @@ function SubmitForm({
             />
           </label>
         </motion.div>
+        <button
+          type='submit'
+          className='absolute right-4 top-7 hover:ring-2 focus:ring-2 ring-primary  outline-none rounded-md'
+        >
+          <svg
+            data-slot='icon'
+            fill='none'
+            strokeWidth='1.5'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+            xmlns='http://www.w3.org/2000/svg'
+            aria-hidden='true'
+            className='w-6 h-6 cursor-pointer'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              d='M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5'
+            ></path>
+          </svg>
+        </button>
       </motion.form>
       {watch('open') && (
         <div className='z-20 fixed top-0 left-0 bg-neutral/60 w-full h-screen' onClick={onClickBackdrop} />

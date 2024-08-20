@@ -56,10 +56,7 @@ function GuestBook() {
         <motion.div
           className='sticky bottom-0'
           initial={{ opacity: 0 }}
-          animate={{
-            opacity: animationY > 0.25 ? 1 : 0,
-            scale: animationY > 0.25 ? 1 : 0.85,
-          }}
+          animate={{ opacity: animationY > 0.8 ? 1 : 0 }}
         >
           <SubmitForm setItems={setSubmittedItems} setEditItems={setEditItems} />
         </motion.div>
