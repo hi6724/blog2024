@@ -4,11 +4,14 @@ import dayjs from 'dayjs';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { thumbnailList } from '@/assets/images/thumbnail/index';
 
-function BlogItem({ data }: { data: IBlogOverview }) {
+function BlogItem({ data, i = 1 }: { data: IBlogOverview; i?: number }) {
   const router = useRouter();
   const createdAt = dayjs(data.createdAt);
   const today = dayjs();
+  const src = thumbnailList[i % thumbnailList.length];
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
@@ -19,9 +22,25 @@ function BlogItem({ data }: { data: IBlogOverview }) {
         scale: 1.05,
       }}
     >
-      {data.thumbImageUri && (
+      {data.thumbImageUri ? (
         <figure className='h-32 hidden'>
           <Image src={data.thumbImageUri} alt='thumbImageUri' width={400} height={400} className='w-full' />
+        </figure>
+      ) : (
+        <figure className='h-32 hidden'>
+          <div
+            className='hero h-full w-full bg-cover bg-center'
+            style={{
+              backgroundImage: `url(${src.src})`,
+            }}
+          >
+            <div className='hero-overlay bg-opacity-60'></div>
+            <div className='hero-content text-neutral-content text-center'>
+              <div className='max-w-md'>
+                <h1 className='text-2xl font-letter font-bold border px-8 py-4'>NO IMG</h1>
+              </div>
+            </div>
+          </div>
         </figure>
       )}
       <div className='card-body justify-end'>

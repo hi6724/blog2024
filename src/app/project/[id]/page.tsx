@@ -25,7 +25,7 @@ function ProjectDetailPage({ params: { id } }: { params: { id: string } }) {
   Object.keys(data?.block ?? {}).forEach((key) => {
     const type = data.block[key].value.type;
     if (type !== 'page') return;
-    if (!data.block[key].value.properties.BUjZ[0][0]) DELETE_KEYS.push('link');
+    if (!data.block[key].value.properties.BUjZ?.[0]?.[0]) DELETE_KEYS.push('link');
   });
 
   // 페이지 프로퍼티 이름 변경
