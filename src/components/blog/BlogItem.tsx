@@ -43,14 +43,17 @@ function BlogItem({ data, i = 1 }: { data: IBlogOverview; i?: number }) {
           </div>
         </figure>
       )}
-      <div className='card-body justify-end'>
+      <div className='card-body !gap-1 !px-4'>
         {/* title */}
-        <h2 className='card-title'>{data.title}</h2>
+        <h2 className='card-title !mb-2'>{data.title}</h2>
         {/* contents */}
         <div>
-          <p className='line-clamp-2'>{data.overview}</p>
+          <p className='line-clamp-3 text-sm'>{data.overview}</p>
         </div>
-        <div className='divider my-1'></div>
+        <p className='text-xs font-semibold opacity-40 flex-grow-0'>
+          {createdAt.format(createdAt.get('year') !== today.get('year') ? 'YYYY년 M월 D일' : 'M월 D일')}
+        </p>
+        <div className='divider mb-1 mt-0'></div>
         {/* tags */}
         <div className='flex gap-1'>
           {data.tags.map((tag: string, i: number) => (
@@ -60,9 +63,6 @@ function BlogItem({ data, i = 1 }: { data: IBlogOverview; i?: number }) {
           ))}
         </div>
         {/* footer */}
-        <p className='text-sm font-semibold opacity-40 flex-grow-0'>
-          {createdAt.format(createdAt.get('year') !== today.get('year') ? 'YYYY년 M월 D일' : 'M월 D일')}
-        </p>
       </div>
     </motion.div>
   );

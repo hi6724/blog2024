@@ -53,7 +53,7 @@ export default function RootLayout({
         >
           <ThemeProvider
             storageKey='hunmok-theme'
-            defaultTheme='system'
+            defaultTheme='darken'
             value={{ lighten: 'emerald', light: 'garden', dark: 'dim', darken: 'night' }}
           >
             <Container>

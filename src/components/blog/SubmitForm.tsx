@@ -87,7 +87,7 @@ function SubmitForm({
   return (
     <>
       <motion.form
-        className={`fixed -bottom-44 sm:-bottom-60 z-50 py-2 bg-base-200 flex flex-col w-full max-w-screen-lg overflow-hidden gap-2 ${className}`}
+        className={`fixed -bottom-44 sm:-bottom-60 z-50 py-2 bg-transparent flex flex-col w-full max-w-screen-lg overflow-hidden gap-2 ${className}`}
         onSubmit={handleSubmit(onValid)}
         onClick={openForm}
         ref={formRef}

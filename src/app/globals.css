@@ -37,6 +37,20 @@
   }
 }
 
+.notion-page-content-inner,
+.notion-page-content {
+  @apply !w-full !max-w-screen-lg;
+}
+
+.notion-aside {
+  right: calc(50% - 528px) !important;
+  transform: translateX(100%);
+  position: fixed !important;
+}
+.notion-aside > div {
+  @apply !bg-base-200;
+}
+
 .notion-page {
   @apply !px-2 !py-4 !w-full;
 }

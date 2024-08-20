@@ -2,17 +2,20 @@
 import { useProjectDetail } from '@/react-query/project';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
-import { NotionRenderer, useNotionContext } from 'react-notion-x';
+import { NotionRenderer } from 'react-notion-x';
 import { Collection } from 'react-notion-x/build/third-party/collection';
+
 import { CodeBlock, dracula, monokai, monokaiSublime, hopscotch } from 'react-code-blocks';
 import { formatDateWithDay } from '@/lib/date';
 import { splitFirst } from '@/lib/string';
-import { FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import SubmitForm from '@/components/blog/SubmitForm';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { IComment } from '@/react-query/types';
 import { motion } from 'framer-motion';
-import useUser from '@/hooks/useUser';
+import { useMobile } from '@/hooks/useMobile';
+import { useNextPrevBlogOverview } from '@/react-query/blog';
+import Link from 'next/link';
 
 const THEME = {
   dark: monokai,
@@ -32,7 +35,8 @@ function BlogDetailPage({ params: { id } }: { params: { id: string } }) {
   const { data } = useProjectDetail(id);
   const { theme } = useTheme();
   const [submittedItems, setSubmittedItems] = useState<IComment[]>([]);
-
+  const isMobile = useMobile();
+  const { data: nextPrevData } = useNextPrevBlogOverview(id);
   // 페이지 프로퍼티 이름 변경
   const collectionKey = Object.keys(data?.collection ?? {})?.[0];
   const schema = data?.collection[collectionKey].value.schema;
@@ -52,12 +56,17 @@ function BlogDetailPage({ params: { id } }: { params: { id: string } }) {
     return { id: comment.value.id, createdAt: comment.value.created_time, icon, username, userId, content };
   });
 
+  console.log(nextPrevData);
+
   return (
     <div className='relative'>
       <NotionRenderer
         recordMap={data}
+        showTableOfContents={!isMobile}
+        header={
+          <h1 className='text-4xl font-bold'>{data?.block?.[id]?.value.properties.title?.[0]?.[0]?.plain_text}</h1>
+        }
         components={{
-          Image: (data: any) => <Image {...data} width={1024} />,
           Collection,
           propertyCreatedTimeValue: ({ block }) => {
             if (!block) return null;
@@ -89,6 +98,26 @@ function BlogDetailPage({ params: { id } }: { params: { id: string } }) {
                 <CommentItem comment={comment} key={comment.id} />
               ))}
             </FormProvider>
+            <div className='flex justify-between'>
+              {nextPrevData?.prev && (
+                <Link
+                  href={`/blog/${nextPrevData.prev.id}`}
+                  className='w-72 bg-success bg-opacity-10 flex flex-col p-4 hover:bg-opacity-30 transition-all rounded-md'
+                >
+                  <p className='text-sm'>이전 글</p>
+                  <h2 className='font-bold'>{nextPrevData.prev.title}</h2>
+                </Link>
+              )}
+              {nextPrevData?.next && (
+                <Link
+                  href={`/blog/${nextPrevData.next.id}`}
+                  className='w-72 max-w-64 flex flex-col items-end p-4 bg-success bg-opacity-10 hover:bg-opacity-30 transition-all rounded-md'
+                >
+                  <p className='text-sm'>다음 글</p>
+                  <h2 className='font-bold'>{nextPrevData.next.title}</h2>
+                </Link>
+              )}
+            </div>
           </motion.div>
         }
         className={`${theme?.includes('dark') ? 'dark-mode' : 'light-mode'} !font-sans w-full`}

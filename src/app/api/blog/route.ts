@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
         ...(!!cursor && { start_cursor: cursor }),
         sorts: [
           {
-            property: 'createdAt',
+            property: 'publishedAt',
             direction: sort === 'ascending' ? 'ascending' : 'descending',
           },
         ],
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
 
   const returnObj = page.results.map((result: any) => {
     const id = result.id;
-    const createdAt = result.properties?.createdAt?.created_time;
+    const createdAt = result.properties?.publishedAt?.date?.start;
     const iconType = result.icon?.type;
     const icon = result.icon[iconType] ?? '🥳';
     const tags = result.properties?.types['multi_select'].map((el: any) => el.name);
