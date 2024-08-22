@@ -17,6 +17,7 @@ const config: Config = {
     colors: {},
     fontFamily: {
       letter: ['var(--oranienbaum)', 'eunbyul', 'g-sans', 'var(--ibm-sans)', 'var(--sans)', 'var(--roboto)'],
+      eunbyul: ['eunbyul', 'g-sans', 'var(--ibm-sans)', 'var(--sans)', 'var(--roboto)'],
       sans: ['g-sans', 'var(--ibm-sans)', 'var(--sans)', 'var(--roboto)'],
     },
   },
