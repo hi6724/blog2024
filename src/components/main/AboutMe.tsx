@@ -71,7 +71,7 @@ function CarouselItem({
         className='flex w-full h-full flex-col '
       >
         <img src={src} loading='lazy' alt='' className='rounded-xl object-cover  w-full sm:h-96' />
-        <div className='mt-4 flex flex-col gap-4 p-4 whitespace-break-spaces sm:text-xl font-light'>
+        <div className='mt-4 flex flex-col gap-4 p-4 whitespace-break-spaces sm:text-xl'>
           <p>{data.content}</p>
         </div>
       </motion.div>
