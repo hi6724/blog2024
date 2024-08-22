@@ -42,6 +42,7 @@ function BlogListPage() {
             value={selected}
             onChange={setSelected}
             labelledBy='select'
+            disableSearch
             overrideStrings={{
               allItemsAreSelected: 'All items are selected.',
               clearSearch: 'Clear Search',
