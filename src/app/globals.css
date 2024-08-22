@@ -88,3 +88,23 @@
 .notion-collection-row {
   @apply !border-b-2 !border-success !border-opacity-60;
 }
+* {
+  --rmsc-main: oklch(var(--in));
+  --rmsc-hover: oklch(var(--b2));
+  --rmsc-selected: oklch(var(--in));
+  --rmsc-border: #ccc;
+  --rmsc-gray: #aaa;
+  --rmsc-bg: oklch(var(--b1));
+  --rmsc-p: 10px;
+  --rmsc-radius: 4px;
+  --rmsc-h: 38px;
+}
+.rmsc .select-item.selected {
+  @apply !bg-info !text-info-content;
+}
+.rmsc .item-renderer {
+  @apply !items-center;
+}
+.rmsc .item-renderer input {
+  @apply checkbox checkbox-xs !w-4 !h-4;
+}

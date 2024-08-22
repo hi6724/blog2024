@@ -50,8 +50,9 @@ function BlogItem({ data, i = 1 }: { data: IBlogOverview; i?: number }) {
         <div>
           <p className='line-clamp-3 text-sm'>{data.overview}</p>
         </div>
-        <p className='text-xs font-semibold opacity-40 flex-grow-0'>
-          {createdAt.format(createdAt.get('year') !== today.get('year') ? 'YYYY년 M월 D일' : 'M월 D일')}
+        <p className='mt-2 text-xs font-semibold opacity-40 flex-grow-0'>
+          <span>{createdAt.format(createdAt.get('year') !== today.get('year') ? 'YYYY년 M월 D일' : 'M월 D일')}</span>
+          {data.comments && <span className='ml-2'>{data.comments}개의 댓글</span>}
         </p>
         <div className='divider mb-1 mt-0'></div>
         {/* tags */}

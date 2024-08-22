@@ -15,10 +15,12 @@ function SubmitForm({
   setItems,
   className,
   id,
+  commentsLength,
 }: {
   setItems: React.Dispatch<React.SetStateAction<IComment[]>>;
   className?: string;
   id: string;
+  commentsLength: number;
 }) {
   const { user, createOrUpdateUser } = useUser();
   const [prevScrollY, setPrevScrollY] = useState(0);
@@ -39,7 +41,7 @@ function SubmitForm({
 
   const onValidNewPost = (data: any) => {
     const userId = createOrUpdateUser({ icon: data.icon, username: data.username });
-    const newData = { ...data, userId };
+    const newData = { ...data, userId, commentsLength: commentsLength + 1 };
 
     fetch(`/api/project/${id}`, {
       method: 'POST',

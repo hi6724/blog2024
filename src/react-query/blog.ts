@@ -4,10 +4,6 @@ import { IBlogOverview, IListQueryParams, IListResponse } from './types';
 import { formatSearchParams } from '@/lib/params';
 
 export const getBlogList = async (params: IListQueryParams) => {
-  params.cursor;
-  params.page_size;
-  params.sort;
-
   return await (await fetch(`/api/blog?${formatSearchParams(params)}`)).json();
 };
 
@@ -25,6 +21,15 @@ export const getNextPrevBlog = async (cursor: string) => {
   const prevPreview = await getBlogList({ cursor, page_size: 2, sort: 'ascending' });
   return { next: nextPreview?.results?.[1], prev: prevPreview?.results?.[1] };
 };
+
+export const getBlogTags = async () => {
+  return await (await fetch('/api/blog/tags')).json();
+};
+export const useBlogTags = () =>
+  useQuery<{ name: string; color: string }[]>({
+    queryKey: ['blog-tags'],
+    queryFn: getBlogTags,
+  });
 
 export const useNextPrevBlogOverview = (id: string) =>
   useQuery<{ next?: IBlogOverview; prev?: IBlogOverview }>({

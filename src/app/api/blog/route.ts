@@ -1,14 +1,18 @@
-import { Client } from '@notionhq/client';
 import { NextRequest, NextResponse } from 'next/server';
 
 const database_id = '8a3bdeb10ce94834a5ba6a8476f4d43c';
 
 export async function GET(request: NextRequest) {
+  const filter = request.nextUrl.searchParams.get('filter');
   const cursor = request.nextUrl.searchParams.get('cursor');
   const page_size = +(request.nextUrl.searchParams.get('page_size') ?? '10');
   const sort = request.nextUrl.searchParams.get('sort') ?? 'descending';
-  // const filter = request.nextUrl.searchParams.get('filter') ?? 'all';
-
+  const filterList = filter?.split(',').map((el) => ({
+    property: 'types',
+    multi_select: {
+      contains: el.trim(),
+    },
+  }));
   const page = await (
     await fetch(`https://api.notion.com/v1/databases/${database_id}/query`, {
       method: 'POST',
@@ -26,6 +30,11 @@ export async function GET(request: NextRequest) {
             direction: sort === 'ascending' ? 'ascending' : 'descending',
           },
         ],
+        ...(filterList && {
+          filter: {
+            or: filterList,
+          },
+        }),
       }),
       next: { revalidate: 600 },
     })
@@ -41,8 +50,9 @@ export async function GET(request: NextRequest) {
     const coverType = result.cover?.type;
     const thumbImageUri = result.cover?.[coverType]?.url;
     const overview = result.properties?.overview?.['rich_text']?.[0]?.['plain_text'];
+    const comments = result.properties?.comments?.['number'];
 
-    return { id, createdAt, icon, tags, title, thumbImageUri, overview };
+    return { id, createdAt, icon, tags, title, thumbImageUri, overview, comments };
   });
 
   return NextResponse.json({

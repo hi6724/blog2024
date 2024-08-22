@@ -25,11 +25,11 @@ const THEME = {
 };
 
 const NAME_MAP: { [key: string]: string } = {
-  createdAt: '작성일',
+  publishedAt: '작성일',
   types: '태그',
   overview: '개요',
 };
-const DELETE_KEYS = ['type'];
+const DELETE_KEYS = ['type', 'comments', 'createdAt'];
 
 function BlogDetailPage({ params: { id } }: { params: { id: string } }) {
   const { data } = useProjectDetail(id);
@@ -56,8 +56,6 @@ function BlogDetailPage({ params: { id } }: { params: { id: string } }) {
     return { id: comment.value.id, createdAt: comment.value.created_time, icon, username, userId, content };
   });
 
-  console.log(nextPrevData);
-
   return (
     <div className='relative'>
       <NotionRenderer
@@ -68,10 +66,13 @@ function BlogDetailPage({ params: { id } }: { params: { id: string } }) {
         }
         components={{
           Collection,
-          propertyCreatedTimeValue: ({ block }) => {
-            if (!block) return null;
-            return <span>{formatDateWithDay(block.created_time, { day: true, time: true })}</span>;
+          propertyDateValue: ({ data }) => {
+            const date = data?.[0]?.[1]?.[0]?.[1];
+            const startDate = date?.start_date;
+            if (!date) return null;
+            return <span>{formatDateWithDay(startDate, { time: true })}</span>;
           },
+
           Code: ({ block }: any) => {
             return (
               <div className='w-full *:p-4 *:font-thin'>
@@ -93,7 +94,11 @@ function BlogDetailPage({ params: { id } }: { params: { id: string } }) {
             whileInView={{ opacity: 1 }}
           >
             <FormProvider {...method}>
-              <SubmitForm id={id} setItems={setSubmittedItems} />
+              <SubmitForm
+                id={id}
+                setItems={setSubmittedItems}
+                commentsLength={(comments?.length ?? 0) + (submittedItems?.length ?? 0)}
+              />
               {[...submittedItems, ...comments]?.map((comment, i) => (
                 <CommentItem comment={comment} key={comment.id} />
               ))}

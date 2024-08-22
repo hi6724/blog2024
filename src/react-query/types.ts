@@ -2,7 +2,7 @@ export interface IListQueryParams {
   cursor?: string;
   page_size?: number;
   sort?: 'ascending' | 'descending';
-  filter?: string;
+  filter?: any;
 }
 
 export interface IListResponse<T> {
@@ -43,6 +43,7 @@ export interface IBlogOverview {
   title: string;
   overview: string;
   thumbImageUri?: string;
+  comments?: number;
 }
 
 export interface IComment {

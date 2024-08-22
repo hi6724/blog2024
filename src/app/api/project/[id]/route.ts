@@ -13,10 +13,10 @@ export async function GET(req: NextRequest, { params: { id } }: { params: { id: 
 }
 
 export async function POST(req: NextRequest, { params: { id } }: { params: { id: string } }) {
-  const { content, icon, username, userId } = await req.json();
+  const { content, icon, username, userId, commentsLength } = await req.json();
   const value = `${icon}:${username}:${userId}:${content}`;
   revalidatePath(`/api/project/${id}`);
-  notionClient.comments.create({
+  const res = await notionClient.comments.create({
     parent: { page_id: id },
     rich_text: [
       {
@@ -26,6 +26,33 @@ export async function POST(req: NextRequest, { params: { id } }: { params: { id:
       },
     ],
   });
+  notionClient.pages.update({
+    page_id: id,
+    properties: {
+      comments: {
+        number: commentsLength,
+      },
+    },
+  });
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, res });
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params: { id, commentId } }: { params: { id: string; commentId: string } }
+) {
+  revalidatePath(`/api/project/${id}`);
+  const response = await notionClient.blocks.delete({
+    block_id: commentId,
+  });
+  notionClient.pages.update({
+    page_id: id,
+    properties: {
+      comments: {
+        number: 100,
+      },
+    },
+  });
+  return NextResponse.json(response);
 }
