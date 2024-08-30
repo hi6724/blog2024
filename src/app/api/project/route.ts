@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
           },
         ],
       }),
-      next: { revalidate: 3600 * 24 * 7 },
+      next: { revalidate: 600 },
     })
   ).json();
 
@@ -43,9 +43,9 @@ export async function GET(request: NextRequest) {
     const skills = result?.properties?.skills?.multi_select?.map((skill: any) => skill.name);
     const overview2 = result?.properties?.overview2?.rich_text?.[0]?.plain_text;
     const overviewImgType = result?.properties?.overviewImg?.files?.[0]?.type;
-    const overviewImg = result?.properties?.overviewImg?.files?.[0][overviewImgType].url;
+    const overviewImg = result?.properties?.overviewImg?.files?.[0]?.[overviewImgType]?.url;
     const link = result?.properties?.link?.url;
-    console.log(result?.properties?.overviewImg);
+
     return {
       id,
       icon,

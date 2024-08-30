@@ -1,5 +1,5 @@
-'use client';
 import AboutmeHeader from '@/components/about-me/AboutmeHeader';
+import AboutmeSkills from '@/components/about-me/AboutmeSkills';
 import AboutMeTimeLine from '@/components/about-me/AboutMeTimeLine';
 
 function page() {
@@ -7,7 +7,7 @@ function page() {
     <>
       <AboutmeHeader />
       <AboutMeTimeLine />
-      <div className='h-screen'></div>
+      <AboutmeSkills />
     </>
   );
 }

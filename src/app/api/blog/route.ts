@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
           },
         }),
       }),
-      next: { revalidate: 3600 * 24 * 7 },
+      next: { revalidate: 600 },
     })
   ).json();
 

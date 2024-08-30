@@ -20,7 +20,7 @@ export async function GET() {
         },
         sorts: [{ property: 'date', direction: 'descending' }],
       }),
-      next: { revalidate: 3600 * 24 * 7 },
+      next: { revalidate: 600 },
     })
   ).json();
 
