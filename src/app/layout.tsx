@@ -45,8 +45,8 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://hunmogu.com/thumbnail.png', // 링크 미리보기에서 사용할 이미지 URL을 입력하세요.
-        width: 1000,
+        url: 'https://hunmogu.com/thumbnail.png',
+        width: 1762,
         height: 1000,
         alt: '귀여운 강아지 사진',
       },
