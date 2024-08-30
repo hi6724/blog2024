@@ -37,6 +37,9 @@ export const metadata: Metadata = {
   title: '하훈목 소개',
   description: '하훈목의 포트폴리오 사이트에서 자신에 대해 소개하는 페이지입니다.',
   keywords: ['하훈목', '포트폴리오', '소개', '개발자', '프론트엔드'],
+  icons: {
+    icon: '/favi.png', // /public path
+  },
   openGraph: {
     title: '하훈목 소개',
     description: '하훈목의 포트폴리오 사이트에서 자신에 대해 소개하는 페이지입니다.',
