@@ -1,50 +1,27 @@
-'use client';
-
-import ChatItem from '@/components/guestbook/ChatItem';
-import { useGuestBookList } from '@/react-query/guestbook';
-import { IGuestBook } from '@/react-query/types';
-import React, { useRef, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import SubmitForm from '@/components/guestbook/SubmitForm';
-import { FormProvider, useForm } from 'react-hook-form';
+import GuestbookMain from '@/components/guestbook/GuestbookMain';
 
 function GuestBookPage() {
-  const { data, fetchNextPage, hasNextPage } = useGuestBookList({ page_size: 120, sort: 'descending' });
-  const guestBookItems = data?.pages.reduce((prev: IGuestBook[], crr) => [...prev, ...crr.results], []);
-  const [submittedItems, setSubmittedItems] = useState<IGuestBook[]>([]);
-  const [editItems, setEditItems] = useState<IGuestBook[]>([]);
-  const editItemsIds = editItems.map((el) => el.id);
-  const scrollRef = useRef(null);
-  const methods = useForm();
-  return (
-    <FormProvider {...methods}>
-      <div ref={scrollRef}>
-        <h1 className='text-title p-2 sticky top-14 bg-base-100 '>GUESTBOOK</h1>
-
-        {guestBookItems && (
-          <InfiniteScroll
-            dataLength={guestBookItems.length}
-            next={fetchNextPage}
-            hasMore={hasNextPage}
-            loader={<h4>Loading...</h4>}
-            className={`grid gap-2 sm:gap-4 md:grid-cols-2 lg:grid-cols-3 relative bg-base-100 px-4 py-8`}
-            endMessage={
-              <p className='sm:col-span-3 text-center p-8'>
-                <b>Yay! You have seen it all</b>
-              </p>
-            }
-          >
-            {[...submittedItems, ...guestBookItems]?.map((chat, i) => {
-              if (editItemsIds.includes(chat.id))
-                return <ChatItem data={editItems.find((el) => chat.id === el.id) as IGuestBook} key={chat.id} />;
-              return <ChatItem data={chat} key={chat.id} />;
-            })}
-          </InfiniteScroll>
-        )}
-        <SubmitForm setItems={setSubmittedItems} setEditItems={setEditItems} />
-      </div>
-    </FormProvider>
-  );
+  return <GuestbookMain />;
 }
 
 export default GuestBookPage;
+
+export const metadata = {
+  title: '방명록',
+  description: '하훈목의 포트폴리오 사이트 방명록 페이지입니다. 이곳에서 방문자의 의견과 생각을 나눌 수 있습니다.',
+  keywords: ['하훈목', '포트폴리오', '방명록', '개발자', '프론트엔드'],
+  openGraph: {
+    title: '방명록',
+    description: '하훈목의 포트폴리오 사이트 방명록 페이지입니다. 이곳에서 방문자의 의견과 생각을 나눌 수 있습니다.',
+    url: 'https://yourwebsite.com/guestbook', // 실제 방명록 페이지 URL을 입력하세요.
+    type: 'website',
+    images: [
+      {
+        url: 'https://firebasestorage.googleapis.com/v0/b/hunmok-fe31e.appspot.com/o/guestbook-preview.webp?alt=media&token=9eba9a10-fb05-4ef2-bc54-12a9d1c67317', // 방명록 페이지 미리보기에서 사용할 이미지 URL을 입력하세요.
+        width: 800,
+        height: 600,
+        alt: '방명록 페이지 미리보기 이미지',
+      },
+    ],
+  },
+};

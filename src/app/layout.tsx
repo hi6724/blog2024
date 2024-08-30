@@ -34,31 +34,23 @@ const ibmSans = IBM_Plex_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: '하훈목 소개',
+  title: '훈모구의 사이트',
   description: '하훈목의 포트폴리오 사이트에서 자신에 대해 소개하는 페이지입니다.',
   keywords: ['하훈목', '포트폴리오', '소개', '개발자', '프론트엔드'],
-  icons: {
-    icon: '/favi.png', // /public path
-  },
+
   openGraph: {
     title: '하훈목 소개',
     description: '하훈목의 포트폴리오 사이트에서 자신에 대해 소개하는 페이지입니다.',
-    url: 'https://hunmok-blog-2024.vercel.app/about-me', // 실제 URL로 교체
+    url: 'https://hunmogu.com', // 실제 URL로 교체
     type: 'website',
     images: [
       {
-        url: 'https://hunmok-blog-2024.vercel.app/profile-image.jpg', // 프로필 이미지나 관련 이미지의 실제 URL로 교체
-        width: 800,
-        height: 600,
-        alt: '하훈목의 프로필 이미지',
+        url: 'https://hunmogu.com/thumbnail.png', // 링크 미리보기에서 사용할 이미지 URL을 입력하세요.
+        width: 1000,
+        height: 1000,
+        alt: '귀여운 강아지 사진',
       },
     ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: '하훈목 소개',
-    description: '하훈목의 포트폴리오 사이트에서 자신에 대해 소개하는 페이지입니다.',
-    images: ['https://hunmok-blog-2024.vercel.app/profile-image.jpg'], // 실제 이미지 URL로 교체
   },
 };
 

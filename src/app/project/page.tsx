@@ -1,48 +1,28 @@
-'use client';
-import ProjectList from '@/components/project/ProjectList';
-import { useProjectOverviewList } from '@/react-query/project';
-import { IProjectOverView } from '@/react-query/types';
-import { useInView, motion } from 'framer-motion';
-import { useRef } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import ProjectMain from '@/components/project/ProjectMain';
+import { Metadata } from 'next';
 
 function ProjectListPage() {
-  const scrollRef = useRef(null);
-  const showRef = useRef(null);
-  const isInviewShow = useInView(showRef, { amount: 'some' });
-  const { data, fetchNextPage, hasNextPage } = useProjectOverviewList({ page_size: 6, sort: 'descending' });
-
-  const projects = data?.pages.reduce((prev: IProjectOverView[], crr) => [...prev, ...crr.results], []);
-  return (
-    <>
-      <motion.h1
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isInviewShow ? 1 : 0 }}
-        className='text-title sticky top-16 mx-2'
-      >
-        PROJECTS
-      </motion.h1>
-      <div ref={scrollRef} />
-      <div className='h-16 sm:h-32' />
-      <div ref={showRef} />
-      {projects && (
-        <InfiniteScroll
-          dataLength={projects.length}
-          next={fetchNextPage}
-          hasMore={hasNextPage}
-          loader={<h4>Loading...</h4>}
-          className='!overflow-visible'
-          endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-          }
-        >
-          <ProjectList projects={projects} />
-        </InfiniteScroll>
-      )}
-    </>
-  );
+  return <ProjectMain />;
 }
 
 export default ProjectListPage;
+
+export const metadata = {
+  title: '진행한 프로젝트',
+  description: '하훈목의 포트폴리오 사이트에서 자신에 대해 소개하는 페이지입니다.',
+  keywords: ['하훈목', '포트폴리오', '소개', '개발자', '프론트엔드'],
+  openGraph: {
+    title: '진행한 프로젝트',
+    description: '프로젝트에 대해 소개하는 페이지입니다.',
+    url: 'https://hunmogu.com/project', // 여기에 실제 사이트 URL을 입력하세요.
+    type: 'website',
+    images: [
+      {
+        url: 'https://hunmogu.com/thumbnail.png', // 링크 미리보기에서 사용할 이미지 URL을 입력하세요.
+        width: 1000,
+        height: 1000,
+        alt: '귀여운 강아지 사진',
+      },
+    ],
+  },
+};
