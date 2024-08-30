@@ -1,3 +1,4 @@
+import { REVALIDATE_TIME } from '@/constants';
 import { NextRequest, NextResponse } from 'next/server';
 
 const database_id = '68009bd6df9640f9b09322eb70a3dee5';
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
           },
         ],
       }),
-      next: { revalidate: 600 },
+      next: { revalidate: REVALIDATE_TIME },
     })
   ).json();
 

@@ -1,3 +1,4 @@
+import { REVALIDATE_TIME } from '@/constants';
 import { notionClient } from '@/lib/notion';
 import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
@@ -9,7 +10,7 @@ export async function GET(request: NextRequest) {
   const page_size = +(request.nextUrl.searchParams.get('page_size') ?? '10');
   const sort = request.nextUrl.searchParams.get('sort') ?? 'descending';
 
-  const guestBooks = await (
+  const guestBooks = await(
     await fetch(`https://api.notion.com/v1/databases/${database_id}/query`, {
       method: 'POST',
       headers: {
@@ -27,7 +28,7 @@ export async function GET(request: NextRequest) {
           },
         ],
       }),
-      next: { revalidate: 600 },
+      next: { revalidate: REVALIDATE_TIME },
     })
   ).json();
 

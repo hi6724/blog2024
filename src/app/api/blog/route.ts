@@ -1,3 +1,4 @@
+import { REVALIDATE_TIME } from '@/constants';
 import { NextRequest, NextResponse } from 'next/server';
 
 const database_id = '8a3bdeb10ce94834a5ba6a8476f4d43c';
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest) {
       contains: el.trim(),
     },
   }));
-  const page = await (
+  const page = await(
     await fetch(`https://api.notion.com/v1/databases/${database_id}/query`, {
       method: 'POST',
       headers: {
@@ -36,7 +37,7 @@ export async function GET(request: NextRequest) {
           },
         }),
       }),
-      next: { revalidate: 600 },
+      next: { revalidate: REVALIDATE_TIME },
     })
   ).json();
 

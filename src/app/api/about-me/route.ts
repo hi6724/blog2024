@@ -1,3 +1,4 @@
+import { REVALIDATE_TIME } from '@/constants';
 import { notionClient } from '@/lib/notion';
 import { NextResponse } from 'next/server';
 
@@ -20,7 +21,7 @@ export async function GET() {
         },
         sorts: [{ property: 'date', direction: 'ascending' }],
       }),
-      next: { revalidate: 600 },
+      next: { revalidate: REVALIDATE_TIME },
     })
   ).json();
 
