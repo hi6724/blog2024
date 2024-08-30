@@ -13,12 +13,12 @@ export async function GET() {
       },
       body: JSON.stringify({
         filter: {
-          property: 'detail',
+          property: 'overview',
           checkbox: {
             equals: true,
           },
         },
-        sorts: [{ property: 'date', direction: 'ascending' }],
+        sorts: [{ property: 'date', direction: 'descending' }],
       }),
       next: { revalidate: 3600 * 24 * 7 },
     })

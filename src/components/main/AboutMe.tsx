@@ -31,7 +31,7 @@ function AboutMe() {
           initial={{ opacity: 0 }}
           animate={{ opacity: animationY > 0.1 ? 1 : 0 }}
         >
-          <Link href={'/project'} className='btn btn-primary w-full self-center max-w-96'>
+          <Link href={'/about-me'} className='btn btn-primary w-full self-center max-w-96'>
             자기소개 자세히 보기
           </Link>
         </motion.div>

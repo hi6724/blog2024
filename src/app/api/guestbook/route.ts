@@ -59,7 +59,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const { title, content, icon, username, userId } = await request.json();
-  revalidatePath('/api/guestbook');
   try {
     const result = await notionClient.pages.create({
       parent: { database_id },
@@ -74,6 +73,7 @@ export async function POST(request: NextRequest) {
         },
       },
     });
+    revalidatePath('/api/guestbook');
     return NextResponse.json({ ok: true, id: result.id });
   } catch (error) {
     return NextResponse.error();

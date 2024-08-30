@@ -36,6 +36,7 @@
     @apply text-2xl text-base-content;
   }
 }
+
 * {
   scroll-margin-top: 2rem !important;
   scroll-behavior: smooth !important;

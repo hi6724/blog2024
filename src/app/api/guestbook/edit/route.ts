@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   const { content, id, title, icon, username } = await request.json();
-  revalidatePath('/api/guestbook');
   notionClient.pages.update({
     page_id: id,
     icon: { emoji: icon },
@@ -16,5 +15,6 @@ export async function POST(request: NextRequest) {
       },
     },
   });
+  revalidatePath('/api/guestbook');
   return NextResponse.json({ ok: true });
 }
