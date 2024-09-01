@@ -76,9 +76,7 @@ function AboutMeTimeLine() {
       </ul>
       <motion.div
         className='absolute w-1 bg-primary top-8 rounded-lg left-[17px] md:left-1/2 md:-translate-x-1/2'
-        initial={{ height: 0 }}
-        animate={{ height: barHeight }}
-        style={{ maxHeight: cumulativeHeights.at(-1) }}
+        style={{ maxHeight: cumulativeHeights.at(-1), height: barHeight }}
       />
     </div>
   );

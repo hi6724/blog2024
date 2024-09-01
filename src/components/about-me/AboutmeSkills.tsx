@@ -1,7 +1,7 @@
 import React from 'react';
 
 function AboutmeSkills() {
-  return <div>AboutmeSkills</div>;
+  return <div></div>;
 }
 
 export default AboutmeSkills;
