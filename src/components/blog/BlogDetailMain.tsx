@@ -17,13 +17,8 @@ import { useMobile } from '@/hooks/useMobile';
 import { useNextPrevBlogOverview } from '@/react-query/blog';
 import Link from 'next/link';
 import BlogCommentItem from './BlogComment';
-
-const THEME = {
-  dark: monokai,
-  darken: monokaiSublime,
-  light: dracula,
-  lighten: hopscotch,
-};
+import MyCodeBlock from '../notion/MyCodeBlock';
+import MyDateProperty from '../notion/MyDateProperty';
 
 const NAME_MAP: { [key: string]: string } = {
   publishedAt: '작성일',
@@ -61,30 +56,10 @@ function BlogDetailMain({ data, id }: { data: any; id: string }) {
       <NotionRenderer
         recordMap={data}
         showTableOfContents={!isMobile}
-        header={
-          <h1 className='text-4xl font-bold'>{data?.block?.[id]?.value.properties.title?.[0]?.[0]?.plain_text}</h1>
-        }
         components={{
           Collection,
-          propertyDateValue: ({ data }) => {
-            const date = data?.[0]?.[1]?.[0]?.[1];
-            const startDate = date?.start_date;
-            if (!date) return null;
-            return <span>{formatDateWithDay(startDate, { time: true })}</span>;
-          },
-
-          Code: ({ block }: any) => {
-            return (
-              <div className='w-full *:p-4 *:font-thin'>
-                <CodeBlock
-                  language={block.properties?.language?.[0]?.[0]}
-                  text={block.properties?.title?.[0]?.[0]}
-                  theme={THEME[(theme as keyof typeof THEME) ?? 'light']}
-                  showLineNumbers={false}
-                />
-              </div>
-            );
-          },
+          propertyDateValue: MyDateProperty,
+          Code: MyCodeBlock,
         }}
         fullPage
         footer={

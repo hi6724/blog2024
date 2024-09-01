@@ -1,10 +1,13 @@
 'use client';
+import { useMobile } from '@/hooks/useMobile';
 import { formatDateWithDay } from '@/lib/date';
 import { useProjectDetail } from '@/react-query/project';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import { NotionRenderer } from 'react-notion-x';
 import { Collection } from 'react-notion-x/build/third-party/collection';
+import MyCodeBlock from '../notion/MyCodeBlock';
+import MyDateProperty from '../notion/MyDateProperty';
 
 const NAME_MAP: { [key: string]: string } = {
   date: '진행기간',
@@ -16,6 +19,7 @@ const NAME_MAP: { [key: string]: string } = {
 const DELETE_KEYS = ['overviewImg', 'createdAt', 'overview2', '상태'];
 
 function ProjectDetailMain({ data }: { data: any }) {
+  const isMobile = useMobile();
   const { theme } = useTheme();
   const collectionKey = Object.keys(data?.collection ?? {})?.[0];
   const schema = data?.collection[collectionKey].value.schema;
@@ -39,24 +43,15 @@ function ProjectDetailMain({ data }: { data: any }) {
   return (
     <NotionRenderer
       recordMap={data}
+      showTableOfContents={!isMobile}
       components={{
         Image: Image,
         Collection,
-        propertyDateValue: ({ data }) => {
-          const date = data?.[0]?.[1]?.[0]?.[1];
-          const startDate = date?.start_date;
-          const endDate = date?.end_date;
-          if (!date) return null;
-          return (
-            <span>
-              {formatDateWithDay(startDate)} ~ {formatDateWithDay(endDate)}
-            </span>
-          );
-        },
+        propertyDateValue: MyDateProperty,
+        Code: MyCodeBlock,
       }}
       fullPage
-      className={`${theme?.includes('dark') ? 'dark-mode' : 'light-mode'}
-        !font-sans`}
+      className={`${theme?.includes('dark') ? 'dark-mode' : 'light-mode'} !font-sans w-full`}
     />
   );
 }
