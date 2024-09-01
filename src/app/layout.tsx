@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   title: '훈모구의 사이트',
   description: '하훈목의 포트폴리오 사이트에서 자신에 대해 소개하는 페이지입니다.',
   keywords: ['하훈목', '포트폴리오', '소개', '개발자', '프론트엔드'],
-
+  icons: [{ rel: 'icon', url: '/favi.png' }],
   openGraph: {
     title: '하훈목 소개',
     description: '하훈목의 포트폴리오 사이트에서 자신에 대해 소개하는 페이지입니다.',
@@ -62,9 +62,7 @@ export default function RootLayout({
   return (
     <ReactQueryClientProvider>
       <html lang='ko' className='scrollbar-hide sm:scrollbar-default' suppressHydrationWarning>
-        <head>
-          <link rel='icon' href='/favi.png' />
-        </head>
+        
         <body
           className={`${[notoSansKr.variable, roboto.variable, oranienbaum.variable, ibmSans.variable].join(
             ' '
