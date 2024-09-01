@@ -32,15 +32,17 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 
   return {
     title: `${title} | 프로젝트`, // 가져온 데이터의 제목을 메타데이터의 타이틀로 설정
-    description: description || '블로그 포스트에 대한 설명을 추가합니다.',
+    description: description || '진행한 프로젝트 입니다.',
     openGraph: {
-      title,
-      description,
+      title: `${title} | 훈모구의 프로젝트`,
+      description: description || '진행한 프로젝트 입니다.',
       url: `https://hunmogu.com/blog/${id}`,
       type: 'article',
       images: [
         {
-          url: thumbnail || 'https://hunmogu.com/default-thumbnail.jpg',
+          url:
+            thumbnail ||
+            'https://firebasestorage.googleapis.com/v0/b/hunmok-fe31e.appspot.com/o/preview%2Fdefault-preview.webp?alt=media&token=20632868-8263-4a80-a8dc-03f60d37942a',
           width: 1700,
           height: 1000,
           alt: title,

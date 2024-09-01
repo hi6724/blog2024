@@ -22,21 +22,23 @@ export default BlogDetailPage;
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const { id } = params; // URL에서 id 파라미터 추출
   const blogData = await fetchBlogData(id); // id를 이용해 블로그 데이터 가져오기
-  const title = blogData?.block?.[id]?.value?.properties?.title?.[0]?.[0];
+  const title = blogData?.block?.[id]?.value?.properties?.title?.[0]?.[0] ?? '훈모구의 블로그 포스트';
   const description = blogData?.block?.[id]?.value?.properties?.['nQ^=']?.[0]?.[0];
   const thumbnail = blogData?.block?.[id]?.value?.format?.page_cover;
 
   return {
     title: `${title} | 블로그`, // 가져온 데이터의 제목을 메타데이터의 타이틀로 설정
-    description: description || '블로그 포스트에 대한 설명을 추가합니다.',
+    description: description || `${title} | 블로그`,
     openGraph: {
-      title,
-      description,
+      title: `${title} | 블로그`, // 가져온 데이터의 제목을 메타데이터의 타이틀로 설정
+      description: description || `${title} | 블로그`,
       url: `https://hunmogu.com/blog/${id}`,
       type: 'article',
       images: [
         {
-          url: thumbnail || 'https://hunmogu.com/default-thumbnail.jpg',
+          url:
+            thumbnail ||
+            'https://firebasestorage.googleapis.com/v0/b/hunmok-fe31e.appspot.com/o/preview%2Fdefault-preview.webp?alt=media&token=20632868-8263-4a80-a8dc-03f60d37942a',
           width: 1700,
           height: 1000,
           alt: title,
