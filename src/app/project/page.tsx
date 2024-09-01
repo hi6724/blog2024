@@ -18,9 +18,9 @@ export const metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://hunmogu.com/thumbnail.png', // 링크 미리보기에서 사용할 이미지 URL을 입력하세요.
-        width: 1700,
-        height: 1000,
+        url: 'https://firebasestorage.googleapis.com/v0/b/hunmok-fe31e.appspot.com/o/preview%2Fproject-preview.webp?alt=media&token=1c039d20-5aad-4e04-bfad-ba489dce6144', // 링크 미리보기에서 사용할 이미지 URL을 입력하세요.
+        width: 2000,
+        height: 1019,
         alt: '귀여운 강아지 사진',
       },
     ],

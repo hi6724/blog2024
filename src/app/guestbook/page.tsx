@@ -17,9 +17,9 @@ export const metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://firebasestorage.googleapis.com/v0/b/hunmok-fe31e.appspot.com/o/guestbook-preview.webp?alt=media&token=9eba9a10-fb05-4ef2-bc54-12a9d1c67317', // 방명록 페이지 미리보기에서 사용할 이미지 URL을 입력하세요.
-        width: 800,
-        height: 600,
+        url: 'https://firebasestorage.googleapis.com/v0/b/hunmok-fe31e.appspot.com/o/preview%2Fguestbook-preview.webp?alt=media&token=0fae0857-231e-4652-8ea7-42ec4747923d', // 방명록 페이지 미리보기에서 사용할 이미지 URL을 입력하세요.
+        width: 2000,
+        height: 1196,
         alt: '방명록 페이지 미리보기 이미지',
       },
     ],

@@ -45,9 +45,9 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://hunmogu.com/thumbnail.png',
-        width: 1762,
-        height: 1000,
+        url: 'https://firebasestorage.googleapis.com/v0/b/hunmok-fe31e.appspot.com/o/preview%2Fdefault-preview.webp?alt=media&token=20632868-8263-4a80-a8dc-03f60d37942a',
+        width: 2000,
+        height: 1028,
         alt: '귀여운 강아지 사진',
       },
     ],
@@ -62,7 +62,6 @@ export default function RootLayout({
   return (
     <ReactQueryClientProvider>
       <html lang='ko' className='scrollbar-hide sm:scrollbar-default' suppressHydrationWarning>
-        
         <body
           className={`${[notoSansKr.variable, roboto.variable, oranienbaum.variable, ibmSans.variable].join(
             ' '
