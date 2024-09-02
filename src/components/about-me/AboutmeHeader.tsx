@@ -5,21 +5,13 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
 function AboutmeHeader() {
-  const scrollRef = useRef(null);
-  const showRef = useRef(null);
-  const isInviewShow = useInView(showRef, { amount: 'some' });
-
   return (
     <div>
-      <motion.h1
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isInviewShow ? 1 : 0 }}
-        className='text-title sticky top-16 mx-2'
-      >
-        ABOUT ME
-      </motion.h1>
-      <div ref={scrollRef} />
-      <div ref={showRef} />
+      <img
+        className='rounded-xl object-cover  w-full h-48 min-h-48 sm:h-64 sm:min-h-64 mb-8'
+        src='https://firebasestorage.googleapis.com/v0/b/hunmok-fe31e.appspot.com/o/main%2Fbg.webp?alt=media&token=72085499-080a-4860-a8b9-82ca69428814'
+        alt=''
+      />
 
       <div className={`${container}`}>
         <div className='mb-8'>

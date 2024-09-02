@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { useRef, useState } from 'react';
 
 const IMG_LIST = [
-  'https://cdn.prod.website-files.com/650478fbd32707701e101c64/6512fd12cdb632e3a9ceef18_pexels.webp',
-  'https://cdn.prod.website-files.com/650478fbd32707701e101c64/6533e2c432e997a1c5845e47_safari-condo-website%20(3).webp',
-  'https://cdn.prod.website-files.com/650478fbd32707701e101c64/6533e2c220d28e426debe1d0_safari-condo-website%20(1).webp',
-  'https://cdn.prod.website-files.com/650478fbd32707701e101c64/6533e2c497cd72e2104fcd62_safari-condo-website%20(2).webp',
+  'https://firebasestorage.googleapis.com/v0/b/hunmok-fe31e.appspot.com/o/main%2Fbg.webp?alt=media&token=72085499-080a-4860-a8b9-82ca69428814',
+  'https://firebasestorage.googleapis.com/v0/b/hunmok-fe31e.appspot.com/o/main%2Ftmax.webp?alt=media&token=cb753eed-58f1-4210-8285-06fea5803688',
+  'https://firebasestorage.googleapis.com/v0/b/hunmok-fe31e.appspot.com/o/main%2Fssafy.webp?alt=media&token=5c836e81-8c6e-4506-b6d5-87abc711d442',
+  'https://firebasestorage.googleapis.com/v0/b/hunmok-fe31e.appspot.com/o/main%2Faward.webp?alt=media&token=70d747fc-7fcb-4d74-9a89-b26bc3b8bdf0',
 ];
 function AboutMe() {
   const scrollRef = useRef(null);
@@ -70,7 +70,12 @@ function CarouselItem({
         animate={{ opacity: isShow ? 1 : 0 }}
         className='flex w-full h-full flex-col '
       >
-        <img src={src} loading='lazy' alt='' className='rounded-xl object-cover  w-full sm:h-64' />
+        <img
+          src={src}
+          loading='lazy'
+          alt=''
+          className='rounded-xl object-cover  w-full h-48 min-h-48 sm:h-64 sm:min-h-64'
+        />
         <div className='mt-4 flex flex-col gap-4 p-4 whitespace-break-spaces sm:text-xl'>
           <p>{data.content}</p>
         </div>

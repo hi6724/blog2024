@@ -68,7 +68,7 @@ function AboutMeTimeLine() {
             <div className={`${index % 2 === 0 ? 'timeline-start md:text-end' : 'timeline-end'} mb-10`}>
               <time className='font-mono italic'>{data.date.start + ''}</time>
               <div className='text-lg font-black'>{data.title}</div>
-              {data.content}
+              <p className='break-words'>{data.content}</p>
             </div>
             {index !== aboutMeData.length - 1 && <hr />}
           </li>
