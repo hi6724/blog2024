@@ -1,16 +1,11 @@
 'use client';
-import { useProjectDetail } from '@/react-query/project';
-import { useTheme } from 'next-themes';
-import Image from 'next/image';
 import { NotionRenderer } from 'react-notion-x';
 import { Collection } from 'react-notion-x/build/third-party/collection';
 
-import { CodeBlock, dracula, monokai, monokaiSublime, hopscotch } from 'react-code-blocks';
-import { formatDateWithDay } from '@/lib/date';
 import { splitFirst } from '@/lib/string';
 import { FormProvider, useForm } from 'react-hook-form';
 import SubmitForm from '@/components/blog/SubmitForm';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { IComment } from '@/react-query/types';
 import { motion } from 'framer-motion';
 import { useMobile } from '@/hooks/useMobile';
@@ -28,13 +23,13 @@ const NAME_MAP: { [key: string]: string } = {
 const DELETE_KEYS = ['type', 'comments', 'createdAt'];
 
 function BlogDetailMain({ data, id }: { data: any; id: string }) {
-  const { theme } = useTheme();
   const [submittedItems, setSubmittedItems] = useState<IComment[]>([]);
   const isMobile = useMobile();
   const { data: nextPrevData } = useNextPrevBlogOverview(id);
   // 페이지 프로퍼티 이름 변경
   const collectionKey = Object.keys(data?.collection ?? {})?.[0];
   const schema = data?.collection[collectionKey].value.schema;
+  const title = useRef('');
 
   const method = useForm();
   Object.keys(schema ?? {}).forEach((key) => {
@@ -44,6 +39,12 @@ function BlogDetailMain({ data, id }: { data: any; id: string }) {
     } else if (name in NAME_MAP) {
       schema[key].name = NAME_MAP[name];
     }
+  });
+
+  Object.keys(data?.block ?? {}).forEach((key) => {
+    const type = data.block[key].value.type;
+    if (type !== 'page') return;
+    title.current = data.block[key].value.properties.title[0][0];
   });
 
   const comments = Object.values(data?.comment ?? {}).map((comment: any) => {
@@ -62,6 +63,11 @@ function BlogDetailMain({ data, id }: { data: any; id: string }) {
           Code: MyCodeBlock,
         }}
         fullPage
+        pageAside={
+          <a className='notion-table-of-contents-item !text-xl' onClick={() => window.scrollTo(0, 0)}>
+            {title.current}
+          </a>
+        }
         footer={
           <motion.div
             className='w-full border-t-2 border-success py-4 px-2 flex flex-col gap-4'
@@ -104,7 +110,7 @@ function BlogDetailMain({ data, id }: { data: any; id: string }) {
             </div>
           </motion.div>
         }
-        className={`${theme?.includes('dark') ? 'dark-mode' : 'light-mode'} !font-sans w-full`}
+        className={`!font-sans w-full`}
       />
     </div>
   );

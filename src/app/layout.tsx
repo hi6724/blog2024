@@ -67,11 +67,7 @@ export default function RootLayout({
             ' '
           )} font-sans`}
         >
-          <ThemeProvider
-            storageKey='hunmok-theme'
-            defaultTheme='darken'
-            value={{ lighten: 'emerald', light: 'garden', dark: 'dim', darken: 'night' }}
-          >
+          <ThemeProvider storageKey='hunmok-theme' defaultTheme='system' value={{ light: 'emerald', dark: 'dim' }}>
             <Container>
               <NavBar />
               <div className='min-h-96'>{children}</div>
@@ -86,7 +82,7 @@ export default function RootLayout({
 
 function Container({ children }: any) {
   return (
-    <div className='flex justify-center w-full bg-base-200'>
+    <div className='flex justify-center w-full bg-neutral'>
       <div className='max-w-5xl w-full bg-base-100 shadow-lg min-h-screen'>{children}</div>
     </div>
   );

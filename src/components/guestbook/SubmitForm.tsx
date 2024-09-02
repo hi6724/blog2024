@@ -137,7 +137,7 @@ function SubmitForm({
               >
                 취소
               </div>
-              <button className='btn btn-outline btn-info btn-sm'>확인</button>
+              <button className='btn btn-outline btn-primary btn-sm'>확인</button>
             </div>
           </motion.div>
         )}

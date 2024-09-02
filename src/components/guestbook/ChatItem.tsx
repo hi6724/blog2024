@@ -95,7 +95,9 @@ function ChatItem({ data }: { data: IGuestBook }) {
             </div>
           )}
         </div>
-        <div className={`px-4 py-2 bg-neutral text-neutral-content ${colorClassName} rounded-xl w-full self-end`}>
+        <div
+          className={`px-4 py-2 bg-base-200 shadow-md text-base-content ${colorClassName} rounded-xl w-full self-end`}
+        >
           <h2 className='font-semibold mb-2'>{data.title}</h2>
           <motion.p
             ref={ref}

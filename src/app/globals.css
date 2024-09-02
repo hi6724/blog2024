@@ -67,28 +67,26 @@
 .notion-frame {
   @apply !p-0;
 }
-
-.notion-app,
-.notion-header,
-.notion-nav-header > .breadcrumbs > .breadcrumb {
-  @apply !text-base-content !bg-base-100;
+.notion-collection-row {
+  @apply !border-b-2 !border-success !border-opacity-60;
 }
-
 .notion-link {
   @apply !text-primary !border-primary;
 }
 .notion-hr {
   @apply !h-[1px] !bg-base-content !bg-opacity-60;
 }
-.notion-page-icon-hero {
+
+.notion-page-icon-hero,.notion-aside-table-of-contents-header {
   @apply !hidden;
+}
+.notion-aside{
+  @apply !flex-col-reverse
 }
 .notion-collection-row-value {
   @apply whitespace-break-spaces;
 }
-.notion-collection-row {
-  @apply !border-b-2 !border-success !border-opacity-60;
-}
+
 * {
   --rmsc-main: oklch(var(--in));
   --rmsc-hover: oklch(var(--b2));
@@ -99,6 +97,23 @@
   --rmsc-p: 10px;
   --rmsc-radius: 4px;
   --rmsc-h: 38px;
+
+  --fg-color: oklch(var(--bc));
+  --fg-color-0: oklch(var(--b)/0.9);
+  --fg-color-1: oklch(var(--bc)/0.85);
+  --fg-color-2: oklch(var(--bc)/0.8);
+  --fg-color-3: oklch(var(--bc)/0.75);
+  --fg-color-4: #000;
+  --fg-color-5: oklch(var(--bc)/0.7);
+  --fg-color-6: oklch(var(--bc)/0.65);
+  --fg-color-icon: var(--fg-color);
+  --bg-color: oklch(var(--b1));
+  --bg-color-0: oklch(var(--b1)/80);
+  --bg-color-1: oklch(var(--b3))
+  --bg-color-2: oklch(var(--b3)/80);
+  --select-color-0: oklch(var(--su)/0.7);
+  --select-color-1: oklch(var(--su)/0.2);
+  --select-color-2: oklch(var(--su));
 }
 .rmsc .select-item.selected {
   @apply !bg-info !text-info-content;

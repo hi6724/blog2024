@@ -1,13 +1,11 @@
 'use client';
 import { useMobile } from '@/hooks/useMobile';
-import { formatDateWithDay } from '@/lib/date';
-import { useProjectDetail } from '@/react-query/project';
-import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import { NotionRenderer } from 'react-notion-x';
 import { Collection } from 'react-notion-x/build/third-party/collection';
 import MyCodeBlock from '../notion/MyCodeBlock';
 import MyDateProperty from '../notion/MyDateProperty';
+import { useEffect, useRef, useState } from 'react';
 
 const NAME_MAP: { [key: string]: string } = {
   date: '진행기간',
@@ -20,14 +18,15 @@ const DELETE_KEYS = ['overviewImg', 'createdAt', 'overview2', '상태'];
 
 function ProjectDetailMain({ data }: { data: any }) {
   const isMobile = useMobile();
-  const { theme } = useTheme();
   const collectionKey = Object.keys(data?.collection ?? {})?.[0];
   const schema = data?.collection[collectionKey].value.schema;
+  const title = useRef('');
 
   // 링크가 없는 페이지는 링크 항목을 삭제
   Object.keys(data?.block ?? {}).forEach((key) => {
     const type = data.block[key].value.type;
     if (type !== 'page') return;
+    title.current = data.block[key].value.properties.title[0][0];
     if (!data.block[key].value.properties.BUjZ?.[0]?.[0]) DELETE_KEYS.push('link');
   });
 
@@ -40,10 +39,16 @@ function ProjectDetailMain({ data }: { data: any }) {
       schema[key].name = NAME_MAP[name];
     }
   });
+
   return (
     <NotionRenderer
       recordMap={data}
       showTableOfContents={!isMobile}
+      pageAside={
+        <a className='notion-table-of-contents-item !text-xl' onClick={() => window.scrollTo(0, 0)}>
+          {title.current}
+        </a>
+      }
       components={{
         Image: Image,
         Collection,
@@ -51,7 +56,7 @@ function ProjectDetailMain({ data }: { data: any }) {
         Code: MyCodeBlock,
       }}
       fullPage
-      className={`${theme?.includes('dark') ? 'dark-mode' : 'light-mode'} !font-sans w-full`}
+      className={`!font-sans w-full`}
     />
   );
 }
