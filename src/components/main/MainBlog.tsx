@@ -1,12 +1,8 @@
 'use client';
 import { useMobile } from '@/hooks/useMobile';
 import { useBlogOverviewList } from '@/react-query/blog';
-import { IBlogOverview } from '@/react-query/types';
-import dayjs from 'dayjs';
 import { motion, useInView } from 'framer-motion';
-import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import BlogList from '../blog/BlogList';
 
