@@ -21,9 +21,9 @@ export default function NavBar() {
         <MobileNav />
       </div>
       {/* desktop */}
-      <div className='hidden sm:flex gap-4 font-letter text-2xl *:link *:link-hover'>
+      <div className='hidden sm:flex gap-4 font-aggro sm:text-xl *:link *:link-hover'>
         {NAV_DATA.map((el) => (
-          <Link key={el.href} href={el.href}>
+          <Link key={el.href} href={el.href} className='h-6'>
             {el.text}
           </Link>
         ))}
@@ -34,11 +34,11 @@ export default function NavBar() {
 }
 
 const NAV_DATA = [
-  { href: '/', text: 'HOME' },
-  { href: '/about-me', text: 'ABOUT ME' },
-  { href: '/project', text: 'PROJECTS' },
-  { href: '/blog', text: 'BLOG' },
-  { href: '/guestbook', text: 'GUESTBOOK' },
+  { href: '/', text: '메인' },
+  { href: '/about-me', text: '자기소개' },
+  { href: '/project', text: '프로젝트' },
+  { href: '/blog', text: '블로그' },
+  { href: '/guestbook', text: '방명록' },
 ];
 
 function MobileNav() {
@@ -81,14 +81,14 @@ function MobileNav() {
         </motion.div>
       </div>
       <motion.div
-        className={`flex absolute top-7 right-0 flex-col overflow-hidden w-52 shadow-xl shadow-base-content/40 rounded-xl`}
+        className={`flex absolute top-7 right-0 flex-col overflow-hidden w-52 shadow-md shadow-base-content/10 rounded-xl`}
         initial={{ height: 0 }}
-        animate={{ height: open ? '13.75rem' : 0 }}
+        animate={{ height: open ? '12.5rem' : 0 }}
       >
         {NAV_DATA.map((el) => (
           <div
-            className={`font-letter text-xl px-4 py-2 bg-base-300/80 text-base-content first:rounded-t-xl last:rounded-b-xl ${
-              pathname === el.href && 'bg-primary/80 text-primary-content'
+            className={`px-4 py-2 bg-base-300/95 text-base-content z-50 first:rounded-t-xl last:rounded-b-xl ${
+              pathname === el.href && 'bg-primary/95 text-primary-content'
             }`}
             key={el.text}
           >

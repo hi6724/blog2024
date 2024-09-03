@@ -35,7 +35,7 @@ function GuestBook() {
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
         >
-          GUESTBOOK
+          방명록
         </motion.h1>
         <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3 relative bg-base-100 p-2'>
           {[...submittedItems, ...guestBookItems]?.map((chat, i) => {

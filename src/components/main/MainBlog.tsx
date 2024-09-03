@@ -21,7 +21,7 @@ function Blog() {
         initial={{ opacity: 0 }}
         animate={{ opacity: isShowTitle ? 1 : 0 }}
       >
-        BLOG
+        블로그
       </motion.h1>
       <div ref={ref}>{blogItems && <BlogList blogItems={blogItems} />}</div>
 

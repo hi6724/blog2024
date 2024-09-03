@@ -3,6 +3,27 @@
 @tailwind utilities;
 
 @font-face {
+    font-family: 'aggro';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroL.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'aggro';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroM.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'aggro';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
   font-family: 'g-sans';
   src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff');
   font-weight: 100;
@@ -30,7 +51,7 @@
 }
 @layer components {
   .text-title {
-    @apply text-4xl font-letter text-base-content sm:text-6xl;
+    @apply text-4xl font-aggro font-bold text-base-content sm:text-6xl sm:leading-tight leading-tight;
   }
   .text-sub-title {
     @apply text-2xl text-base-content;
@@ -123,4 +144,7 @@
 }
 .rmsc .item-renderer input {
   @apply checkbox checkbox-xs !w-4 !h-4;
+}
+.my-text-shadow{
+  text-shadow: .1em .1em 0 oklch(var(--a)/0.2);
 }

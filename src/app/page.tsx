@@ -17,8 +17,10 @@ function Home() {
   return (
     <>
       <div className='z-10 relative mt-12 ml-2'>
-        <h1 className='text-title'>HELLO!</h1>
-        <h1 className='text-title'>{"I'M HUNMOK"}</h1>
+        <h1 className='text-title'>프론트엔드 개발자</h1>
+        <h1 className='text-title font-aggro'>
+          <span className='text-accent my-text-shadow'>하훈목</span>입니다
+        </h1>
       </div>
 
       <AboutMe />

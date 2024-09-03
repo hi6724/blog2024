@@ -18,7 +18,7 @@ function GuestbookMain() {
   return (
     <FormProvider {...methods}>
       <div ref={scrollRef}>
-        <h1 className='text-title p-2 sticky top-14 bg-base-100 '>GUESTBOOK</h1>
+        <h1 className='text-title p-2 sticky top-14 bg-base-100 '>방명록</h1>
 
         {guestBookItems && (
           <InfiniteScroll

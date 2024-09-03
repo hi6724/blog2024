@@ -21,7 +21,7 @@ function BlogMain() {
 
   return (
     <div>
-      <motion.h1 className='text-title sticky top-14 bg-base-100 text-base-content p-2'>BLOG</motion.h1>
+      <motion.h1 className='text-title sticky top-14 bg-base-100 text-base-content p-2'>블로그</motion.h1>
       <div className='py-2 px-4 space-y-1'>
         <p>
           <span className='font-semibold'>TMAX</span>와 <span className='font-semibold'>SSAFY</span>에서 배운내용 그리고

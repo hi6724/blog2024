@@ -20,7 +20,7 @@ function ProjectMain() {
         animate={{ opacity: isInviewShow ? 1 : 0 }}
         className='text-title sticky top-16 mx-2'
       >
-        PROJECTS
+        프로젝트
       </motion.h1>
       <div ref={scrollRef} />
       <div className='h-16 sm:h-32' />
