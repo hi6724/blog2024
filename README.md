@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1 align="center"> 𝒉𝒖𝒏𝒎𝒐𝒌-𝒃𝒍𝒐𝒈 </h1>
+<br/>
 
-## Getting Started
 
-First, run the development server:
+<br/>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+https://hunmogu.com/
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+## 💜 프로젝트 진행 기간
+2022-06-10 ~ 2024-09-04 (1인)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎵 제작배경
+개인적으로 노션을 정말 많이 사용하고 있습니다. 
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+프로젝트를 정리해 두기도 하고, SSAFY를 다니며 배운내용, 알고리즘 스터디 문제풀이 등을 사용합니다. 
 
-## Deploy on Vercel
+이렇게 제가 정리한 글들을 블로그화 시키면 좋겠다고 생각해서, notion API를 사용해서 제작했습니다.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## ✔ 주요 기술
+### BE
+- Express.js
+- Notion API
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### FE
+- Next.js
+- framer-motion
+
+### 배포
+vercel 사용해서 배포중입니다.
+
+
