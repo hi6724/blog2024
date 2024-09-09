@@ -58,7 +58,7 @@ function CarouselItem({
   return (
     <>
       <motion.div
-        className='w-full top-20 sticky z-10 bg-base-300 bg-opacity-60'
+        className='w-full top-20 sticky z-10 bg-base-100 bg-opacity-80'
         initial={{ opacity: 0 }}
         animate={{ opacity: isShow ? 1 : 0 }}
       >
