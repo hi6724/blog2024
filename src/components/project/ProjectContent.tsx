@@ -12,7 +12,7 @@ function ProjectContent({ project, reverse }: { project: IProjectOverView; rever
   return (
     <div className='relative' ref={ref}>
       <motion.div
-        className={`flex w-full bg-base-100 py-6 flex-col-reverse mb-4 sm:flex-row sm:relative sm:mb-16 sm:px-4 hover:bg-base-200 ${
+        className={`flex w-full bg-base-200 shadow-lg shadow-base-content/10 py-6 flex-col-reverse mb-4 sm:flex-row sm:relative sm:mb-16 sm:px-4 hover:bg-base-300 ${
           reverse && 'sm:flex-row-reverse'
         }`}
         style={{
