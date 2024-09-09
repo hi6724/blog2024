@@ -109,7 +109,7 @@ function ChatItem({ data }: { data: IGuestBook }) {
             {data.content}
           </motion.p>
           {overflow && (
-            <button className='z-10 bg-neutral text-primary' onClick={() => setOpen(!open)}>
+            <button className='z-10 text-primary' onClick={() => setOpen(!open)}>
               {open ? '접기' : '...더보기'}
             </button>
           )}

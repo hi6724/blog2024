@@ -51,7 +51,7 @@
 }
 @layer components {
   .text-title {
-    @apply text-4xl font-aggro font-bold text-base-content sm:text-6xl sm:leading-tight leading-tight;
+    @apply text-4xl font-aggro font-bold text-base-content sm:text-5xl sm:leading-tight leading-tight;
   }
   .text-sub-title {
     @apply text-2xl text-base-content;
