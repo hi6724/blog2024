@@ -56,7 +56,7 @@ function ProjectContent({ project, reverse }: { project: IProjectOverView; rever
           >
             <div
               className={classNames(
-                'bg-base-200 from-neutral-50/30 via-base-200 via-15% to-base-300 to-90% px-6 py-4 rounded-lg sm:mt-8',
+                'bg-base-200 sm:bg-transparent from-neutral-50/20 via-base-200 via-15% to-base-300 to-90% px-6 py-4 rounded-lg sm:mt-8',
                 {
                   'sm:bg-gradient-to-r': !reverse,
                   'sm:bg-gradient-to-l': reverse,
