@@ -7,7 +7,7 @@ import { useRef } from 'react';
 
 function ProjectContent({ project, reverse }: { project: IProjectOverView; reverse?: boolean }) {
   const ref = useRef(null);
-  const isInView = useInView(ref);
+  const isInView = useInView(ref, { margin: '-25%', once: true });
 
   return (
     <div className='relative' ref={ref}>
