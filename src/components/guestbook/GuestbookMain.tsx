@@ -27,11 +27,6 @@ function GuestbookMain() {
             hasMore={hasNextPage}
             loader={<h4>Loading...</h4>}
             className={`grid gap-2 sm:gap-4 md:grid-cols-2 lg:grid-cols-3 relative bg-base-100 px-4 py-8`}
-            endMessage={
-              <p className='sm:col-span-3 text-center p-8'>
-                <b>Yay! You have seen it all</b>
-              </p>
-            }
           >
             {[...submittedItems, ...guestBookItems]?.map((chat, i) => {
               if (editItemsIds.includes(chat.id))

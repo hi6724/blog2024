@@ -32,11 +32,6 @@ function ProjectMain() {
           hasMore={hasNextPage}
           loader={<h4>Loading...</h4>}
           className='!overflow-visible'
-          endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-          }
         >
           <ProjectList projects={projects} />
         </InfiniteScroll>

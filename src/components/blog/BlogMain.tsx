@@ -64,11 +64,6 @@ function BlogMain() {
           hasMore={hasNextPage}
           loader={<h4>Loading...</h4>}
           className='relative z-0'
-          endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-          }
         >
           <BlogList blogItems={blogItems} />
         </InfiniteScroll>
