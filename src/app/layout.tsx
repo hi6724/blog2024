@@ -82,8 +82,8 @@ export default function RootLayout({
 
 function Container({ children }: any) {
   return (
-    <div className='flex justify-center w-full bg-neutral'>
-      <div className='max-w-5xl w-full bg-base-100 shadow-lg min-h-screen'>{children}</div>
+    <div className='flex justify-center w-full bg-base-200'>
+      <div className='max-w-5xl w-full bg-base-100 shadow-xl min-h-screen'>{children}</div>
     </div>
   );
 }

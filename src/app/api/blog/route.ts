@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       contains: el.trim(),
     },
   }));
-  const page = await(
+  const page = await (
     await fetch(`https://api.notion.com/v1/databases/${database_id}/query`, {
       method: 'POST',
       headers: {
@@ -41,18 +41,17 @@ export async function GET(request: NextRequest) {
     })
   ).json();
 
-  const returnObj = page.results.map((result: any) => {
+  const returnObj = page?.results?.map((result: any) => {
     const id = result.id;
     const createdAt = result.properties?.publishedAt?.date?.start;
     const iconType = result.icon?.type;
-    const icon = result.icon[iconType] ?? '🥳';
-    const tags = result.properties?.types['multi_select'].map((el: any) => el.name);
+    const icon = result.icon?.[iconType] ?? '🥳';
+    const tags = result.properties?.types['multi_select'];
     const title = result.properties?.name?.title?.[0]?.plain_text;
     const coverType = result.cover?.type;
     const thumbImageUri = result.cover?.[coverType]?.url;
     const overview = result.properties?.overview?.['rich_text']?.[0]?.['plain_text'];
     const comments = result.properties?.comments?.['number'];
-
     return { id, createdAt, icon, tags, title, thumbImageUri, overview, comments };
   });
 

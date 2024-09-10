@@ -39,7 +39,11 @@ export interface IBlogOverview {
   id: string;
   createdAt: string;
   icon: string;
-  tags: string[];
+  tags: {
+    id: string;
+    name: string;
+    color: string;
+  }[];
   title: string;
   overview: string;
   thumbImageUri?: string;

@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 
 const database_id = '9eb29aceae7c4b24840412f7b1f23ed7';
 export async function GET() {
-  const aboutMeData = await(
+  const aboutMeData = await (
     await fetch(`https://api.notion.com/v1/databases/${database_id}/query`, {
       method: 'POST',
       headers: {

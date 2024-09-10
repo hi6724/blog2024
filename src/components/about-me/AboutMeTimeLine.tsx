@@ -43,7 +43,7 @@ function AboutMeTimeLine() {
       <ul ref={ulRef} className='timeline timeline-snap-icon max-md:timeline-compact timeline-vertical relative'>
         {aboutMeData?.map((data, index: number) => (
           <li className='min-h-52' ref={(el: any) => (boxRefs.current[index] = el)} key={data.id}>
-            {index !== 0 && <hr />}
+            {index !== 0 && <hr className='bg-base-content/60' />}
             <div className='timeline-middle z-10 bg-base-100'>
               <motion.svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -54,7 +54,7 @@ function AboutMeTimeLine() {
                   color:
                     barHeight > cumulativeHeights[index]
                       ? 'var(--fallback-p,oklch(var(--p)/var(--tw-text-opacity)))'
-                      : 'var(--fallback-b3,oklch(var(--b3)/var(--tw-bg-opacity)))',
+                      : 'var(--fallback-b3,oklch(var(--bc)/0.6))',
                   scale: barHeight > cumulativeHeights[index] ? 1.5 : 1,
                 }}
               >
@@ -70,7 +70,7 @@ function AboutMeTimeLine() {
               <div className='text-lg font-black'>{data.title}</div>
               <p className='break-words'>{data.content}</p>
             </div>
-            {index !== aboutMeData.length - 1 && <hr />}
+            {index !== aboutMeData.length - 1 && <hr className='bg-base-content/60' />}
           </li>
         ))}
       </ul>

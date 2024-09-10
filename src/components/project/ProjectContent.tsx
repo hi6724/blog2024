@@ -7,18 +7,18 @@ import { useRef } from 'react';
 
 function ProjectContent({ project, reverse }: { project: IProjectOverView; reverse?: boolean }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { margin: '-25%', once: true });
+  const isInView = useInView(ref, { margin: '15% 0% -25% 0%' });
 
   return (
     <div className='relative' ref={ref}>
       <motion.div
-        className={`flex w-full bg-base-200 shadow-lg shadow-base-content/10 py-6 flex-col-reverse mb-4 sm:flex-row sm:relative sm:mb-16 sm:px-4 hover:bg-base-300 ${
+        className={`flex w-full bg-base-200/60 shadow-lg shadow-base-content/10 py-6 flex-col-reverse mb-4 sm:flex-row sm:relative sm:mb-16 sm:px-4 hover:bg-base-300 hover:shadow-base-content/60 ${
           reverse && 'sm:flex-row-reverse'
         }`}
         style={{
           transform: isInView ? 'none' : 'translateY(200px)',
           opacity: isInView ? 1 : 0,
-          transition: 'all cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s',
+          transition: 'all cubic-bezier(0.17, 0.55, 0.55, 1) 0.7s',
         }}
       >
         <div className='sm:hidden mx-1 mt-2 rounded-md p-2'>

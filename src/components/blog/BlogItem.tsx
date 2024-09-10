@@ -5,12 +5,15 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { thumbnailList } from '@/assets/images/thumbnail/index';
+import { useTheme } from 'next-themes';
+import { NOTION_COLOR_SCHEME } from '@/constants';
 
 function BlogItem({ data, i = 1 }: { data: IBlogOverview; i?: number }) {
   const router = useRouter();
   const createdAt = dayjs(data.createdAt);
   const today = dayjs();
   const src = thumbnailList[i % thumbnailList.length];
+  const { resolvedTheme } = useTheme();
 
   return (
     <motion.div
@@ -22,12 +25,10 @@ function BlogItem({ data, i = 1 }: { data: IBlogOverview; i?: number }) {
         scale: 1.05,
       }}
     >
-      {data.thumbImageUri ? (
-        <figure className='h-32 hidden'>
+      <figure className='h-32 hidden relative'>
+        {data.thumbImageUri ? (
           <Image src={data.thumbImageUri} alt='thumbImageUri' width={400} height={400} className='w-full' />
-        </figure>
-      ) : (
-        <figure className='h-32 hidden'>
+        ) : (
           <div
             className='hero h-full w-full bg-cover bg-center'
             style={{
@@ -41,9 +42,10 @@ function BlogItem({ data, i = 1 }: { data: IBlogOverview; i?: number }) {
               </div>
             </div>
           </div>
-        </figure>
-      )}
-      <div className='card-body !gap-1 !px-4'>
+        )}
+      </figure>
+      <div className='card-body !gap-1 !px-4 relative'>
+        <div className='absolute -top-4 left-2 text-2xl'>{data.icon}</div>
         {/* title */}
         <h2 className='card-title !mb-2'>{data.title}</h2>
         {/* contents */}
@@ -57,9 +59,16 @@ function BlogItem({ data, i = 1 }: { data: IBlogOverview; i?: number }) {
         <div className='divider mb-1 mt-0'></div>
         {/* tags */}
         <div className='flex gap-1'>
-          {data.tags.map((tag: string, i: number) => (
-            <div className='badge badge-accent badge-outline' key={i}>
-              {tag}
+          {data.tags.map((tag) => (
+            <div
+              className='badge'
+              key={tag.id}
+              style={{
+                color: NOTION_COLOR_SCHEME[resolvedTheme ?? 'light'].text.default,
+                backgroundColor: NOTION_COLOR_SCHEME[resolvedTheme ?? 'light'].bg[tag.color],
+              }}
+            >
+              {tag.name}
             </div>
           ))}
         </div>
