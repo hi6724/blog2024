@@ -51,7 +51,7 @@ function Footer() {
               />
             </svg>
           </a>
-          <a href='https://www.linkedin.com/in/%ED%9B%88%EB%AA%A9-%ED%95%98-9a4a86302/' target='_blank'>
+          <a href='https://www.linkedin.com/in/hunmogu/' target='_blank'>
             <svg
               className='fill-current hover:fill-primary scale-105'
               xmlns='http://www.w3.org/2000/svg'
