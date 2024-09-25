@@ -37,5 +37,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'daily',
       priority: 0.4,
     },
+    ...(await fetchData('api/blog-ids')).map((o: any) => ({
+      url: `https://hunmogu.com/blog/${o.id}`,
+      lastModified: o.lastEditedTime,
+      priority: 0.3,
+    })),
+
+    ...(await fetchData('api/project-ids')).map((o: any) => ({
+      url: `https://hunmogu.com/project/${o.id}`,
+      lastModified: o.lastEditedTime,
+      priority: 0.3,
+    })),
   ];
 }
