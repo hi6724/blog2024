@@ -1,4 +1,5 @@
 export const REVALIDATE_TIME = 600;
+export const ONE_WEEK_TIME = 3600 * 24 * 7;
 type Theme = Record<string, any>;
 export const NOTION_COLOR_SCHEME: Theme = {
   light: {

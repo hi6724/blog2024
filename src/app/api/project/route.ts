@@ -68,5 +68,6 @@ export async function GET(request: NextRequest) {
     next_cursor: projects.next_cursor,
     has_more: projects.has_more,
     results: returnObj,
+    sample: projects.results[0],
   });
 }
