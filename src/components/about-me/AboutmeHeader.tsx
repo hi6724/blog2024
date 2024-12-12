@@ -37,26 +37,29 @@ function AboutmeHeader() {
         </AnimateSection>
         <AnimateSection title='행동으로 옮기는 개발자 입니다.'>
           <p>
-            1. 근태시간을 자동으로 계산해주는
-            <br />
+            1. 무신사가 PC버전을 종료하여 PC에 적합한 화면으로 보여주는{' '}
+            <Link href='/project/23e96911-9caa-498a-89db-5c9b02f956c1' className={strongText}>
+              무신사PC(1500+)
+            </Link>
+            를 개발했습니다.{' '}
+          </p>
+          <p>
+            2. 근태시간을 자동으로 계산해주는{' '}
             <Link href='/project/3c09e85b-8e7e-41e4-9dfb-d9ab68b830bc' className={`${strongText}`}>
               크롬익스텐션을(300+)
             </Link>{' '}
             개발하였습니다.
           </p>
-          <p className='mt-4'>
-            2. 무신사가 PC버전을 종료하여 PC에 적합한 화면으로 보여주는{' '}
-            <Link href='/project/23e96911-9caa-498a-89db-5c9b02f956c1' className={strongText}>
-              무신사PC
-            </Link>
-            를 개발했습니다.{' '}
-          </p>
         </AnimateSection>
 
         <AnimateSection title='수상이력'>
           <p>
+            7th Ne(o)rdinary 우수상
+            <time className='text-sm'> 2024.11.24</time>
+          </p>
+          <p>
             <Link href='/project/3c09e85b-8e7e-41e4-9dfb-d9ab68b830bc' className={strongText}>
-              구름톤 최우수상
+              10th 구름톤 최우수상
             </Link>
             <time className='text-sm'> 2024.05.24</time>
           </p>
@@ -65,10 +68,10 @@ function AboutmeHeader() {
             조코딩 AI 해커톤: 본선진출 <time className='text-sm'> 2023.8.19</time>
           </p>
           <p>
-            SSAFY 특화 프로젝트 경진대회<time className='text-sm'> 2023.04.07</time>
+            8th SSAFY 특화 프로젝트 우수상<time className='text-sm'> 2023.04.07</time>
           </p>
           <p>
-            SSAFY 1학기 최종 프로젝트 최우수상<time className='text-sm'> 2022.11.25</time>
+            8th SSAFY 관통 프로젝트 최우수상<time className='text-sm'> 2022.11.25</time>
           </p>
           <p>
             <Link href='/project/d55d84dc-c4c8-4040-83e7-09a6b5283512' className={strongText}>
@@ -78,8 +81,8 @@ function AboutmeHeader() {
           </p>
         </AnimateSection>
         <AnimateSection title='자격증'>
+          <p>PCCP Lv5 (2024.11.14)</p>
           <p>SQLD (2023.12.15)</p>
-          <p>PCCP Lv2 (2023.07.16)</p>
           <p>영어 OPIc IM1 (2022.12.24)</p>
           <p>일본어 JLPT N1 (2022.08.10)</p>
         </AnimateSection>

@@ -21,7 +21,7 @@ export async function GET() {
         },
         sorts: [{ property: 'date', direction: 'descending' }],
       }),
-      next: { revalidate: REVALIDATE_TIME },
+      next: { revalidate: 0 },
     })
   ).json();
 
@@ -33,6 +33,7 @@ export async function GET() {
     const tagType = data?.tag?.type;
     const tags = data?.tag?.[tagType];
     const content = data?.content?.rich_text?.[0]?.plain_text;
+    const img = data?.img?.files?.[0]?.external?.url;
 
     return {
       id,
@@ -40,6 +41,7 @@ export async function GET() {
       date,
       tags,
       content,
+      img,
     };
   });
 
