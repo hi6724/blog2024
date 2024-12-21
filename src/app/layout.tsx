@@ -61,16 +61,16 @@ export default function RootLayout({
 }>) {
   return (
     <ReactQueryClientProvider>
-      <html lang='ko' className='scrollbar-hide sm:scrollbar-default' suppressHydrationWarning>
+      <html lang="ko" className="scrollbar-hide sm:scrollbar-default" suppressHydrationWarning>
         <body
           className={`${[notoSansKr.variable, roboto.variable, oranienbaum.variable, ibmSans.variable].join(
             ' '
           )} font-sans`}
         >
-          <ThemeProvider storageKey='hunmok-theme' defaultTheme='system' value={{ light: 'emerald', dark: 'dim' }}>
+          <ThemeProvider storageKey="hunmok-theme" defaultTheme="system" value={{ light: 'emerald', dark: 'dracula' }}>
             <Container>
               <NavBar />
-              <div className='min-h-96'>{children}</div>
+              <div className="min-h-96">{children}</div>
               <Footer />
             </Container>
           </ThemeProvider>
@@ -82,8 +82,8 @@ export default function RootLayout({
 
 function Container({ children }: any) {
   return (
-    <div className='flex justify-center w-full bg-base-200'>
-      <div className='max-w-5xl w-full bg-base-100 shadow-xl min-h-screen'>{children}</div>
+    <div className="flex justify-center w-full bg-base-200">
+      <div className="max-w-5xl w-full bg-base-100 shadow-xl min-h-screen">{children}</div>
     </div>
   );
 }

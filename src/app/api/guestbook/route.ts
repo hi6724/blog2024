@@ -1,6 +1,7 @@
 import { REVALIDATE_TIME } from '@/constants';
 import { notionClient } from '@/lib/notion';
 import { revalidatePath } from 'next/cache';
+import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 const database_id = 'cf6dea8440b04e5c85cf9bc986f546b7';
@@ -10,7 +11,7 @@ export async function GET(request: NextRequest) {
   const page_size = +(request.nextUrl.searchParams.get('page_size') ?? '10');
   const sort = request.nextUrl.searchParams.get('sort') ?? 'descending';
 
-  const guestBooks = await(
+  const guestBooks = await (
     await fetch(`https://api.notion.com/v1/databases/${database_id}/query`, {
       method: 'POST',
       headers: {
@@ -75,6 +76,14 @@ export async function POST(request: NextRequest) {
       },
     });
     revalidatePath('/api/guestbook');
+    const host = headers().get('host');
+    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+
+    fetch(`${protocol}://${host}/api/guestbook/count`, {
+      method: 'POST',
+      body: JSON.stringify({ type: 'create' }),
+    });
+
     return NextResponse.json({ ok: true, id: result.id });
   } catch (error) {
     return NextResponse.error();

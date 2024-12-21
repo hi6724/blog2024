@@ -108,7 +108,7 @@
   @apply whitespace-break-spaces;
 }
 
-* {
+*,.notion.notion-app {
   --rmsc-main: oklch(var(--in));
   --rmsc-hover: oklch(var(--b2));
   --rmsc-selected: oklch(var(--in));
@@ -136,6 +136,7 @@
   --select-color-1: oklch(var(--su)/0.2);
   --select-color-2: oklch(var(--su));
 }
+
 .rmsc .select-item.selected {
   @apply !bg-info !text-info-content;
 }

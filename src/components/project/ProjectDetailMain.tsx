@@ -6,6 +6,7 @@ import { Collection } from 'react-notion-x/build/third-party/collection';
 import MyCodeBlock from '../notion/MyCodeBlock';
 import MyDateProperty from '../notion/MyDateProperty';
 import { useEffect, useRef, useState } from 'react';
+import { useTheme } from 'next-themes';
 
 const NAME_MAP: { [key: string]: string } = {
   date: '진행기간',
@@ -13,10 +14,28 @@ const NAME_MAP: { [key: string]: string } = {
   link: '링크',
   skills: '기술 스택',
   overview: '프로젝트 개요',
+  views: '조회수',
 };
 const DELETE_KEYS = ['overviewImg', 'createdAt', 'overview2', '상태'];
 
 function ProjectDetailMain({ data }: { data: any }) {
+  const theme = useTheme();
+
+  const [darkMode, setDarkMode] = useState<boolean | null>(null);
+  useEffect(() => {
+    setTimeout(() => {
+      setDarkMode(theme.resolvedTheme === 'dark');
+    }, 0);
+  }, [setDarkMode, theme]);
+
+  if (darkMode === null) return 'loading...';
+  if (darkMode) return <ProjectDetailContent data={data} darkMode={true} />;
+  else return <ProjectDetailContent data={data} darkMode={false} />;
+}
+
+export default ProjectDetailMain;
+
+function ProjectDetailContent({ data, darkMode }: { data: any; darkMode: boolean }) {
   const isMobile = useMobile();
   const collectionKey = Object.keys(data?.collection ?? {})?.[0];
   const schema = data?.collection[collectionKey].value.schema;
@@ -27,7 +46,10 @@ function ProjectDetailMain({ data }: { data: any }) {
     const type = data.block[key].value.type;
     if (type !== 'page') return;
     title.current = data.block[key].value.properties.title[0][0];
+    console.log(data.block[key].value);
+
     if (!data.block[key].value.properties.BUjZ?.[0]?.[0]) DELETE_KEYS.push('link');
+    if (!data.block[key].value.properties['M\\ky']?.[0]?.[0]) DELETE_KEYS.push('views');
   });
 
   // 페이지 프로퍼티 이름 변경
@@ -45,10 +67,11 @@ function ProjectDetailMain({ data }: { data: any }) {
       recordMap={data}
       showTableOfContents={!isMobile}
       pageAside={
-        <a className='notion-table-of-contents-item !text-xl' onClick={() => window.scrollTo(0, 0)}>
+        <a className="notion-table-of-contents-item !text-xl" onClick={() => window.scrollTo(0, 0)}>
           {title.current}
         </a>
       }
+      darkMode={darkMode}
       components={{
         Image: Image,
         Collection,
@@ -60,5 +83,3 @@ function ProjectDetailMain({ data }: { data: any }) {
     />
   );
 }
-
-export default ProjectDetailMain;
