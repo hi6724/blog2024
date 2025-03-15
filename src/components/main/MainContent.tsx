@@ -1,10 +1,10 @@
-'use client';
-import AboutMe from '@/components/main/AboutMe';
-import MainBlog from '@/components/main/MainBlog';
-import GuestBook from '@/components/main/GuestBook';
-import MainProject from '@/components/main/MainProject';
-import { useWorkHistory } from '@/react-query/about-me';
-import { getYearMonthDifference } from '@/lib/date';
+"use client";
+import AboutMe from "@/components/main/AboutMe";
+import MainBlog from "@/components/main/MainBlog";
+import GuestBook from "@/components/main/GuestBook";
+import MainProject from "@/components/main/MainProject";
+import { useAboutMeList, useWorkHistory } from "@/react-query/about-me";
+import { getFormatDateWithDay, getYearMonthDifference } from "@/lib/date";
 
 export function MainContent({
   totalViews,
@@ -16,8 +16,30 @@ export function MainContent({
   totalGuestbookCnt: number;
 }) {
   const { data } = useWorkHistory();
-  const totalDate = data?.total ?? getYearMonthDifference(new Date(2023, 7, 1), new Date());
-  const kbDate = data?.kb ?? getYearMonthDifference(new Date(2024, 11, 1), new Date());
+  const { data: aboutMe } = useAboutMeList();
+
+  const jobHistory = aboutMe
+    ?.filter((el) => {
+      const isJob = el.tags.some((tag) => tag?.name === "job");
+      return isJob;
+    })
+    .map((el) => {
+      if (!el.date?.start) return;
+      const startDate = new Date(el.date.start);
+      const isNow = !el.date.end;
+      const endDate = el.date?.end ? new Date(el.date.end) : new Date();
+      const differenceInMillis = endDate.getTime() - startDate.getTime();
+      const differenceInDays = differenceInMillis / (1000 * 60 * 60 * 24);
+      return { title: el.title, day: Math.ceil(differenceInDays), isNow };
+    }, 0);
+
+  console.log("TOTAL WORK TIME::", jobHistory);
+
+  const totalDate = jobHistory?.reduce((acc, cur) => acc + (cur?.day ?? 0), 0);
+  const nowData = jobHistory?.find((el) => el?.isNow);
+  const nowWorkDate = nowData?.day;
+  const formattedNowWorkDate = getFormatDateWithDay(nowWorkDate ?? 80);
+  const formattedTotalWorkDate = getFormatDateWithDay(totalDate ?? 524);
 
   return (
     <>
@@ -28,8 +50,8 @@ export function MainContent({
         </h1>
         <div className="flex flex-col">
           <p className="text-md mt-4 pl-4">
-            <span className="font-bold text-secondary"> {totalDate}</span>동안 프론트엔드 개발자로 일하고 있는
-            하훈목입니다.
+            <span className="font-bold text-secondary"> {formattedTotalWorkDate}</span>동안 프론트엔드 개발자로 일하고
+            있는 하훈목입니다.
             <br />
             주로 react와 next를 사용해서 프로젝트를 진행하고 있습니다. <br />
             트렌드와 프로덕션의 중간에서 효율점을 찾아가며 발전해 나가고 있습니다. 잘 부탁드립니다.
@@ -37,8 +59,10 @@ export function MainContent({
 
           <div className="stats stats-vertical sm:stats-horizontal sm:grid-rows-2 lg:grid-rows-1 w-full mt-4 *:p-4">
             <div className="stat">
-              <div className="stat-value">{totalDate}</div>
-              <div className="stat-title text-secondary">현재: 국민은행({kbDate})</div>
+              <div className="stat-value">{formattedTotalWorkDate}</div>
+              <div className="stat-title text-secondary">
+                현재: {nowData?.title}({formattedNowWorkDate})
+              </div>
             </div>
 
             <div className="stat sm:border-opacity-0 lg:border-opacity-10">

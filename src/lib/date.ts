@@ -1,7 +1,7 @@
-import dayjs from 'dayjs';
-import 'dayjs/locale/ko';
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
 
-dayjs.locale('ko'); // 한국어 로케일 설정
+dayjs.locale("ko"); // 한국어 로케일 설정
 
 // 옵션 객체의 타입 정의
 interface FormatDateOptions {
@@ -17,23 +17,23 @@ interface FormatDateOptions {
  * @returns {string} - "YYYY.MM.DD(요일) 오후HH:mm" 또는 "YYYY.MM.DD" 형식의 문자열
  */
 export function formatDateWithDay(dateInput: string | number, options: FormatDateOptions = {}): string {
-  const { day = false, time = false, format = 'YYYY.MM.DD' } = options;
+  const { day = false, time = false, format = "YYYY.MM.DD" } = options;
 
   // dateInput이 문자열일 경우 dayjs로 변환, 타임스탬프일 경우 dayjs로 변환
-  const date = typeof dateInput === 'string' ? dayjs(dateInput) : dayjs(Number(dateInput));
+  const date = typeof dateInput === "string" ? dayjs(dateInput) : dayjs(Number(dateInput));
 
   // 기본 날짜 포맷팅 (YYYY.MM.DD)
   let formattedDate = date.format(format);
 
   if (day) {
     // 요일 추가 (월, 화, 수 등)
-    const dayOfWeek = date.format('ddd');
+    const dayOfWeek = date.format("ddd");
     formattedDate += `(${dayOfWeek})`;
   }
 
   if (time) {
     // 시간 포맷팅 (오전/오후 HH:mm)
-    const timeFormat = date.format('A h:mm');
+    const timeFormat = date.format("A h:mm");
     formattedDate += ` ${timeFormat}`;
   }
 
@@ -52,6 +52,18 @@ export function getYearMonthDifference(startDate: Date, endDate: Date): string {
 
   const years = Math.floor(totalMonths / 12);
   const months = totalMonths % 12;
+  if (years === 0) return `${months}개월`;
+  return `${years}년 ${months}개월`;
+}
+
+export function getDateDifference(startDate: Date, endDate: Date): Date {
+  const differenceInMillis = endDate.getTime() - startDate.getTime();
+  return new Date(differenceInMillis);
+}
+
+export function getFormatDateWithDay(totalDay: number) {
+  const years = Math.floor(totalDay / 365);
+  const months = Math.ceil((totalDay % 365) / 30);
   if (years === 0) return `${months}개월`;
   return `${years}년 ${months}개월`;
 }

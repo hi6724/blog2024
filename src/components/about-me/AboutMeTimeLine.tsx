@@ -70,7 +70,9 @@ function AboutMeTimeLine() {
                   />
                 </motion.svg>
               </div>
-              <div className={`${index % 2 === 0 ? 'timeline-start md:text-end' : 'timeline-end'} !mb-10`}>
+              <div
+                className={`${index % 2 === 0 ? 'timeline-start md:text-end md:mr-4' : 'timeline-end md:ml-4'} !mb-10`}
+              >
                 <time className='font-mono italic'>
                   {formatDateWithDay(data.date.start, { format: 'YYYY년 MM월' })} ~{' '}
                   {data.date.end ? formatDateWithDay(data.date.end, { format: 'YYYY년 MM월' }) : '현재'}

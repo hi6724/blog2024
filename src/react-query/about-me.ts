@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
 export interface IAboutMeOverview {
   id: string;
@@ -7,7 +7,7 @@ export interface IAboutMeOverview {
     start: string;
     end: string;
   };
-  tags: string[];
+  tags: { id: string; name: string; color: string }[];
   content: string;
   img?: string;
 }
@@ -16,7 +16,7 @@ export const getAboutMe = async () => await (await fetch(`/api/about-me/overview
 
 export const useAboutMeOverview = () =>
   useQuery<IAboutMeOverview[]>({
-    queryKey: ['about-me'],
+    queryKey: ["about-me"],
     queryFn: getAboutMe,
   });
 
@@ -24,7 +24,7 @@ export const getAboutMeList = async () => await (await fetch(`/api/about-me`)).j
 
 export const useAboutMeList = () =>
   useQuery<IAboutMeOverview[]>({
-    queryKey: ['about-me/list'],
+    queryKey: ["about-me/list"],
     queryFn: getAboutMeList,
   });
 
@@ -33,4 +33,4 @@ export interface IWorkHistory {
   kb: number;
 }
 const getWorkHistory = async () => await (await fetch(`/api/time`)).json();
-export const useWorkHistory = () => useQuery<IWorkHistory>({ queryKey: ['time'], queryFn: getWorkHistory });
+export const useWorkHistory = () => useQuery<IWorkHistory>({ queryKey: ["time"], queryFn: getWorkHistory });

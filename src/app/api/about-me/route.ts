@@ -19,7 +19,7 @@ export async function GET() {
             equals: true,
           },
         },
-        sorts: [{ property: 'date', direction: 'ascending' }],
+        sorts: [{ property: 'date', direction: 'descending' }],
       }),
       next: { revalidate: REVALIDATE_TIME },
     })

@@ -19,36 +19,42 @@ function AboutmeHeader() {
           <motion.h1 className='font-bold text-2xl md:text-3xl'>하훈목입니다.</motion.h1>
         </div>
 
-        <AnimateSection title='열정을 잃지 않는 개발자'>
+        <AnimateSection title='프로젝트'>
           <p>
-            기술블로그에{' '}
-            <a href='https://velog.io/@hunmok1027' target='_blank' className={strongText}>
-              80+개의 포스팅
-            </a>
-            을 작성했습니다.
-          </p>
-          <p>
-            구름톤에 참여하여{' '}
-            <Link href='/project/3c09e85b-8e7e-41e4-9dfb-d9ab68b830bc' className={strongText}>
-              최우수상
+            <span>사이드프로젝트로 </span>
+            <Link href='/project/23e96911-9caa-498a-89db-5c9b02f956c1' className={`${strongText}`}>
+              무신사PC 익스텐션
             </Link>
-            을 수상했습니다.
+            <span>을 개발했습니다. (유저 2000+)</span>
           </p>
-        </AnimateSection>
-        <AnimateSection title='행동으로 옮기는 개발자 입니다.'>
           <p>
-            1. 무신사가 PC버전을 종료하여 PC에 적합한 화면으로 보여주는{' '}
-            <Link href='/project/23e96911-9caa-498a-89db-5c9b02f956c1' className={strongText}>
-              무신사PC(1500+)
+            <span>KB국민은행에서 </span>
+            <Link href='/project/ec37885e-13ef-4f4c-83ef-65e9f807cc38' className={`${strongText}`}>
+              태블릿브랜치
             </Link>
-            를 개발했습니다.{' '}
+            <span>와 </span>
+            <Link href='/project/c97dc5ab-bf28-4714-a49f-dbff7b0d3331' className={`${strongText}`}>
+              미리작성태블릿
+            </Link>
+            <span>을 개발하고 있습니다.</span>
           </p>
           <p>
-            2. 근태시간을 자동으로 계산해주는{' '}
-            <Link href='/project/3c09e85b-8e7e-41e4-9dfb-d9ab68b830bc' className={`${strongText}`}>
-              크롬익스텐션을(300+)
-            </Link>{' '}
-            개발하였습니다.
+            <span>TMAX에서 </span>
+            <Link href='/project/ec37885e-13ef-4f4c-83ef-65e9f807cc38' className={`${strongText}`}>
+              CoreBank
+            </Link>
+            <span>와 </span>
+            <Link href='/project/c97dc5ab-bf28-4714-a49f-dbff7b0d3331' className={`${strongText}`}>
+              배달공제조합
+            </Link>
+            <span>을 개발했습니다.</span>
+          </p>
+          <p>
+            <span>SSAFY에서 </span>
+            <Link href='/project/2ba92a19-359f-42b8-a597-232e6a16ca46' className={`${strongText}`}>
+              니,누꼬?
+            </Link>
+            <span>를 개발했습니다.</span>
           </p>
         </AnimateSection>
 
@@ -105,7 +111,7 @@ const container = classNames(
   `
 );
 
-function AnimateSection({ children, title }: { children: React.ReactNode; title: string }) {
+function AnimateSection({ children, title }: { children: React.ReactNode; title?: string }) {
   const childrenRef = useRef<HTMLDivElement>(null);
   const [childrenHeight, setChildrenHeight] = useState(0);
   const isInview = useInView(childrenRef, { amount: 'some' });
@@ -118,18 +124,25 @@ function AnimateSection({ children, title }: { children: React.ReactNode; title:
 
   return (
     <section className='z-10 relative'>
-      <div className='relative z-0 h-12'>
-        <motion.h2
-          className='absolute top-0'
-          initial={{ top: '2rem' }}
-          whileInView={{ top: 0 }}
-          transition={{ duration: 0.2, delay: 0.1, ease: 'easeInOut' }}
-        >
-          {title}
-        </motion.h2>
-        <div className='absolute bg-base-100 w-full h-8 top-8 z-0'></div>
-      </div>
-      <div className='relative'>
+      {title && (
+        <div className='relative z-0 h-8'>
+          <motion.h2
+            className='absolute top-0'
+            initial={{ top: '1rem' }}
+            whileInView={{ top: 0 }}
+            transition={{ duration: 0.2, delay: 0.1, ease: 'easeInOut' }}
+          >
+            {title}
+          </motion.h2>
+          <motion.div
+            className='absolute bg-primary w-full h-[1px] top-8 z-0'
+            initial={{ opacity: 0, width: 0 }}
+            whileInView={{ opacity: 1, width: 1000 }}
+            transition={{ duration: 0.3, delay: 0.2, ease: 'easeInOut' }}
+          ></motion.div>
+        </div>
+      )}
+      <div className='relative mt-4'>
         <motion.div
           className='z-10 relative'
           ref={childrenRef}
