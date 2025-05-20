@@ -34,21 +34,21 @@ const ibmSans = IBM_Plex_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: '훈모구의 사이트',
-  description: '하훈목의 포트폴리오 사이트에서 자신에 대해 소개하는 페이지입니다.',
-  keywords: ['하훈목', '포트폴리오', '소개', '개발자', '프론트엔드'],
+  title: '훈모구 소개',
+  description: '싸피와 티맥스핀테크를 거쳐 현재 KB국민은행에서 개발자로 근무하고 있는 프론트엔드 개발자 입니다.',
+  keywords: ['포트폴리오', '소개', '개발자', '프론트엔드', '국민은행', '싸피', '핀테크'],
   icons: [{ rel: 'icon', url: '/favi.png' }],
   openGraph: {
-    title: '하훈목 소개',
-    description: '하훈목의 포트폴리오 사이트에서 자신에 대해 소개하는 페이지입니다.',
-    url: 'https://hunmogu.com', // 실제 URL로 교체
+    title: '훈모구 소개',
+    description: '훈모구의 포트폴리오 사이트에서 자신에 대해 소개하는 페이지입니다.',
+    url: 'https://hunmogu.com/about-me', // 실제 URL로 교체
     type: 'website',
     images: [
       {
-        url: 'https://firebasestorage.googleapis.com/v0/b/hunmok-fe31e.appspot.com/o/preview%2Fdefault-preview.webp?alt=media&token=20632868-8263-4a80-a8dc-03f60d37942a',
+        url: 'https://firebasestorage.googleapis.com/v0/b/hunmok-fe31e.appspot.com/o/preview%2Faboutme-preview.webp?alt=media&token=7cc50760-b91e-4fba-b1f4-34e4e6690a31',
         width: 2000,
-        height: 1028,
-        alt: '귀여운 강아지 사진',
+        height: 797,
+        alt: '귀여운 코딩하는 강아지 사진',
       },
     ],
   },
@@ -61,16 +61,12 @@ export default function RootLayout({
 }>) {
   return (
     <ReactQueryClientProvider>
-      <html lang="ko" className="scrollbar-hide sm:scrollbar-default" suppressHydrationWarning>
-        <body
-          className={`${[notoSansKr.variable, roboto.variable, oranienbaum.variable, ibmSans.variable].join(
-            ' '
-          )} font-sans`}
-        >
-          <ThemeProvider storageKey="hunmok-theme" defaultTheme="system" value={{ light: 'emerald', dark: 'dracula' }}>
+      <html lang='ko' className='scrollbar-hide sm:scrollbar-default' suppressHydrationWarning>
+        <body className={`${[notoSansKr.variable, roboto.variable, oranienbaum.variable, ibmSans.variable].join(' ')} font-sans`}>
+          <ThemeProvider storageKey='hunmok-theme' defaultTheme='system' value={{ light: 'emerald', dark: 'dracula' }}>
             <Container>
               <NavBar />
-              <div className="min-h-96">{children}</div>
+              <div className='min-h-96'>{children}</div>
               <Footer />
             </Container>
           </ThemeProvider>
@@ -82,8 +78,8 @@ export default function RootLayout({
 
 function Container({ children }: any) {
   return (
-    <div className="flex justify-center w-full bg-base-200">
-      <div className="max-w-5xl w-full bg-base-100 shadow-xl min-h-screen">{children}</div>
+    <div className='flex justify-center w-full bg-base-200'>
+      <div className='max-w-5xl w-full bg-base-100 shadow-xl min-h-screen'>{children}</div>
     </div>
   );
 }
