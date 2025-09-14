@@ -6,7 +6,7 @@ import { splitFirst } from '@/lib/string';
 import { FormProvider, useForm } from 'react-hook-form';
 import SubmitForm from '@/components/blog/SubmitForm';
 import { useRef, useState } from 'react';
-import { IComment } from '@/react-query/types';
+import { IComment, ISupabaseComment } from '@/react-query/types';
 import { motion } from 'framer-motion';
 import { useMobile } from '@/hooks/useMobile';
 import { useNextPrevBlogOverview } from '@/react-query/blog';
@@ -24,7 +24,7 @@ const NAME_MAP: { [key: string]: string } = {
 };
 const DELETE_KEYS = ['type', 'comments', 'createdAt'];
 
-function BlogDetailContent({ data, darkMode, id }: { data: any; darkMode?: boolean; id: string }) {
+function BlogDetailContent({ data, darkMode, id, supaSomments }: { data: any; darkMode?: boolean; id: string; supaSomments: ISupabaseComment[] }) {
   const [submittedItems, setSubmittedItems] = useState<IComment[]>([]);
   const isMobile = useMobile();
   const { data: nextPrevData } = useNextPrevBlogOverview(id);
@@ -54,8 +54,17 @@ function BlogDetailContent({ data, darkMode, id }: { data: any; darkMode?: boole
     return { id: comment.value.id, createdAt: comment.value.created_time, icon, username, userId, content };
   });
 
+  const newComments = supaSomments.map((el) => ({
+    id: el.id,
+    createdAt: el.created_at,
+    icon: el.user.avatar,
+    username: el.user.user_name,
+    userId: el.user_notion_id,
+    content: el.body,
+  }));
+
   return (
-    <div className="relative">
+    <div className='relative'>
       <NotionRenderer
         showTableOfContents={!isMobile}
         recordMap={data}
@@ -67,48 +76,40 @@ function BlogDetailContent({ data, darkMode, id }: { data: any; darkMode?: boole
         darkMode={darkMode}
         fullPage
         pageAside={
-          <a className="notion-table-of-contents-item !text-xl" onClick={() => window.scrollTo(0, 0)}>
+          <a className='notion-table-of-contents-item !text-xl' onClick={() => window.scrollTo(0, 0)}>
             {title.current}
           </a>
         }
         footer={
-          <motion.div
-            className="w-full border-t-2 border-success py-4 px-2 flex flex-col gap-4"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-          >
+          <motion.div className='w-full border-t-2 border-success py-4 px-2 flex flex-col gap-4' initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
             <FormProvider {...method}>
-              <SubmitForm
-                id={id}
-                setItems={setSubmittedItems}
-                commentsLength={(comments?.length ?? 0) + (submittedItems?.length ?? 0)}
-              />
-              {[...submittedItems, ...comments]?.map((comment, i) => (
+              <SubmitForm id={id} setItems={setSubmittedItems} commentsLength={(newComments?.length ?? 0) + (submittedItems?.length ?? 0)} />
+              {[...submittedItems, ...newComments]?.map((comment, i) => (
                 <BlogCommentItem comment={comment} key={comment.id} />
               ))}
             </FormProvider>
-            <div className="flex justify-between gap-2">
+            <div className='flex justify-between gap-2'>
               {nextPrevData?.prev ? (
                 <Link
                   href={`/blog/${nextPrevData.prev.id}`}
-                  className="w-72 bg-success bg-opacity-10 flex flex-col p-4 hover:bg-opacity-30 transition-all rounded-md"
+                  className='w-72 bg-success bg-opacity-10 flex flex-col p-4 hover:bg-opacity-30 transition-all rounded-md'
                 >
-                  <p className="text-sm">이전 글</p>
-                  <h2 className="font-bold line-clamp-1">{nextPrevData.prev.title}</h2>
+                  <p className='text-sm'>이전 글</p>
+                  <h2 className='font-bold line-clamp-1'>{nextPrevData.prev.title}</h2>
                 </Link>
               ) : (
-                <div className="w-72"></div>
+                <div className='w-72'></div>
               )}
               {nextPrevData?.next ? (
                 <Link
                   href={`/blog/${nextPrevData.next.id}`}
-                  className="w-72 max-w-64 flex flex-col items-end p-4 bg-success bg-opacity-10 hover:bg-opacity-30 transition-all rounded-md"
+                  className='w-72 max-w-64 flex flex-col items-end p-4 bg-success bg-opacity-10 hover:bg-opacity-30 transition-all rounded-md'
                 >
-                  <p className="text-sm">다음 글</p>
-                  <h2 className="font-bold line-clamp-1">{nextPrevData.next.title}</h2>
+                  <p className='text-sm'>다음 글</p>
+                  <h2 className='font-bold line-clamp-1'>{nextPrevData.next.title}</h2>
                 </Link>
               ) : (
-                <div className="w-72"></div>
+                <div className='w-72'></div>
               )}
             </div>
           </motion.div>

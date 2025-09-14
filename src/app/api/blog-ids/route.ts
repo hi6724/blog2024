@@ -19,7 +19,5 @@ export async function GET(request: NextRequest) {
     })
   ).json();
 
-  return NextResponse.json(
-    projects.results.map((result: any) => ({ id: result.id, lastEditedTime: result.last_edited_time }))
-  );
+  return NextResponse.json(projects.results.map((result: any) => ({ id: result.id, lastEditedTime: result.last_edited_time })));
 }

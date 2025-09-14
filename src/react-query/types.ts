@@ -1,3 +1,16 @@
+export interface ISupabaseComment {
+  id: any;
+  created_at: any;
+  body: any;
+  post_id: any;
+  user_notion_id: any;
+  user: {
+    user_name: any;
+    avatar: any;
+    password: any;
+  };
+}
+
 export interface IListQueryParams {
   cursor?: string;
   page_size?: number;

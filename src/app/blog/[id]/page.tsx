@@ -1,3 +1,4 @@
+import { getComment } from '@/app/action';
 import BlogDetailMain from '@/components/blog/BlogDetailMain';
 import { Metadata } from 'next';
 import { headers } from 'next/headers';
@@ -13,8 +14,9 @@ async function fetchBlogData(id: string) {
 
 async function BlogDetailPage({ params: { id } }: { params: { id: string } }) {
   const data = await fetchBlogData(id);
+  const comments = await getComment({ id });
 
-  return <BlogDetailMain data={data} id={id} />;
+  return <BlogDetailMain data={data} id={id} comments={comments} />;
 }
 
 export default BlogDetailPage;
