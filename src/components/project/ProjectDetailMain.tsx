@@ -38,14 +38,14 @@ export default ProjectDetailMain;
 function ProjectDetailContent({ data, darkMode }: { data: any; darkMode: boolean }) {
   const isMobile = useMobile();
   const collectionKey = Object.keys(data?.collection ?? {})?.[0];
-  const schema = data?.collection[collectionKey].value.schema;
+  const schema = data?.collection?.[collectionKey]?.value?.schema;
   const title = useRef('');
 
   // 링크가 없는 페이지는 링크 항목을 삭제
   Object.keys(data?.block ?? {}).forEach((key) => {
-    const type = data.block[key].value.type;
+    const type = data.block[key]?.value?.type;
     if (type !== 'page') return;
-    title.current = data.block[key].value.properties.title[0][0];
+    title.current = data.block[key].value.properties?.title?.[0]?.[0] ?? '';
     console.log(data.block[key].value);
 
     if (!data.block[key].value.properties.BUjZ?.[0]?.[0]) DELETE_KEYS.push('link');

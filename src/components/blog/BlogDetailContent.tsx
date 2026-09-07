@@ -30,7 +30,7 @@ function BlogDetailContent({ data, darkMode, id, supaSomments }: { data: any; da
   const { data: nextPrevData } = useNextPrevBlogOverview(id);
   // 페이지 프로퍼티 이름 변경
   const collectionKey = Object.keys(data?.collection ?? {})?.[0];
-  const schema = data?.collection[collectionKey].value.schema;
+  const schema = data?.collection?.[collectionKey]?.value?.schema;
   const title = useRef('');
 
   const method = useForm();
@@ -44,9 +44,9 @@ function BlogDetailContent({ data, darkMode, id, supaSomments }: { data: any; da
   });
 
   Object.keys(data?.block ?? {}).forEach((key) => {
-    const type = data.block[key].value.type;
+    const type = data.block[key]?.value?.type;
     if (type !== 'page') return;
-    title.current = data.block[key].value.properties.title[0][0];
+    title.current = data.block[key].value.properties?.title?.[0]?.[0] ?? '';
   });
 
   const comments = Object.values(data?.comment ?? {}).map((comment: any) => {

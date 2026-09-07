@@ -9,14 +9,29 @@ async function fetchBlogData(id: string) {
   const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https'; // 개발 환경에서는 http, 프로덕션에서는 https
   const res = await fetch(`${protocol}://${host}/api/project/${id}`);
   const data = await res.json();
+  console.log('LLOK 여기이!!!', data);
   return data;
 }
 
 async function BlogDetailPage({ params: { id } }: { params: { id: string } }) {
   const data = await fetchBlogData(id);
-  const comments = await getComment({ id });
+  const commentResult = await getComment({ id })
+    .then((comments) => ({ comments, failed: false }))
+    .catch(() => {
+      console.error('Failed to load blog comments', { id });
+      return { comments: [], failed: true };
+    });
 
-  return <BlogDetailMain data={data} id={id} comments={comments} />;
+  return (
+    <>
+      {commentResult.failed && (
+        <p role='status' className='px-4 py-2 text-sm text-center'>
+          댓글을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.
+        </p>
+      )}
+      <BlogDetailMain data={data} id={id} comments={commentResult.comments} />
+    </>
+  );
 }
 
 export default BlogDetailPage;

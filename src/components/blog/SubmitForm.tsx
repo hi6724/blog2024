@@ -10,6 +10,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import useUser from '@/hooks/useUser';
 import { usePathname } from 'next/navigation';
+import { createComment } from '@/app/action';
 
 function SubmitForm({
   setItems,
@@ -32,25 +33,27 @@ function SubmitForm({
   const { handleSubmit, register, reset, setValue, watch } = useFormContext();
 
   const onValid = (data: any) => {
-    const confirmResult = confirm('댓글은 수정과 삭제가 불가능합니다.\n등록하시겠습니까?');
-    if (!confirmResult) return;
     onValidNewPost(data);
     reset();
     closeForm();
   };
 
-  const onValidNewPost = (data: any) => {
-    const userId = createOrUpdateUser({ icon: data.icon, username: data.username });
-    const newData = { ...data, userId, commentsLength: commentsLength + 1 };
+  const onValidNewPost = async (data: any) => {
+    const userData = await createOrUpdateUser({ icon: data.icon, username: data.username, password: data.password });
+    console.log('USER DATA:::', userData?.user);
+    console.log('postId', id);
+    await createComment({ body: data.content, postId: id, userNotionId: userData?.user.user_notion_id });
 
-    fetch(`/api/project/${id}`, {
-      method: 'POST',
-      body: JSON.stringify(newData),
-    });
     reset({ title: '', content: '' });
 
     setItems((p) => {
-      const newSubmittedData = { createdAt: dayjs(), id: uuidv4(), icon: newData.icon, ...newData };
+      const newSubmittedData = {
+        createdAt: dayjs(),
+        id: uuidv4(),
+        icon: userData?.user.avatar,
+        username: userData?.user.user_name,
+        content: data.content,
+      } as any;
       if (p) return [newSubmittedData, ...p];
       else return [newSubmittedData];
     });
@@ -62,7 +65,9 @@ function SubmitForm({
     setValue('username', user.username);
     setValue('userId', user.userId);
     setValue('icon', user.icon);
+    setValue('password', user.password);
   };
+
   useEffect(() => {
     setUserInfo();
   }, [user]);
@@ -113,10 +118,7 @@ function SubmitForm({
             overflow: watch('open') ? 'visible' : 'hidden',
           }}
         >
-          <select
-            className='select w-20 sm:select-lg !outline-none focus:!outline-primary border border-base-content border-opacity-20'
-            {...register('icon')}
-          >
+          <select className='select w-20 sm:select-lg !outline-none focus:!outline-primary border border-base-content border-opacity-20' {...register('icon')}>
             {emojiList.map((el) => (
               <option key={el} value={el}>
                 {el}
@@ -125,19 +127,14 @@ function SubmitForm({
           </select>
 
           <label className='input input-bordered flex items-center gap-2 !outline-primary relative w-[calc(100vw-6.5rem)] sm:input-lg'>
-            <input
-              type='text'
-              placeholder='이름'
-              required
-              maxLength={10}
-              {...register('username', { required: true, maxLength: 10 })}
-            />
+            <input type='text' placeholder='이름' required maxLength={10} {...register('username', { required: true, maxLength: 10 })} />
+          </label>
+
+          <label className='input input-bordered flex items-center gap-2 !outline-primary relative w-[calc(100vw-6.5rem)] sm:input-lg'>
+            <input type='password' placeholder='비밀번호' required maxLength={10} {...register('password', { required: true, maxLength: 10 })} />
           </label>
         </motion.div>
-        <button
-          type='submit'
-          className='absolute right-4 top-5 hover:ring-2 focus:ring-2 ring-primary p-2 outline-none rounded-md'
-        >
+        <button type='submit' className='absolute right-4 top-5 hover:ring-2 focus:ring-2 ring-primary p-2 outline-none rounded-md'>
           <svg
             data-slot='icon'
             fill='none'
@@ -156,9 +153,7 @@ function SubmitForm({
           </svg>
         </button>
       </motion.form>
-      {watch('open') && (
-        <div className='z-[300] fixed top-0 left-0 bg-neutral/60 w-full h-screen' onClick={onClickBackdrop} />
-      )}
+      {watch('open') && <div className='z-[300] fixed top-0 left-0 bg-neutral/60 w-full h-screen' onClick={onClickBackdrop} />}
     </>
   );
 }

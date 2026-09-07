@@ -13,7 +13,7 @@ export class MyNotionAPI {
   private readonly _userTimeZone: string;
 
   constructor({
-    apiBaseUrl = 'https://www.notion.so/api/v3',
+    apiBaseUrl = 'https://app.notion.com/api/v3',
     authToken,
     activeUser,
     userTimeZone = 'America/New_York',
@@ -72,16 +72,18 @@ export class MyNotionAPI {
     recordMap.signed_urls = {};
 
     if (fetchMissingBlocks) {
+      const requestedBlockIds = new Set<string>();
       // eslint-disable-next-line no-constant-condition
       while (true) {
         // fetch any missing content blocks
-        const pendingBlockIds = getPageContentBlockIds(recordMap).filter((id) => !recordMap.block[id]);
+        const pendingBlockIds = getPageContentBlockIds(recordMap).filter((id) => !recordMap.block[id] && !requestedBlockIds.has(id));
 
         if (!pendingBlockIds.length) {
           break;
         }
 
-        const newBlocks = await this.getBlocks(pendingBlockIds, gotOptions).then((res) => res.recordMap.block);
+        pendingBlockIds.forEach((id) => requestedBlockIds.add(id));
+        const newBlocks = await this.getBlocks(pendingBlockIds, gotOptions).then((res) => res.recordMap?.block ?? {});
 
         recordMap.block = { ...recordMap.block, ...newBlocks };
       }
@@ -99,7 +101,7 @@ export class MyNotionAPI {
         collectionId: string;
         collectionViewId: string;
       }> = contentBlockIds.flatMap((blockId) => {
-        const block = recordMap.block[blockId].value;
+        const block = recordMap.block[blockId]?.value;
         const collectionId =
           block &&
           (block.type === 'collection_view' || block.type === 'collection_view_page') &&
@@ -542,13 +544,33 @@ export class MyNotionAPI {
 
     const url = `${this._apiBaseUrl}/${endpoint}`;
 
-    return fetch(url, {
+    const response = await fetch(url, {
+      ...gotOptions,
       method: 'post',
       body: JSON.stringify(body),
       headers,
-      ...gotOptions,
-    }).then((res) => {
-      return res.json();
     });
+
+    if (!response.ok) {
+      throw new Error(`Notion API ${endpoint} failed (${response.status})`);
+    }
+
+    const data = await response.json();
+
+    // New Notion responses wrap each record in { spaceId, value: { value, role } }.
+    // Normalize every table before notion-utils or react-notion-x reads it.
+    if (data.recordMap) {
+      for (const table of Object.values(data.recordMap)) {
+        if (!table || typeof table !== 'object') continue;
+        for (const record of Object.values(table)) {
+          if (record?.value?.value && typeof record.value.value === 'object') {
+            record.role = record.value.role ?? record.role;
+            record.value = record.value.value;
+          }
+        }
+      }
+    }
+
+    return data as T;
   }
 }

@@ -1,3 +1,4 @@
+import { createUser, getUser } from '@/app/action';
 import { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
@@ -5,6 +6,7 @@ interface IUser {
   username: string;
   icon: string;
   userId: string;
+  password: string;
 }
 
 function useUser() {
@@ -17,8 +19,8 @@ function useUser() {
       return;
     }
 
-    const { username, icon, userId } = prevData;
-    if (!username || !icon || !userId) {
+    const { username, icon, userId, password } = prevData;
+    if (!username || !icon || !userId || !password) {
       localStorage.removeItem('hunmok-blog');
       setUser(null);
       return;
@@ -27,18 +29,21 @@ function useUser() {
     setUser(prevData);
   }, []);
 
-  function createOrUpdateUser(data: Omit<IUser, 'userId'> & Partial<Pick<IUser, 'userId'>>) {
+  async function createOrUpdateUser(data: Omit<IUser, 'userId'> & Partial<Pick<IUser, 'userId'>>) {
     const userId = user?.userId ?? uuid();
-    if (user === null) {
-      const newUser = { ...data, userId };
-      localStorage.setItem('hunmok-blog', JSON.stringify(newUser));
-      setUser(newUser);
+    const dbUser = await getUser({ password: data.password, userName: data.username });
+    if (dbUser.code === 'OK') {
+      return dbUser;
+    } else if (dbUser.code === 'NO_USER_NAME') {
+      const res = await createUser({ userName: data.username, password: data.password, avatar: data.icon });
+      setUser({ username: data.username, password: data.password, icon: data.icon, userId });
+      return { ok: true, code: 'NEW_USER', user: res.data };
+    } else if (dbUser.code === 'WRONG_PASSWORD') {
+      alert('동일한 이름이 존재합니다.');
+      return null;
     } else {
-      const newUser = { ...data, userId };
-      localStorage.setItem('hunmok-blog', JSON.stringify(newUser));
-      setUser(newUser);
+      return null;
     }
-    return userId;
   }
 
   return { user, createOrUpdateUser };

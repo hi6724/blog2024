@@ -37,7 +37,7 @@ function SubmitForm({
   };
 
   const onValidNewPost = (data: any) => {
-    const userId = createOrUpdateUser({ icon: data.icon, username: data.username });
+    const userId = createOrUpdateUser({ icon: data.icon, username: data.username, password: data.password });
     const newData = { ...data, userId };
     const tempId = uuidv4();
 
@@ -64,7 +64,7 @@ function SubmitForm({
   const onValidEditPost = (data: any) => {
     const { content, id, icon, title, userId, username } = data;
     if (userId !== user?.userId) return;
-    createOrUpdateUser({ icon: data.icon, username: data.username });
+    createOrUpdateUser({ icon: data.icon, username: data.username, password: data.password });
     fetch('/api/guestbook/edit', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -146,9 +146,7 @@ function SubmitForm({
             <input
               type='text'
               className='grow'
-              placeholder={
-                !watch('isEdit') ? (watch('open') ? '제목' : '방명록을 남겨주세요') : watch('prevData.title')
-              }
+              placeholder={!watch('isEdit') ? (watch('open') ? '제목' : '방명록을 남겨주세요') : watch('prevData.title')}
               required
               {...register('title', { required: true })}
             />
@@ -213,9 +211,7 @@ function SubmitForm({
           </svg>
         </button>
       </motion.form>
-      {watch('open') && (
-        <div className='z-20 fixed top-0 left-0 bg-neutral/60 w-full h-screen' onClick={onClickBackdrop} />
-      )}
+      {watch('open') && <div className='z-20 fixed top-0 left-0 bg-neutral/60 w-full h-screen' onClick={onClickBackdrop} />}
     </>
   );
 }

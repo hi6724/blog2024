@@ -40,29 +40,30 @@ export async function GET(req: NextRequest, { params: { id } }: { params: { id: 
 
 export async function POST(req: NextRequest, { params: { id } }: { params: { id: string } }) {
   const { content, icon, username, userId, commentsLength } = await req.json();
+  console.log({ content, icon, username, userId, commentsLength });
   const value = `${icon}:${username}:${userId}:${content}`;
   revalidatePath(`/api/project/${id}`);
 
-  const res = await notionClient.comments.create({
-    parent: { page_id: id },
-    rich_text: [
-      {
-        text: {
-          content: value,
-        },
-      },
-    ],
-  });
-  notionClient.pages.update({
-    page_id: id,
-    properties: {
-      comments: {
-        number: commentsLength,
-      },
-    },
-  });
+  // const res = await notionClient.comments.create({
+  //   parent: { page_id: id },
+  //   rich_text: [
+  //     {
+  //       text: {
+  //         content: value,
+  //       },
+  //     },
+  //   ],
+  // });
+  // notionClient.pages.update({
+  //   page_id: id,
+  //   properties: {
+  //     comments: {
+  //       number: commentsLength,
+  //     },
+  //   },
+  // });
 
-  return NextResponse.json({ ok: true, res });
+  return NextResponse.json({ ok: true, res: 'res' });
 }
 
 export async function DELETE(req: NextRequest, { params: { id, commentId } }: { params: { id: string; commentId: string } }) {
