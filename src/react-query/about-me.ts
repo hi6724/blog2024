@@ -1,3 +1,4 @@
+import { CONTENT_STALE_MS } from '@/lib/cache-policy';
 import { useQuery } from "@tanstack/react-query";
 
 export interface IAboutMeOverview {
@@ -16,6 +17,7 @@ export const getAboutMe = async () => await (await fetch(`/api/about-me/overview
 
 export const useAboutMeOverview = () =>
   useQuery<IAboutMeOverview[]>({
+    staleTime: CONTENT_STALE_MS,
     queryKey: ["about-me"],
     queryFn: getAboutMe,
   });
@@ -24,6 +26,7 @@ export const getAboutMeList = async () => await (await fetch(`/api/about-me`)).j
 
 export const useAboutMeList = () =>
   useQuery<IAboutMeOverview[]>({
+    staleTime: CONTENT_STALE_MS,
     queryKey: ["about-me/list"],
     queryFn: getAboutMeList,
   });

@@ -1,3 +1,4 @@
+import { CONTENT_STALE_MS } from '@/lib/cache-policy';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios, { AxiosResponse } from 'axios';
 import { IBlogOverview, IListQueryParams, IListResponse } from './types';
@@ -9,6 +10,7 @@ export const getBlogList = async (params: IListQueryParams) => {
 
 export const useBlogOverviewList = (params: IListQueryParams) =>
   useInfiniteQuery<IListResponse<IBlogOverview>>({
+    staleTime: CONTENT_STALE_MS,
     queryKey: ['blog-ovreview-list', ...Object.values(params)],
     // @ts-ignore
     queryFn: ({ pageParam }) => getBlogList({ ...params, ...(!!pageParam && { cursor: pageParam }) }),
@@ -27,12 +29,14 @@ export const getBlogTags = async () => {
 };
 export const useBlogTags = () =>
   useQuery<{ name: string; color: string }[]>({
+    staleTime: CONTENT_STALE_MS,
     queryKey: ['blog-tags'],
     queryFn: getBlogTags,
   });
 
 export const useNextPrevBlogOverview = (id: string) =>
   useQuery<{ next?: IBlogOverview; prev?: IBlogOverview }>({
+    staleTime: CONTENT_STALE_MS,
     queryKey: ['next-prev-blog', id],
     queryFn: () => getNextPrevBlog(id),
   });

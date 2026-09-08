@@ -1,3 +1,4 @@
+import { CONTENT_STALE_MS } from '@/lib/cache-policy';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { IListQueryParams, IListResponse, IProjectOverView } from './types';
 import { formatSearchParams } from '@/lib/params';
@@ -9,6 +10,7 @@ export const getProjectList = async (params: IListQueryParams) => {
 
 export const useProjectOverviewList = (params: IListQueryParams) =>
   useInfiniteQuery<IListResponse<IProjectOverView>>({
+    staleTime: CONTENT_STALE_MS,
     queryKey: ['project-ovreview-list', ...Object.values(params)],
     // @ts-ignore
     queryFn: ({ pageParam }) => getProjectList({ ...params, ...(!!pageParam && { cursor: pageParam }) }),
@@ -23,6 +25,7 @@ export const getProjectDetail = async (id: string) => {
 
 export const useProjectDetail = (id: string) =>
   useQuery({
+    staleTime: CONTENT_STALE_MS,
     queryKey: ['project-detail', id],
     queryFn: () => getProjectDetail(id),
   });

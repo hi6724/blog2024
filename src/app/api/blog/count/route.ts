@@ -10,7 +10,7 @@ export async function GET() {
         Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
         'Notion-Version': '2022-06-28',
       },
-      next: { revalidate: 1000 * 3600 },
+      next: { revalidate: 3600 },
     })
   ).json();
 

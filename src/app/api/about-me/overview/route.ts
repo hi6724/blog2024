@@ -21,7 +21,7 @@ export async function GET() {
         },
         sorts: [{ property: 'date', direction: 'descending' }],
       }),
-      next: { revalidate: 0 },
+      next: { revalidate: REVALIDATE_TIME },
     })
   ).json();
 

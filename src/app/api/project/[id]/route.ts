@@ -1,13 +1,13 @@
 import { myNotionClient, notionClient } from '@/lib/notion';
-import { revalidatePath } from 'next/cache';
+import { unstable_cache, revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
+// Cache the assembled page; signed image URLs keep a shorter 30-minute TTL.
+const getCachedPage = unstable_cache((id: string) => myNotionClient.getPage(id), ['notion-page-v1'], { revalidate: 1800 });
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest, { params: { id } }: { params: { id: string } }) {
-  const notionData = await myNotionClient.getPage(id, {
-    gotOptions: {
-      next: { revalidate: 600 },
-    },
-  });
+  const notionData = await getCachedPage(id);
 
   const notionApiUrl = `https://api.notion.com/v1/pages/${id}`;
   const res = await (

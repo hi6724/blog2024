@@ -1,6 +1,8 @@
 import { getYearMonthDifference } from "@/lib/date";
 import { NextResponse } from "next/server";
 
+export const revalidate = 3600;
+
 export async function GET() {
   const startDate = new Date(2023, 7, 1);
   const endDate = new Date();
