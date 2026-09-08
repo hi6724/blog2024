@@ -102,3 +102,29 @@ RUN_SUPABASE_TESTS=1 node --test tests/guestbook.integration.cjs
 테스트는 임시 방명록의 CRUD, 비밀번호 차단, 이름 보존, 개수, 양방향 페이지 이동을
 검증하고 임시 데이터를 삭제합니다.
 
+## Notion 자기소개 섹션
+
+자기소개 페이지의 프로젝트·수상이력·자격증은 **AboutMeDB → 자기소개 상세**에서
+관리합니다. 기존 문구 14개와 링크를 아래 페이지에 옮겼습니다.
+
+https://www.notion.so/3d521d4162d480458329d3d624e1482a
+
+- `프로젝트`, `수상이력`, `자격증` 제목 블록 아래에 일반 문단이나 목록을 작성합니다.
+- 제목과 문단 순서, 링크, 굵게·기울임, 회색 텍스트를 사이트에 반영합니다.
+- 표시할 항목은 페이지 최상위에 둡니다. 하위 페이지·토글·중첩 목록은 지원하지 않습니다.
+- 다른 제목 아래의 관리 메모는 사이트에 표시하지 않습니다.
+- Notion 변경은 콘텐츠 캐시 갱신 후 반영됩니다(서버 기본 1시간). 새 코드는 최초 한 번 배포해야 합니다.
+- 기존 타임라인·기술스택·소개 제목은 변경하지 않았습니다.
+
+서버의 기존 `NOTION_API_KEY`를 사용합니다. 다른 관리 페이지로 옮길 때만 서버 환경변수
+`NOTION_ABOUT_SECTIONS_PAGE_ID`를 지정하고 해당 페이지에 Notion 연결 접근 권한을 부여합니다.
+API는 `/api/about-me/sections`이며, Notion 조회 실패 시 오류와 재시도 버튼을 표시합니다.
+초기 문구 백업 `scripts/data/about-notion-sections.json`은 런타임에서 사용하지 않습니다.
+
+```sh
+node --test tests/notion-about-sections.test.cjs
+# 개발 서버 실행 후 실제 Notion 원본과 초기 문구/링크 대조 (Notion 수정 후에는 차이가 날 수 있습니다)
+RUN_NOTION_TESTS=1 node --test tests/notion-about-sections.test.cjs
+```
+
+

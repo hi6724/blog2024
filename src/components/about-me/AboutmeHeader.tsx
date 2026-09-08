@@ -1,10 +1,22 @@
 'use client';
+import { CONTENT_STALE_MS } from '@/lib/cache-policy';
+import { useQuery } from '@tanstack/react-query';
+import type { AboutSection } from '@/lib/notion-about-sections';
 import classNames from 'classnames';
 import { useInView, motion, HTMLMotionProps } from 'framer-motion';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
+async function getSections(): Promise<AboutSection[]> {
+  const response = await fetch('/api/about-me/sections', { cache: 'no-store' });
+  if (!response.ok) throw new Error('자기소개 항목을 불러오지 못했습니다.');
+  return response.json();
+}
+
 function AboutmeHeader() {
+  const { data: sections = [], isPending, isError, refetch } = useQuery({
+    queryKey: ['about-me/sections'], queryFn: getSections, staleTime: CONTENT_STALE_MS,
+  });
   return (
     <div>
       <img
@@ -19,79 +31,17 @@ function AboutmeHeader() {
           <motion.h1 className='font-bold text-2xl md:text-3xl'>하훈목입니다.</motion.h1>
         </div>
 
-        <AnimateSection title='프로젝트'>
-          <p>
-            <span>사이드프로젝트로 </span>
-            <Link href='/project/23e96911-9caa-498a-89db-5c9b02f956c1' className={`${strongText}`}>
-              무신사PC 익스텐션
-            </Link>
-            <span>을 개발했습니다. (유저 2000+)</span>
-          </p>
-          <p>
-            <span>KB국민은행에서 </span>
-            <Link href='/project/ec37885e-13ef-4f4c-83ef-65e9f807cc38' className={`${strongText}`}>
-              태블릿브랜치
-            </Link>
-            <span>와 </span>
-            <Link href='/project/c97dc5ab-bf28-4714-a49f-dbff7b0d3331' className={`${strongText}`}>
-              미리작성태블릿
-            </Link>
-            <span>을 개발하고 있습니다.</span>
-          </p>
-          <p>
-            <span>TMAX에서 </span>
-            <Link href='/project/ec37885e-13ef-4f4c-83ef-65e9f807cc38' className={`${strongText}`}>
-              CoreBank
-            </Link>
-            <span>와 </span>
-            <Link href='/project/c97dc5ab-bf28-4714-a49f-dbff7b0d3331' className={`${strongText}`}>
-              배달공제조합
-            </Link>
-            <span>을 개발했습니다.</span>
-          </p>
-          <p>
-            <span>SSAFY에서 </span>
-            <Link href='/project/2ba92a19-359f-42b8-a597-232e6a16ca46' className={`${strongText}`}>
-              니,누꼬?
-            </Link>
-            <span>를 개발했습니다.</span>
-          </p>
-        </AnimateSection>
-
-        <AnimateSection title='수상이력'>
-          <p>
-            7th Ne(o)rdinary 우수상
-            <time className='text-sm'> 2024.11.24</time>
-          </p>
-          <p>
-            <Link href='/project/3c09e85b-8e7e-41e4-9dfb-d9ab68b830bc' className={strongText}>
-              10th 구름톤 최우수상
-            </Link>
-            <time className='text-sm'> 2024.05.24</time>
-          </p>
-          <p>
-            <Link href='/project/2ba92a19-359f-42b8-a597-232e6a16ca46' className={strongText}></Link>
-            조코딩 AI 해커톤: 본선진출 <time className='text-sm'> 2023.8.19</time>
-          </p>
-          <p>
-            8th SSAFY 특화 프로젝트 우수상<time className='text-sm'> 2023.04.07</time>
-          </p>
-          <p>
-            8th SSAFY 관통 프로젝트 최우수상<time className='text-sm'> 2022.11.25</time>
-          </p>
-          <p>
-            <Link href='/project/d55d84dc-c4c8-4040-83e7-09a6b5283512' className={strongText}>
-              천하제일 앱 컨테스트 기발하상
-            </Link>
-            <time className='text-sm inline'> 2021.11.30</time>
-          </p>
-        </AnimateSection>
-        <AnimateSection title='자격증'>
-          <p>PCCP Lv5 (2024.11.14)</p>
-          <p>SQLD (2023.12.15)</p>
-          <p>영어 OPIc IM1 (2022.12.24)</p>
-          <p>일본어 JLPT N1 (2022.08.10)</p>
-        </AnimateSection>
+        {isPending && <p role='status'>자기소개 항목을 불러오는 중입니다.</p>}
+        {isError && <p role='alert'>자기소개 항목을 불러오지 못했습니다. <button className='btn btn-sm' onClick={() => void refetch()}>다시 시도</button></p>}
+        {sections.map(section => <AnimateSection key={section.id} title={section.title}>
+          {section.paragraphs.map(paragraph => <p key={paragraph.id} className={classNames('whitespace-pre-wrap', paragraph.bulleted && 'ml-5 list-item list-disc')}>
+            {paragraph.parts.map((part, index) => {
+              const textClass = classNames(part.bold && 'font-bold', part.italic && 'italic', part.muted && 'text-sm text-base-content/60');
+              return part.href ? <Link key={index} href={part.href} className={classNames(strongText, textClass)}>{part.text}</Link>
+                : <span key={index} className={textClass}>{part.text}</span>;
+            })}
+          </p>)}
+        </AnimateSection>)}
       </div>
     </div>
   );
