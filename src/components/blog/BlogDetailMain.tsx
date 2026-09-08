@@ -2,9 +2,8 @@
 import { useTheme } from 'next-themes';
 import BlogDetailContent from './BlogDetailContent';
 import { useEffect, useState } from 'react';
-import { ISupabaseComment } from '@/react-query/types';
 
-function BlogDetailMain({ data, id, comments }: { data: any; id: string; comments: ISupabaseComment[] }) {
+function BlogDetailMain({ data, id }: { data: any; id: string }) {
   const theme = useTheme();
 
   const [darkMode, setDarkMode] = useState<boolean | null>(null);
@@ -19,13 +18,13 @@ function BlogDetailMain({ data, id, comments }: { data: any; id: string; comment
   if (darkMode)
     return (
       <div className='relative'>
-        <BlogDetailContent data={data} id={id} darkMode={true} supaSomments={comments} />
+        <BlogDetailContent data={data} id={id} darkMode={true} />
       </div>
     );
 
   return (
     <div className='relative'>
-      <BlogDetailContent data={data} id={id} darkMode={false} supaSomments={comments} />
+      <BlogDetailContent data={data} id={id} darkMode={false} />
     </div>
   );
 }

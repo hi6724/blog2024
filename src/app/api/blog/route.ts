@@ -1,3 +1,4 @@
+import { getCommentCounts } from '@/lib/comment-counts';
 import { REVALIDATE_TIME } from '@/constants';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -55,9 +56,11 @@ export async function GET(request: NextRequest) {
     return { id, createdAt, icon, tags, title, thumbImageUri, overview, comments };
   });
 
+  // Keep public comment badges in sync with Supabase, independently of Notion's cache.
+  const counts = await getCommentCounts((returnObj ?? []).map((row: { id: string }) => row.id)).catch(() => null);
   return NextResponse.json({
     next_cursor: page.next_cursor,
     has_more: page.has_more,
-    results: returnObj,
+    results: returnObj?.map((row: { id: string }) => ({ ...row, comments: counts ? counts[row.id] ?? 0 : undefined })),
   });
 }

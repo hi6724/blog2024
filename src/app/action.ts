@@ -1,128 +1,124 @@
 'use server';
 
-import { supabase } from '@/lib/supabase/client';
-import { createSupabaseServer } from '@/lib/supabase/serverClient';
-import { ISupabaseComment } from '@/react-query/types';
+import { createSupabaseAdmin } from '@/lib/supabase/admin';
+import { COMMENT_SELECT, normalizeComment, normalizePostId, validateComment } from '@/lib/comments';
+import type { ISupabaseComment } from '@/react-query/types';
 import bcrypt from 'bcrypt';
+import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
+import { commentCacheTag, COMMENT_COUNTS_CACHE_TAG, INTERACTION_CACHE_SECONDS } from '@/lib/cache-policy';
 
-const SALT = '$2b$10$AoSrvjM.jwnN1xEdxjxcMu';
-interface IUserRes {
-  ok: boolean;
-  code: 'NO_USER_NAME' | 'WRONG_PASSWORD' | 'OK' | 'NEW_USER';
-  user?: any;
-}
-/** 앱 세션에서 현재 로그인 사용자 ID를 가져오는 헬퍼 (예시) */
-export async function getUser({ userName, password }: { userName: string; password: string }): Promise<IUserRes> {
-  const user = await supabase.from('user').select('*').eq('user_name', userName).single();
-  if (!user?.data) return { ok: false, code: 'NO_USER_NAME' };
-
-  const isOk = bcrypt.compareSync(password, user.data.password);
-  if (!isOk) return { ok: false, code: 'WRONG_PASSWORD' };
-
-  return { ok: true, code: 'OK', user: user.data };
-}
-
-/** 생성: user_name 중복 체크 → 비번 해시 → insert */
-export async function createUser({ userName, password, avatar }: { userName: string; password: string; avatar: string }): Promise<any> {
-  const supabase = createSupabaseServer();
-  const { data: exists } = await supabase.from('user').select('*').eq('user_name', userName).maybeSingle();
-  if (exists) return { ok: false, error: 'DUPLICATE_USER_NAME', code: 'DUPLICATE' };
-
-  const hashed = bcrypt.hashSync(password, SALT);
-  const { data, error } = await supabase.from('user').insert({ user_name: userName, password: hashed, avatar }).select('*').single();
-  if (error || !data) return { ok: false, error: error?.message ?? 'INSERT_FAILED' };
-
-  return { ok: true, data };
-}
-
-const pickUser = (row: any) => ({
-  ...row,
-  user: row.user,
+interface Credentials { userName: string; password: string }
+const publicUser = (user: any) => ({
+  user_name: user.user_name, avatar: user.avatar, user_notion_id: user.user_notion_id,
 });
 
-/** READ: 특정 post의 댓글 목록 (+ 단일 user 객체로 정규화) */
+function validateCredentials({ userName, password }: Credentials) {
+  if (typeof userName !== 'string' || !userName.trim() || userName.trim().length > 10 ||
+      typeof password !== 'string' || !password || Buffer.byteLength(password, 'utf8') > 72) {
+    throw new Error('이름(1~10자)과 비밀번호(최대 72바이트)를 확인해주세요.');
+  }
+}
+
+export async function getUser(input: Credentials) {
+  validateCredentials(input);
+  const { data, error } = await createSupabaseAdmin().from('user')
+    .select('user_name,password,avatar,user_notion_id').eq('user_name', input.userName.trim()).maybeSingle();
+  if (error) throw new Error('사용자 정보를 불러오지 못했습니다.');
+  if (!data) return { ok: false, code: 'NO_USER_NAME' };
+  if (!await bcrypt.compare(input.password, data.password)) return { ok: false, code: 'WRONG_PASSWORD' };
+  return { ok: true, code: 'OK', user: publicUser(data) };
+}
+
+export async function createUser(input: Credentials & { avatar: string }) {
+  validateCredentials(input);
+  const db = createSupabaseAdmin();
+  const { data: existing, error: readError } = await db.from('user').select('user_notion_id')
+    .eq('user_name', input.userName.trim()).maybeSingle();
+  if (readError) throw new Error('사용자 정보를 불러오지 못했습니다.');
+  if (existing) return { ok: false, code: 'DUPLICATE', error: '이미 사용 중인 이름입니다.' };
+  const { data, error } = await db.from('user').insert({
+    user_name: input.userName.trim(), password: await bcrypt.hash(input.password, 12),
+    avatar: typeof input.avatar === 'string' ? input.avatar.slice(0, 16) : '🥳',
+  }).select('user_name,avatar,user_notion_id').single();
+  if (error?.code === '23505') return { ok: false, code: 'DUPLICATE', error: '이미 사용 중인 이름입니다.' };
+  if (error || !data) return { ok: false, code: 'CREATE_FAILED', error: '사용자를 등록하지 못했습니다.' };
+  return { ok: true, data: publicUser(data) };
+}
+
+async function authenticate(input: Credentials) {
+  const result = await getUser(input);
+  if (!result.ok || !result.user) throw new Error('이름 또는 비밀번호가 올바르지 않습니다.');
+  return result.user;
+}
+
 export async function getComment({ id }: { id: string }): Promise<ISupabaseComment[]> {
-  const supabase = createSupabaseServer();
-
-  const { data, error } = await supabase
-    .from('comment')
-    .select(
-      `
-      id,
-      created_at,
-      body,
-      post_id,
-      user_notion_id,
-      user ( user_notion_id, user_name, avatar, password )
-      `
-    )
-    .eq('post_id', id)
-    .order('created_at', { ascending: true });
-  console.log('여기 디버깅::::', data);
-  if (error) throw error;
-  return (data ?? []).map(pickUser) as ISupabaseComment[];
+  const postId = normalizePostId(id);
+  return unstable_cache(() => readComments(postId), ['page-comments-v1', postId], {
+    revalidate: INTERACTION_CACHE_SECONDS, tags: [commentCacheTag(postId)],
+  })();
 }
 
-/** CREATE: 앱 세션의 현재 사용자로 댓글 생성 */
-export async function createComment(input: { postId: string; body: string; userNotionId: string }): Promise<ISupabaseComment> {
-  const supabase = createSupabaseServer();
-
-  const { data, error } = await supabase
-    .from('comment')
-    .insert({
-      post_id: input.postId,
-      body: input.body,
-      user_notion_id: input.userNotionId, // ✅ 앱 세션에서 주입
-    })
-    .select(
-      `
-      id,
-      created_at,
-      body,
-      post_id,
-      user_notion_id,
-      user ( user_name, avatar, password )
-      `
-    )
-    .single();
-
-  if (error) throw error;
-  return pickUser(data) as ISupabaseComment;
+async function readComments(postId: string): Promise<ISupabaseComment[]> {
+  // Support older rows saved with Notion's compact (32 character) IDs too.
+  const db = createSupabaseAdmin();
+  const comments: ISupabaseComment[] = [];
+  const batchSize = 100;
+  for (let offset = 0; ; offset += batchSize) {
+    const { data, error } = await db.from('comment').select(COMMENT_SELECT)
+      .in('post_id', [postId, postId.replace(/-/g, '')])
+      .order('created_at', { ascending: false }).order('id')
+      .range(offset, offset + batchSize - 1);
+    if (error) throw new Error('댓글을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.');
+    comments.push(...(data ?? []).map(normalizeComment));
+    if (!data || data.length < batchSize) break;
+  }
+  return comments;
 }
 
-/** UPDATE: 본인 댓글만 수정 (앱 레벨 소유자 검증) */
-export async function updateComment(input: { id: string; body: string }): Promise<ISupabaseComment> {
-  const supabase = createSupabaseServer();
-
-  // 1) 소유자 검증 (간단/안전하게 WHERE 절에서 함께 제한)
-  const { data, error } = await supabase
-    .from('comment')
-    .update({ body: input.body })
-    .eq('id', input.id)
-    .eq('user_id', '') // ✅ 소유자만 갱신
-    .select(
-      `
-      id,
-      created_at,
-      body,
-      post_id,
-      user_notion_id,
-      user ( user_name, avatar, password )
-      `
-    )
-    .single();
-
-  if (error) throw error;
-  if (!data) throw new Error('수정 가능한 댓글이 없습니다.');
-  return pickUser(data) as ISupabaseComment;
+export async function createComment(input: Credentials & { postId: string; body: string; avatar: string }): Promise<ISupabaseComment> {
+  const postId = normalizePostId(input.postId);
+  const body = validateComment(input.body);
+  let result = await getUser(input);
+  if (result.code === 'NO_USER_NAME') {
+    const created = await createUser(input);
+    // Re-authenticate after a possible concurrent signup instead of trusting a supplied ID.
+    if (!created.ok && created.code !== 'DUPLICATE') throw new Error(created.error);
+    result = await getUser(input);
+  }
+  if (!result.ok || !result.user) throw new Error('이미 사용 중인 이름이거나 비밀번호가 올바르지 않습니다.');
+  const { data, error } = await createSupabaseAdmin().from('comment').insert({
+    post_id: postId, body, user_notion_id: result.user.user_notion_id,
+  }).select(COMMENT_SELECT).single();
+  if (error || !data) throw new Error('댓글을 저장하지 못했습니다. 잠시 후 다시 시도해주세요.');
+  invalidateComments(postId);
+  return normalizeComment(data);
 }
 
-/** DELETE: 본인 댓글만 삭제 (앱 레벨 소유자 검증) */
-export async function deleteComment(input: { id: string }): Promise<{ success: true }> {
-  const supabase = createSupabaseServer();
+export async function updateComment(input: Credentials & { id: string; body: string }): Promise<ISupabaseComment> {
+  const body = validateComment(input.body);
+  const user = await authenticate(input);
+  const { data, error } = await createSupabaseAdmin().from('comment').update({ body })
+    .eq('id', input.id).eq('user_notion_id', user.user_notion_id).select(COMMENT_SELECT).single();
+  if (error || !data) throw new Error('수정 가능한 댓글이 없습니다.');
+  invalidateComments(data.post_id);
+  return normalizeComment(data);
+}
 
-  const { error } = await supabase.from('comment').delete().eq('id', input.id).eq('user_id', ''); // ✅ 소유자만 삭제
-
-  if (error) throw error;
+export async function deleteComment(input: Credentials & { id: string }): Promise<{ success: true }> {
+  const user = await authenticate(input);
+  const { data, error } = await createSupabaseAdmin().from('comment').delete()
+    .eq('id', input.id).eq('user_notion_id', user.user_notion_id).select('post_id').single();
+  if (error || !data) throw new Error('삭제 가능한 댓글이 없습니다.');
+  invalidateComments(data.post_id);
   return { success: true };
+}
+
+function invalidateComments(rawPostId: string) {
+  const postId = normalizePostId(rawPostId);
+  revalidateTag(commentCacheTag(postId));
+  revalidateTag(COMMENT_COUNTS_CACHE_TAG);
+  for (const id of Array.from(new Set([postId, postId.replace(/-/g, '')]))) {
+    revalidatePath(`/blog/${id}`);
+    revalidatePath(`/project/${id}`);
+  }
 }

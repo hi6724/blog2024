@@ -1,4 +1,3 @@
-import { getComment } from '@/app/action';
 import BlogDetailMain from '@/components/blog/BlogDetailMain';
 import { Metadata } from 'next';
 import { headers } from 'next/headers';
@@ -15,23 +14,7 @@ async function fetchBlogData(id: string) {
 
 async function BlogDetailPage({ params: { id } }: { params: { id: string } }) {
   const data = await fetchBlogData(id);
-  const commentResult = await getComment({ id })
-    .then((comments) => ({ comments, failed: false }))
-    .catch(() => {
-      console.error('Failed to load blog comments', { id });
-      return { comments: [], failed: true };
-    });
-
-  return (
-    <>
-      {commentResult.failed && (
-        <p role='status' className='px-4 py-2 text-sm text-center'>
-          댓글을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.
-        </p>
-      )}
-      <BlogDetailMain data={data} id={id} comments={commentResult.comments} />
-    </>
-  );
+  return <BlogDetailMain data={data} id={id} />;
 }
 
 export default BlogDetailPage;

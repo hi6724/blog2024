@@ -2,19 +2,14 @@
 import { NotionRenderer } from 'react-notion-x';
 import { Collection } from 'react-notion-x/build/third-party/collection';
 
-import { splitFirst } from '@/lib/string';
-import { FormProvider, useForm } from 'react-hook-form';
-import SubmitForm from '@/components/blog/SubmitForm';
-import { useRef, useState } from 'react';
-import { IComment, ISupabaseComment } from '@/react-query/types';
+import { useRef } from 'react';
+import CommentSection from '@/components/comments/CommentSection';
 import { motion } from 'framer-motion';
 import { useMobile } from '@/hooks/useMobile';
 import { useNextPrevBlogOverview } from '@/react-query/blog';
 import Link from 'next/link';
-import BlogCommentItem from './BlogComment';
 import MyCodeBlock from '../notion/MyCodeBlock';
 import MyDateProperty from '../notion/MyDateProperty';
-import { useTheme } from 'next-themes';
 
 const NAME_MAP: { [key: string]: string } = {
   publishedAt: '작성일',
@@ -24,8 +19,7 @@ const NAME_MAP: { [key: string]: string } = {
 };
 const DELETE_KEYS = ['type', 'comments', 'createdAt'];
 
-function BlogDetailContent({ data, darkMode, id, supaSomments }: { data: any; darkMode?: boolean; id: string; supaSomments: ISupabaseComment[] }) {
-  const [submittedItems, setSubmittedItems] = useState<IComment[]>([]);
+function BlogDetailContent({ data, darkMode, id }: { data: any; darkMode?: boolean; id: string }) {
   const isMobile = useMobile();
   const { data: nextPrevData } = useNextPrevBlogOverview(id);
   // 페이지 프로퍼티 이름 변경
@@ -33,7 +27,6 @@ function BlogDetailContent({ data, darkMode, id, supaSomments }: { data: any; da
   const schema = data?.collection?.[collectionKey]?.value?.schema;
   const title = useRef('');
 
-  const method = useForm();
   Object.keys(schema ?? {}).forEach((key) => {
     const name = schema[key].name;
     if (DELETE_KEYS.includes(name)) {
@@ -48,20 +41,6 @@ function BlogDetailContent({ data, darkMode, id, supaSomments }: { data: any; da
     if (type !== 'page') return;
     title.current = data.block[key].value.properties?.title?.[0]?.[0] ?? '';
   });
-
-  const comments = Object.values(data?.comment ?? {}).map((comment: any) => {
-    const [icon, username, userId, content] = splitFirst(comment.value.text[0][0], ':', 3);
-    return { id: comment.value.id, createdAt: comment.value.created_time, icon, username, userId, content };
-  });
-
-  const newComments = supaSomments.map((el) => ({
-    id: el.id,
-    createdAt: el.created_at,
-    icon: el.user.avatar,
-    username: el.user.user_name,
-    userId: el.user_notion_id,
-    content: el.body,
-  }));
 
   return (
     <div className='relative'>
@@ -82,12 +61,7 @@ function BlogDetailContent({ data, darkMode, id, supaSomments }: { data: any; da
         }
         footer={
           <motion.div className='w-full border-t-2 border-success py-4 px-2 flex flex-col gap-4' initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
-            <FormProvider {...method}>
-              <SubmitForm id={id} setItems={setSubmittedItems} commentsLength={(newComments?.length ?? 0) + (submittedItems?.length ?? 0)} />
-              {[...submittedItems, ...newComments]?.map((comment, i) => (
-                <BlogCommentItem comment={comment} key={comment.id} />
-              ))}
-            </FormProvider>
+            <CommentSection pageId={id} />
             <div className='flex justify-between gap-2'>
               {nextPrevData?.prev ? (
                 <Link

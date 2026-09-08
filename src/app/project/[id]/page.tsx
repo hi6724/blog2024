@@ -16,7 +16,7 @@ async function ProjectDetailPage({ params: { id } }: { params: { id: string } })
 
   return (
     <div className='relative'>
-      <ProjectDetailMain data={data} />
+      <ProjectDetailMain data={data} id={id} />
     </div>
   );
 }

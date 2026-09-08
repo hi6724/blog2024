@@ -1,4 +1,5 @@
 'use client';
+import CommentSection from '@/components/comments/CommentSection';
 import { useMobile } from '@/hooks/useMobile';
 import Image from 'next/image';
 import { NotionRenderer } from 'react-notion-x';
@@ -18,7 +19,7 @@ const NAME_MAP: { [key: string]: string } = {
 };
 const DELETE_KEYS = ['overviewImg', 'createdAt', 'overview2', '상태'];
 
-function ProjectDetailMain({ data }: { data: any }) {
+function ProjectDetailMain({ data, id }: { data: any; id: string }) {
   const theme = useTheme();
 
   const [darkMode, setDarkMode] = useState<boolean | null>(null);
@@ -29,13 +30,13 @@ function ProjectDetailMain({ data }: { data: any }) {
   }, [setDarkMode, theme]);
 
   if (darkMode === null) return 'loading...';
-  if (darkMode) return <ProjectDetailContent data={data} darkMode={true} />;
-  else return <ProjectDetailContent data={data} darkMode={false} />;
+  if (darkMode) return <ProjectDetailContent data={data} id={id} darkMode={true} />;
+  else return <ProjectDetailContent data={data} id={id} darkMode={false} />;
 }
 
 export default ProjectDetailMain;
 
-function ProjectDetailContent({ data, darkMode }: { data: any; darkMode: boolean }) {
+function ProjectDetailContent({ data, darkMode, id }: { data: any; darkMode: boolean; id: string }) {
   const isMobile = useMobile();
   const collectionKey = Object.keys(data?.collection ?? {})?.[0];
   const schema = data?.collection?.[collectionKey]?.value?.schema;
@@ -78,6 +79,7 @@ function ProjectDetailContent({ data, darkMode }: { data: any; darkMode: boolean
         propertyDateValue: MyDateProperty,
         Code: MyCodeBlock,
       }}
+      footer={<CommentSection pageId={id} />}
       fullPage
       className={`!font-sans w-full`}
     />

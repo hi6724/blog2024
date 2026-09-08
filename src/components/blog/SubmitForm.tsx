@@ -1,160 +1,100 @@
 'use client';
 
-import { animateScroll } from 'react-scroll';
-import { v4 as uuidv4 } from 'uuid';
-import { useMobile } from '@/hooks/useMobile';
-import { IComment, IGuestBook } from '@/react-query/types';
-import dayjs from 'dayjs';
-import { motion } from 'framer-motion';
-import React, { useEffect, useRef, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
-import useUser from '@/hooks/useUser';
-import { usePathname } from 'next/navigation';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { createPortal } from 'react-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import { createComment } from '@/app/action';
+import { MAX_COMMENT_LENGTH } from '@/lib/comments';
+import type { ISupabaseComment } from '@/react-query/types';
 
-function SubmitForm({
-  setItems,
-  className,
-  id,
-  commentsLength,
-}: {
-  setItems: React.Dispatch<React.SetStateAction<IComment[]>>;
-  className?: string;
-  id: string;
-  commentsLength: number;
-}) {
-  const { user, createOrUpdateUser } = useUser();
-  const [prevScrollY, setPrevScrollY] = useState(0);
-  const pathname = usePathname();
-
-  const emojiList = ['🥳', '🤪', '⭐', '🐝', '👻', '🐷', '🐻'];
-  const isMobile = useMobile();
-  const formRef = useRef<HTMLFormElement>(null);
-  const { handleSubmit, register, reset, setValue, watch } = useFormContext();
-
-  const onValid = (data: any) => {
-    onValidNewPost(data);
-    reset();
-    closeForm();
-  };
-
-  const onValidNewPost = async (data: any) => {
-    const userData = await createOrUpdateUser({ icon: data.icon, username: data.username, password: data.password });
-    console.log('USER DATA:::', userData?.user);
-    console.log('postId', id);
-    await createComment({ body: data.content, postId: id, userNotionId: userData?.user.user_notion_id });
-
-    reset({ title: '', content: '' });
-
-    setItems((p) => {
-      const newSubmittedData = {
-        createdAt: dayjs(),
-        id: uuidv4(),
-        icon: userData?.user.avatar,
-        username: userData?.user.user_name,
-        content: data.content,
-      } as any;
-      if (p) return [newSubmittedData, ...p];
-      else return [newSubmittedData];
-    });
-    if (pathname === '/guestbook') animateScroll.scrollToTop;
-  };
-
-  const setUserInfo = () => {
-    if (!user) return;
-    setValue('username', user.username);
-    setValue('userId', user.userId);
-    setValue('icon', user.icon);
-    setValue('password', user.password);
-  };
-
+export default function SubmitForm({ id, onCreated }: { id: string; onCreated: (comment: ISupabaseComment) => void }) {
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
+  const reducedMotion = useReducedMotion();
+  useEffect(() => { setMounted(true); }, []);
   useEffect(() => {
-    setUserInfo();
-  }, [user]);
+    if (open) bodyRef.current?.focus({ preventScroll: true });
+  }, [open]);
+  function close() {
+    if (pending) return;
+    (document.activeElement as HTMLElement | null)?.blur();
+    setOpen(false);
+  }
 
-  const onClickBackdrop = () => {
-    closeForm();
-    if (watch('isEdit')) {
-      reset();
-      setUserInfo();
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (pending) return;
+    const form = event.currentTarget;
+    const fields = new FormData(form);
+    setPending(true);
+    setError('');
+    setSuccess(false);
+    try {
+      const comment = await createComment({
+        postId: id, body: String(fields.get('body') ?? ''),
+        userName: String(fields.get('userName') ?? ''), password: String(fields.get('password') ?? ''),
+        avatar: String(fields.get('avatar') ?? '🥳'),
+      });
+      onCreated(comment);
+      form.reset();
+      setSuccess(true);
+      (document.activeElement as HTMLElement | null)?.blur();
+      setOpen(false);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : '댓글 등록에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setPending(false);
     }
-  };
-  const openForm = () => {
-    if (watch('open')) return;
-    setPrevScrollY(window.scrollY);
-    setValue('open', true);
-  };
+  }
 
-  const closeForm = () => {
-    if (!watch('open')) return;
-    setValue('open', false);
-    window.scrollTo(0, prevScrollY);
-  };
-
-  return (
-    <>
-      <motion.form
-        className={`fixed -bottom-44 left-1/2 -translate-x-1/2 sm:-bottom-60 z-[301] py-2 bg-transparent flex flex-col w-full max-w-screen-lg overflow-hidden gap-2 ${className}`}
-        onSubmit={handleSubmit(onValid)}
-        onClick={openForm}
-        ref={formRef}
-        animate={{
-          bottom: watch('open') ? '0' : isMobile ? '-4rem' : '-5rem',
-          backgroundColor: watch('open') ? 'var(--fallback-b2, oklch(var(--b2)' : 'rgba(255,255,255,0)',
-        }}
-      >
-        <div className='px-2 pb-4'>
-          <textarea
-            className='textarea textarea-md text-[1rem] textarea-bordered sm:textarea-lg w-full h-full  resize-none overflow-hidden focus:border-primary focus:border-2'
-            placeholder={!watch('isEdit') ? (watch('open') ? '내용' : '댓글을 남겨주세요') : watch('prevData.content')}
-            required
-            {...register('content', { required: true })}
-          />
+  return <>
+    <button type='button' onFocus={() => setOpen(true)} onClick={() => setOpen(true)}
+      aria-expanded={open} aria-controls={`comment-form-${id}`}
+      className='input input-bordered h-14 w-full text-left text-base-content/60 focus:ring-2 focus:ring-primary'>댓글을 남겨주세요</button>
+    {success && <p role='status' className='text-success text-sm'>댓글이 등록되었습니다.</p>}
+    {mounted && createPortal(<>
+    {open && <div className='fixed inset-0 z-40 bg-neutral/60' onClick={close} aria-hidden='true' />}
+    <motion.form id={`comment-form-${id}`} onSubmit={submit}
+      onKeyDown={event => { if (event.key === 'Escape') close(); }}
+      initial={false} animate={{ y: open ? 0 : '100%' }}
+      transition={{ duration: reducedMotion ? 0 : 0.25, ease: 'easeOut' }}
+      style={{ visibility: open ? 'visible' : 'hidden' }}
+      className='fixed bottom-0 inset-x-0 mx-auto z-50 max-w-screen-lg max-h-[90dvh] overflow-y-auto rounded-t-2xl bg-base-200 p-5 sm:p-6 shadow-xl flex flex-col gap-4' aria-label='댓글 작성'>
+      <h3 className='text-lg font-semibold'>댓글 작성</h3>
+      <fieldset disabled={pending} className='flex flex-col gap-3'>
+        <label className='flex flex-col gap-1'>
+          <span className='text-sm'>댓글 내용</span>
+          <textarea ref={bodyRef} name='body' required maxLength={MAX_COMMENT_LENGTH} rows={4}
+            className='textarea textarea-bordered w-full text-base focus:ring-2 focus:ring-primary' placeholder='댓글을 남겨주세요' />
+        </label>
+        <div className='flex flex-wrap gap-2'>
+          <label className='flex flex-col gap-1'>
+            <span className='text-sm'>아이콘</span>
+            <select name='avatar' className='select select-bordered focus:ring-2 focus:ring-primary' defaultValue='🥳'>
+              {['🥳', '🤪', '⭐', '🐝', '👻', '🐷', '🐻'].map((emoji) => <option key={emoji}>{emoji}</option>)}
+            </select>
+          </label>
+          <label className='flex flex-1 min-w-32 flex-col gap-1'>
+            <span className='text-sm'>이름</span>
+            <input name='userName' required maxLength={10} autoComplete='username' className='input input-bordered w-full focus:ring-2 focus:ring-primary' />
+          </label>
+          <label className='flex flex-1 min-w-32 flex-col gap-1'>
+            <span className='text-sm'>비밀번호</span>
+            <input name='password' type='password' required maxLength={72} autoComplete='current-password' className='input input-bordered w-full focus:ring-2 focus:ring-primary' />
+          </label>
         </div>
-
-        <motion.div
-          className='flex w-screen max-w-screen-lg gap-2 sm:flex-row overflow-hidden px-2 h-12 sm:h-16'
-          animate={{
-            overflow: watch('open') ? 'visible' : 'hidden',
-          }}
-        >
-          <select className='select w-20 sm:select-lg !outline-none focus:!outline-primary border border-base-content border-opacity-20' {...register('icon')}>
-            {emojiList.map((el) => (
-              <option key={el} value={el}>
-                {el}
-              </option>
-            ))}
-          </select>
-
-          <label className='input input-bordered flex items-center gap-2 !outline-primary relative w-[calc(100vw-6.5rem)] sm:input-lg'>
-            <input type='text' placeholder='이름' required maxLength={10} {...register('username', { required: true, maxLength: 10 })} />
-          </label>
-
-          <label className='input input-bordered flex items-center gap-2 !outline-primary relative w-[calc(100vw-6.5rem)] sm:input-lg'>
-            <input type='password' placeholder='비밀번호' required maxLength={10} {...register('password', { required: true, maxLength: 10 })} />
-          </label>
-        </motion.div>
-        <button type='submit' className='absolute right-4 top-5 hover:ring-2 focus:ring-2 ring-primary p-2 outline-none rounded-md'>
-          <svg
-            data-slot='icon'
-            fill='none'
-            strokeWidth='1.5'
-            stroke='currentColor'
-            viewBox='0 0 24 24'
-            xmlns='http://www.w3.org/2000/svg'
-            aria-hidden='true'
-            className='w-6 h-6 cursor-pointer'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              d='M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5'
-            ></path>
-          </svg>
-        </button>
-      </motion.form>
-      {watch('open') && <div className='z-[300] fixed top-0 left-0 bg-neutral/60 w-full h-screen' onClick={onClickBackdrop} />}
-    </>
-  );
+        <p className='text-xs opacity-70'>처음 사용하는 이름은 자동 등록됩니다. 같은 이름으로 작성하려면 기존 비밀번호를 입력해주세요.</p>
+        <div className='flex justify-end gap-2'>
+          <button type='button' onClick={close} className='btn focus:ring-2 focus:ring-primary'>닫기</button>
+          <button type='submit' className='btn btn-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-base-100'>{pending ? '등록 중…' : '댓글 등록'}</button>
+        </div>
+      </fieldset>
+      {error && <p role='alert' className='text-error text-sm'>{error}</p>}
+    </motion.form>
+    </>, document.body)}
+  </>;
 }
-export default SubmitForm;
