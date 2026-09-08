@@ -1,44 +1,24 @@
 'use client';
-import ChatItem from '@/components/guestbook/ChatItem';
-import { useGuestBookList } from '@/react-query/guestbook';
-import { IGuestBook } from '@/react-query/types';
-import React, { useRef, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import SubmitForm from '@/components/guestbook/SubmitForm';
-import { FormProvider, useForm } from 'react-hook-form';
+import ChatItem from './ChatItem';
+import SubmitForm from './SubmitForm';
+import { useGuestBookList, useInvalidateGuestbook } from '@/react-query/guestbook';
+import { useState } from 'react';
 
-function GuestbookMain() {
-  const { data, fetchNextPage, hasNextPage } = useGuestBookList({ page_size: 120, sort: 'descending' });
-  const guestBookItems = data?.pages.reduce((prev: IGuestBook[], crr) => [...prev, ...crr.results], []);
-  const [submittedItems, setSubmittedItems] = useState<IGuestBook[]>([]);
-  const [editItems, setEditItems] = useState<IGuestBook[]>([]);
-  const editItemsIds = editItems.map((el) => el.id);
-  const scrollRef = useRef(null);
-  const methods = useForm();
-  return (
-    <FormProvider {...methods}>
-      <div ref={scrollRef}>
-        <h1 className='text-title p-2 sticky top-14 bg-base-100 '>방명록</h1>
-
-        {guestBookItems && (
-          <InfiniteScroll
-            dataLength={guestBookItems.length}
-            next={fetchNextPage}
-            hasMore={hasNextPage}
-            loader={<h4>Loading...</h4>}
-            className={`grid gap-2 sm:gap-4 md:grid-cols-2 lg:grid-cols-3 relative bg-base-100 px-4 py-8`}
-          >
-            {[...submittedItems, ...guestBookItems]?.map((chat, i) => {
-              if (editItemsIds.includes(chat.id))
-                return <ChatItem data={editItems.find((el) => chat.id === el.id) as IGuestBook} key={chat.id} />;
-              return <ChatItem data={chat} key={chat.id} />;
-            })}
-          </InfiniteScroll>
-        )}
-        <SubmitForm setItems={setSubmittedItems} setEditItems={setEditItems} />
-      </div>
-    </FormProvider>
-  );
+export default function GuestbookMain() {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, isError, refetch } = useGuestBookList({ page_size: 20, sort: 'descending' });
+  const invalidateGuestbook = useInvalidateGuestbook();
+  const [saved, setSaved] = useState(false);
+  const entries = data?.pages.flatMap(page => page.results) ?? [];
+  const onChanged = () => { void invalidateGuestbook(); };
+  return <div className='px-4 pt-6 pb-28'>
+    <h1 className='text-title mb-6'>방명록</h1>
+    <div><SubmitForm floating onSaved={() => { setSaved(true); onChanged(); }} />
+      {saved && <p role='status' className='text-success mt-2'>방명록이 등록되었습니다.</p>}
+    </div>
+    {isPending && <p role='status'>방명록을 불러오는 중입니다.</p>}
+    {isError && <div role='alert'>방명록을 불러오지 못했습니다. <button className='btn btn-sm' onClick={() => void refetch()}>다시 시도</button></div>}
+    {!isPending && !isError && entries.length === 0 && <p>첫 방명록을 남겨주세요.</p>}
+    <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>{entries.map(entry => <ChatItem key={entry.id} data={entry} onChanged={onChanged} />)}</div>
+    {hasNextPage && <button disabled={isFetchingNextPage} className='btn block mx-auto mt-6' onClick={() => void fetchNextPage()}>{isFetchingNextPage ? '불러오는 중…' : '방명록 더 보기'}</button>}
+  </div>;
 }
-
-export default GuestbookMain;

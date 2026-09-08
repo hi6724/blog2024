@@ -1,20 +1,19 @@
-import { notionClient } from '@/lib/notion';
-import { revalidatePath } from 'next/cache';
-import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-
-export async function DELETE(req: NextRequest, { params: { id } }: { params: { id: string } }) {
-  const response = await notionClient.blocks.delete({
-    block_id: id,
-  });
-  revalidatePath('/api/guestbook');
-
-  const host = headers().get('host');
-  const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
-
-  fetch(`${protocol}://${host}/api/guestbook/count`, {
-    method: 'POST',
-    body: JSON.stringify({ type: 'delete' }),
-  });
-  return NextResponse.json(response);
+import { deleteGuestbook, updateGuestbook } from '@/lib/guestbook';
+import { guestbookError } from '@/lib/guestbook-response';
+import { revalidatePath } from 'next/cache';
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const { password } = await request.json();
+    const result = await deleteGuestbook(params.id, password);
+    revalidatePath('/'); revalidatePath('/guestbook');
+    return NextResponse.json(result);
+  } catch (error) { return guestbookError(error); }
+}
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const result = await updateGuestbook(params.id, await request.json());
+    revalidatePath('/'); revalidatePath('/guestbook');
+    return NextResponse.json({ ok: true, result });
+  } catch (error) { return guestbookError(error); }
 }

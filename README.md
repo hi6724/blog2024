@@ -76,3 +76,29 @@ npx tsc --noEmit
 RUN_SUPABASE_TESTS=1 node --test tests/comments.integration.cjs
 ```
 
+## Supabase 방명록
+
+기존 Notion 방명록 37건을 `public.guestbook`으로 이전했습니다. 이름, 제목, 본문,
+아이콘, 원본 페이지 ID와 작성 시각을 보존했고 Notion 원본은 유지했습니다.
+이전된 방명록의 수정·삭제 비밀번호는 모두 `password`이며 bcrypt 해시로 저장합니다.
+새 방명록은 작성 시 입력한 비밀번호를 사용합니다. 댓글 사용자 계정과는 별도입니다.
+
+목록·개수·작성·수정·삭제 API와 메인 화면은 Supabase를 사용합니다. 수정 시 작성자
+이름은 유지합니다. RLS와 권한 제한으로 브라우저의 직접 DB 접근은 차단하고 서버에서
+비밀번호를 검증합니다. 서버용 환경변수는 위 댓글 설정과 같습니다.
+
+`supabase/migrations/20260907142940_migrate_guestbook.sql`은 현재 DB에 적용했습니다.
+`node scripts/migrate-guestbook.cjs`로 Notion 전체 페이지를 읽어 이전할 수 있으며,
+원본 페이지 ID가 이미 존재하면 덮어쓰지 않습니다. 스크립트는 원본과 이전 결과를
+대조하므로 이전 후 수정된 행이 있으면 검증 오류를 보고합니다.
+실제 사이트의 방명록 전환에는 이 코드의 배포가 필요합니다.
+
+로컬 개발 서버를 실행한 상태에서 API 통합 검증:
+
+```sh
+RUN_SUPABASE_TESTS=1 node --test tests/guestbook.integration.cjs
+```
+
+테스트는 임시 방명록의 CRUD, 비밀번호 차단, 이름 보존, 개수, 양방향 페이지 이동을
+검증하고 임시 데이터를 삭제합니다.
+

@@ -6,6 +6,7 @@ import MainProject from '@/components/main/MainProject';
 import { useAboutMeList, useWorkHistory } from '@/react-query/about-me';
 import { getFormatDateWithDay, getYearMonthDifference } from '@/lib/date';
 import React from 'react';
+import { useGuestbookCount } from '@/react-query/guestbook';
 
 // DB로 변경하기
 const DESCRIPTION = {
@@ -31,6 +32,7 @@ export function MainContent({
   totalBlogPostCnt: number;
   totalGuestbookCnt: number;
 }) {
+  const { data: guestbookCount = totalGuestbookCnt } = useGuestbookCount(totalGuestbookCnt);
   const { data: aboutMe } = useAboutMeList();
 
   const jobHistory = aboutMe
@@ -124,7 +126,7 @@ export function MainContent({
                 </svg>
               </div>
               <div className='stat-title'>방명록</div>
-              <div className='stat-value'>{totalGuestbookCnt}</div>
+              <div className='stat-value'>{guestbookCount}</div>
               <div className='stat-desc'>개의 방명록이 작성되었습니다.</div>
             </div>
 

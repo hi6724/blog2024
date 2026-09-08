@@ -8,7 +8,7 @@ export default async function Main() {
 
   const totalViews = await (await fetch(`${baseUrl}/api/views/total`)).json();
   const totalPostCnt = await (await fetch(`${baseUrl}/api/blog/count`)).json();
-  const totalGuestBookCnt = await (await fetch(`${baseUrl}/api/guestbook/count`)).json();
+  const totalGuestBookCnt = await (await fetch(`${baseUrl}/api/guestbook/count`, { cache: 'no-store' })).json();
 
   return (
     <MainContent

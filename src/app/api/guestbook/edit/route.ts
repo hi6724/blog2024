@@ -1,20 +1,12 @@
-import { notionClient } from '@/lib/notion';
-import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
-
+import { updateGuestbook } from '@/lib/guestbook';
+import { guestbookError } from '@/lib/guestbook-response';
+import { revalidatePath } from 'next/cache';
 export async function POST(request: NextRequest) {
-  const { content, id, title, icon, username } = await request.json();
-  notionClient.pages.update({
-    page_id: id,
-    icon: { emoji: icon },
-    properties: {
-      title: { title: [{ text: { content: title } }] },
-      username: { rich_text: [{ text: { content: username } }] },
-      content: {
-        rich_text: [{ text: { content: content } }],
-      },
-    },
-  });
-  revalidatePath('/api/guestbook');
-  return NextResponse.json({ ok: true });
+  try {
+    const input = await request.json();
+    const result = await updateGuestbook(input.id, input);
+    revalidatePath('/'); revalidatePath('/guestbook');
+    return NextResponse.json({ ok: true, result });
+  } catch (error) { return guestbookError(error); }
 }

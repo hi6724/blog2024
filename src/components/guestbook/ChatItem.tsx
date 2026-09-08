@@ -1,128 +1,44 @@
-import { IGuestBook } from '@/react-query/types';
-import { motion } from 'framer-motion';
+'use client';
+import type { IGuestBook } from '@/react-query/types';
 import dayjs from 'dayjs';
-import { useEffect, useRef, useState } from 'react';
-import useUser from '@/hooks/useUser';
-import { useFormContext } from 'react-hook-form';
+import { useState, type FormEvent } from 'react';
+import SubmitForm from './SubmitForm';
 
-function ChatItem({ data }: { data: IGuestBook }) {
-  const ref = useRef<HTMLParagraphElement>(null);
-  const [overflow, setOverFlow] = useState(false);
-  const [open, setOpen] = useState(false);
-  const { user } = useUser();
-  const [isMine, setIsMine] = useState(user?.userId === data.userId);
-  const { setFocus, setValue } = useFormContext();
-  const [deleted, setDeleted] = useState(false);
-  const isLoading = data.id.includes('tempID');
-
-  useEffect(() => {
-    if (!ref.current) return;
-    setOverFlow(ref.current.scrollHeight > ref.current.offsetHeight);
-    setIsMine(data.userId === user?.userId);
-  }, [ref, user]);
-
-  const colorClassName = isMine ? 'bg-accent text-accent-content' : '';
-
-  const handleStartEdit = () => {
-    setValue('title', data.title);
-    setValue('content', data.content);
-    setValue('isEdit', true);
-    setValue('open', true);
-    setValue('id', data.id);
-    setValue('username', data.username);
-    setValue('icon', data.icon);
-    setValue('prevData', { title: data.title, content: data.content, username: data.username });
-    setFocus('title');
-  };
-  const handleDelete = () => {
-    const confirmResult = confirm('정말 삭제하시겠습니까?');
-    if (!confirmResult) return;
-    fetch(`/api/guestbook/${data.id}`, {
-      method: 'DELETE',
-    });
-    setDeleted(true);
-  };
-  if (deleted) return null;
-  return (
-    <div className='max-w-96 whitespace-break-spaces relative'>
-      <div className='w-full self-end'>
-        <div className='flex justify-between mb-1 mx-1'>
-          <div>
-            <span className='text-2xl mr-1'>{data.icon}</span>
-            <span>{data.username}</span>
-            <time className='ml-2 text-xs opacity-50'>{dayjs(data.createdAt).format('YY.MM.DD')}</time>
-          </div>
-
-          {isMine && (
-            <div className='flex gap-1'>
-              <button onClick={handleDelete}>
-                <svg
-                  data-slot='icon'
-                  fill='none'
-                  strokeWidth='2.5'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                  xmlns='http://www.w3.org/2000/svg'
-                  aria-hidden='true'
-                  className={`w-5 h-5 text-error hover:scale-125 transition-all rounded-full`}
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0'
-                  ></path>
-                </svg>
-              </button>
-
-              <button onClick={handleStartEdit}>
-                <svg
-                  data-slot='icon'
-                  fill='none'
-                  strokeWidth='2.5'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                  xmlns='http://www.w3.org/2000/svg'
-                  aria-hidden='true'
-                  className={`w-5 h-5 text-success/80 hover:scale-125 transition-all rounded-full`}
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10'
-                  ></path>
-                </svg>
-              </button>
-            </div>
-          )}
-        </div>
-        <div
-          className={`px-4 py-2 bg-base-200 shadow-md text-base-content ${colorClassName} rounded-xl w-full self-end`}
-        >
-          <h2 className='font-semibold mb-2'>{data.title}</h2>
-          <motion.p
-            ref={ref}
-            className='relative overflow-hidden max-h-[4.5rem]'
-            animate={{
-              maxHeight: open ? `${ref.current?.scrollHeight}px` : '72px',
-            }}
-          >
-            {data.content}
-          </motion.p>
-          {overflow && (
-            <button className='z-10 text-primary' onClick={() => setOpen(!open)}>
-              {open ? '접기' : '...더보기'}
-            </button>
-          )}
-
-          <div className='bg-primary text-primary-content'></div>
-        </div>
-      </div>
-      {isLoading && (
-        <div className='absolute left-0 top-0 z-10 bg-neutral/60 w-full h-full rounded-lg flex items-center justify-center text-neutral-content font-bold'>
-          Loading...
-        </div>
-      )}
+export default function ChatItem({ data, onChanged }: { data: IGuestBook; onChanged?: () => void }) {
+  const [mode, setMode] = useState<'edit' | 'delete' | null>(null);
+  const [error, setError] = useState('');
+  const [pending, setPending] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  async function remove(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (pending) return;
+    const password = new FormData(event.currentTarget).get('password');
+    setPending(true); setError('');
+    try {
+      const response = await fetch(`/api/guestbook/${data.id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error ?? '삭제하지 못했습니다.');
+      setMode(null); onChanged?.();
+    } catch (error) { setError(error instanceof Error ? error.message : '삭제하지 못했습니다.'); }
+    finally { setPending(false); }
+  }
+  return <article aria-label={`${data.username}의 방명록`} className='min-w-0 break-words'>
+    <div className='flex items-center gap-2 mb-2'><span className='text-2xl'>{data.icon}</span><span>{data.username}</span><time className='text-xs opacity-60'>{dayjs(data.createdAt).format('YY.MM.DD')}</time></div>
+    <div className='p-4 bg-base-200 shadow-md rounded-xl'>
+      <h2 className='font-semibold mb-2'>{data.title}</h2>
+      <p className={`whitespace-pre-wrap ${!expanded && data.content.length > 120 ? 'line-clamp-4' : ''}`}>{data.content}</p>
+      {data.content.length > 120 && <button className='text-primary text-sm mt-1' onClick={() => setExpanded(!expanded)}>{expanded ? '접기' : '더보기'}</button>}
+      {onChanged && !mode && <div className='flex gap-2 mt-3'>
+        <button className='btn btn-ghost btn-xs' onClick={() => { setMode('edit'); setError(''); }}>수정</button>
+        <button className='btn btn-ghost btn-xs' onClick={() => { setMode('delete'); setError(''); }}>삭제</button>
+      </div>}
+      {mode === 'edit' && <SubmitForm entry={data} onCancel={() => setMode(null)} onSaved={() => { setMode(null); onChanged?.(); }} />}
+      {mode === 'delete' && <form onSubmit={remove} aria-label='방명록 삭제' className='mt-3 flex flex-col gap-2'>
+        <p className='text-sm'>삭제하려면 이 글의 비밀번호를 입력해주세요.</p>
+        <label>비밀번호<input name='password' type='password' required maxLength={72} disabled={pending} className='input input-bordered w-full' /></label>
+        <div className='flex gap-2 justify-end'><button type='button' disabled={pending} className='btn btn-sm' onClick={() => setMode(null)}>취소</button><button type='submit' disabled={pending} className='btn btn-sm btn-error'>{pending ? '삭제 중…' : '삭제 확인'}</button></div>
+        {error && <p role='alert' className='text-error text-sm'>{error}</p>}
+      </form>}
     </div>
-  );
+  </article>;
 }
-export default ChatItem;

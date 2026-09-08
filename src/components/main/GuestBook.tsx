@@ -1,68 +1,25 @@
 'use client';
-import { useMobile } from '@/hooks/useMobile';
-import { useGuestBookList } from '@/react-query/guestbook';
-import { motion, useMotionValueEvent, useScroll } from 'framer-motion';
+import { useGuestBookList, useInvalidateGuestbook } from '@/react-query/guestbook';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 import Link from 'next/link';
 import ChatItem from '../guestbook/ChatItem';
 import SubmitForm from '../guestbook/SubmitForm';
-import { IGuestBook } from '@/react-query/types';
-import { useEffect, useRef, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
 
-function GuestBook() {
-  const { data } = useGuestBookList({ page_size: 9, sort: 'descending' });
-  const guestBookItems = data?.pages.reduce((prev: IGuestBook[], crr) => [...prev, ...crr.results], []) ?? [];
-  const [submittedItems, setSubmittedItems] = useState<IGuestBook[]>([]);
-  const [editItems, setEditItems] = useState<IGuestBook[]>([]);
-  const editItemsIds = editItems.map((el) => el.id);
-  const methods = useForm();
-
-  const scrollRef = useRef(null);
-  const [animationY, setAnimationY] = useState(0);
-  const { scrollYProgress } = useScroll({ target: scrollRef, offset: ['start end', 'end end'] });
-  useMotionValueEvent(scrollYProgress, 'change', setAnimationY);
-  useEffect(() => {
-    if (animationY < 0.25) methods.setValue('open', false);
-  }, [animationY]);
-
-  return (
-    <FormProvider {...methods}>
-      <div ref={scrollRef}>
-        <div className='h-[25vh]' />
-        <motion.h1
-          className='text-title p-2 sticky top-14 bg-base-100 '
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-        >
-          방명록
-        </motion.h1>
-        <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3 relative bg-base-100 p-2'>
-          {[...submittedItems, ...guestBookItems]?.map((chat, i) => {
-            if (editItemsIds.includes(chat.id))
-              return <ChatItem data={editItems.find((el) => chat.id === el.id) as IGuestBook} key={chat.id} />;
-            return <ChatItem data={chat} key={chat.id} />;
-          })}
-        </div>
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          className='py-8 sm:py-12 bg-base-100 z-10 mt-4 mx-2 flex justify-center'
-        >
-          <Link href={'/guestbook'} className='btn btn-primary w-full self-center max-w-96'>
-            모든 방명록 보기
-          </Link>
-        </motion.div>
-        <motion.div
-          className='sticky bottom-0'
-          initial={{ opacity: 0 }}
-          animate={{ opacity: animationY > 0.8 ? 1 : 0 }}
-        >
-          <SubmitForm setItems={setSubmittedItems} setEditItems={setEditItems} />
-        </motion.div>
-      </div>
-    </FormProvider>
-  );
+export default function GuestBook() {
+  const { data, isError, refetch } = useGuestBookList({ page_size: 9, sort: 'descending' });
+  const invalidateGuestbook = useInvalidateGuestbook();
+  const formAnchor = useRef<HTMLDivElement>(null);
+  const showForm = useInView(formAnchor);
+  const items = data?.pages.flatMap(page => page.results) ?? [];
+  return <div>
+    <div className='h-[25vh]' />
+    <motion.h1 className='text-title p-2 sticky top-14 bg-base-100' initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>방명록</motion.h1>
+    {isError && <p role='alert'>방명록을 불러오지 못했습니다. <button className='btn btn-sm' onClick={() => void refetch()}>다시 시도</button></p>}
+    <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3 bg-base-100 p-2'>
+      {items.map(item => <ChatItem key={item.id} data={item} />)}
+    </div>
+    <div className='py-8 mx-2 flex justify-center'><Link href='/guestbook' className='btn btn-primary w-full max-w-96'>모든 방명록 보기</Link></div>
+    <div ref={formAnchor} className='h-28'>{showForm && <SubmitForm floating onSaved={() => { void invalidateGuestbook(); }} />}</div>
+  </div>;
 }
-
-export default GuestBook;
