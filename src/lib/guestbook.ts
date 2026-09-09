@@ -1,7 +1,7 @@
 import 'server-only';
 import { unstable_cache, revalidateTag } from 'next/cache';
 import { GUESTBOOK_CACHE_TAG, INTERACTION_CACHE_SECONDS } from '@/lib/cache-policy';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { createSupabaseAdmin } from '@/lib/supabase/admin';
 import type { IGuestBook, IListResponse } from '@/react-query/types';
 

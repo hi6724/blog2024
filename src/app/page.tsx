@@ -1,4 +1,5 @@
 import { MainContent } from "@/components/main/MainContent";
+import { fetchStatistic } from "@/lib/fetch-statistic";
 import { headers } from "next/headers";
 
 export default async function Main() {
@@ -6,15 +7,17 @@ export default async function Main() {
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
   const baseUrl = `${protocol}://${host}`;
 
-  const totalViews = await (await fetch(`${baseUrl}/api/views/total`)).json();
-  const totalPostCnt = await (await fetch(`${baseUrl}/api/blog/count`)).json();
-  const totalGuestBookCnt = await (await fetch(`${baseUrl}/api/guestbook/count`, { cache: 'no-store' })).json();
+  const [totalViews, totalPostCnt, totalGuestBookCnt] = await Promise.all([
+    fetchStatistic(`${baseUrl}/api/views/total`),
+    fetchStatistic(`${baseUrl}/api/blog/count`),
+    fetchStatistic(`${baseUrl}/api/guestbook/count`, { cache: 'no-store' }),
+  ]);
 
   return (
     <MainContent
-      totalViews={totalViews ?? 0}
-      totalBlogPostCnt={totalPostCnt ?? 0}
-      totalGuestbookCnt={totalGuestBookCnt ?? 0}
+      totalViews={totalViews}
+      totalBlogPostCnt={totalPostCnt}
+      totalGuestbookCnt={totalGuestBookCnt}
     />
   );
 }
