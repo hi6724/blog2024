@@ -28,11 +28,11 @@ export function MainContent({
   totalBlogPostCnt,
   totalGuestbookCnt,
 }: {
-  totalViews: number;
-  totalBlogPostCnt: number;
-  totalGuestbookCnt: number;
+  totalViews: number | null;
+  totalBlogPostCnt: number | null;
+  totalGuestbookCnt: number | null;
 }) {
-  const { data: guestbookCount = totalGuestbookCnt } = useGuestbookCount(totalGuestbookCnt);
+  const { data: guestbookCount = totalGuestbookCnt } = useGuestbookCount(totalGuestbookCnt ?? undefined);
   const { data: aboutMe } = useAboutMeList();
 
   const jobHistory = aboutMe
@@ -105,8 +105,8 @@ export function MainContent({
                 </svg>
               </div>
               <div className='stat-title'>포스트</div>
-              <div className='stat-value'>{totalBlogPostCnt}</div>
-              <div className='stat-desc'>개의 포스트를 작성했습니다.</div>
+              <div className='stat-value'>{totalBlogPostCnt ?? '조회 불가'}</div>
+              <div className='stat-desc'>{totalBlogPostCnt == null ? '잠시 후 다시 확인해주세요.' : '개의 포스트를 작성했습니다.'}</div>
             </div>
 
             <div className='stat'>
@@ -126,8 +126,8 @@ export function MainContent({
                 </svg>
               </div>
               <div className='stat-title'>방명록</div>
-              <div className='stat-value'>{guestbookCount}</div>
-              <div className='stat-desc'>개의 방명록이 작성되었습니다.</div>
+              <div className='stat-value'>{guestbookCount ?? '조회 불가'}</div>
+              <div className='stat-desc'>{guestbookCount == null ? '잠시 후 다시 확인해주세요.' : '개의 방명록이 작성되었습니다.'}</div>
             </div>
 
             <div className='stat'>
@@ -147,8 +147,8 @@ export function MainContent({
                 </svg>
               </div>
               <div className='stat-title'>총 조회수</div>
-              <div className='stat-value'>{totalViews}</div>
-              <div className='stat-desc'>번 조회되었습니다</div>
+              <div className='stat-value'>{totalViews ?? '조회 불가'}</div>
+              <div className='stat-desc'>{totalViews == null ? '잠시 후 다시 확인해주세요.' : '번 조회되었습니다'}</div>
             </div>
           </div>
         </div>

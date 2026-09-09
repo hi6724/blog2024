@@ -3,7 +3,7 @@
 import { createSupabaseAdmin } from '@/lib/supabase/admin';
 import { COMMENT_SELECT, normalizeComment, normalizePostId, validateComment } from '@/lib/comments';
 import type { ISupabaseComment } from '@/react-query/types';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { commentCacheTag, COMMENT_COUNTS_CACHE_TAG, INTERACTION_CACHE_SECONDS } from '@/lib/cache-policy';
 
