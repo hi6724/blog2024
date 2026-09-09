@@ -1,3 +1,4 @@
+import { SITE_URL } from '@/lib/seo';
 import BlogDetailMain from '@/components/blog/BlogDetailMain';
 import { Metadata } from 'next';
 import { headers } from 'next/headers';
@@ -8,7 +9,6 @@ async function fetchBlogData(id: string) {
   const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https'; // 개발 환경에서는 http, 프로덕션에서는 https
   const res = await fetch(`${protocol}://${host}/api/project/${id}`);
   const data = await res.json();
-  console.log('LLOK 여기이!!!', data);
   return data;
 }
 
@@ -27,12 +27,13 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   const thumbnail = blogData?.block?.[id]?.value?.format?.page_cover;
 
   return {
+    alternates: { canonical: `/blog/${id}` },
     title: `${title} | 블로그`, // 가져온 데이터의 제목을 메타데이터의 타이틀로 설정
     description: description || `${title} | 블로그`,
     openGraph: {
       title: `${title} | 블로그`, // 가져온 데이터의 제목을 메타데이터의 타이틀로 설정
       description: description || `${title} | 블로그`,
-      url: `https://hunmogu.com/blog/${id}`,
+      url: `${SITE_URL}/blog/${id}`,
       type: 'article',
       images: [
         {
