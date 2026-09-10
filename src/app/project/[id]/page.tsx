@@ -1,3 +1,4 @@
+import { SITE_URL } from '@/lib/seo';
 import ProjectDetailMain from '@/components/project/ProjectDetailMain';
 import { Metadata } from 'next';
 import { headers } from 'next/headers';
@@ -26,17 +27,18 @@ export default ProjectDetailPage;
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const { id } = params; // URL에서 id 파라미터 추출
   const blogData = await fetchProject(id); // id를 이용해 블로그 데이터 가져오기
-  const title = blogData?.block?.[id]?.value?.properties?.title?.[0]?.[0];
+  const title = blogData?.block?.[id]?.value?.properties?.title?.[0]?.[0] ?? '훈모구의 프로젝트';
   const description = blogData?.block?.[id]?.value?.properties?.['nQ^=']?.[0]?.[0];
   const thumbnail = blogData?.block?.[id]?.value?.format?.page_cover;
 
   return {
+    alternates: { canonical: `/project/${id}` },
     title: `${title} | 프로젝트`, // 가져온 데이터의 제목을 메타데이터의 타이틀로 설정
     description: description || '진행한 프로젝트 입니다.',
     openGraph: {
       title: `${title} | 훈모구의 프로젝트`,
       description: description || '진행한 프로젝트 입니다.',
-      url: `https://hunmogu.com/blog/${id}`,
+      url: `${SITE_URL}/project/${id}`,
       type: 'article',
       images: [
         {

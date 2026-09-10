@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { SITE_URL } from '@/lib/seo';
 import './globals.css';
 import 'react-notion-x/src/styles.css';
 import 'prismjs/themes/prism-tomorrow.css';
@@ -34,14 +35,16 @@ const ibmSans = IBM_Plex_Sans_KR({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  twitter: { card: 'summary_large_image' },
   title: '훈모구 소개',
   description: '싸피와 티맥스핀테크를 거쳐 현재 KB국민은행에서 개발자로 근무하고 있는 프론트엔드 개발자 입니다.',
   keywords: ['포트폴리오', '소개', '개발자', '프론트엔드', '국민은행', '싸피', '핀테크'],
-  icons: [{ rel: 'icon', url: '/favi.png' }],
+  icons: [{ rel: 'icon', url: '/favicon.ico' }],
   openGraph: {
     title: '훈모구 소개',
     description: '훈모구의 포트폴리오 사이트에서 자신에 대해 소개하는 페이지입니다.',
-    url: 'https://hunmogu.com/about-me', // 실제 URL로 교체
+    url: SITE_URL,
     type: 'website',
     images: [
       {

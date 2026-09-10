@@ -1,52 +1,19 @@
 import type { MetadataRoute } from 'next';
+import { SITE_URL } from '@/lib/seo';
+import { fetchSitemapPages } from '@/lib/sitemap-pages';
 
-async function fetchData(url: string) {
-  const res = await fetch(`https://hunmogu.com/${url}`);
-  return await res.json();
-}
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  return [
-    {
-      url: 'https://hunmogu.com',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 1,
-    },
-    {
-      url: 'https://hunmogu.com/about-me',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: 'https://hunmogu.com/project',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.6,
-    },
-    {
-      url: 'https://hunmogu.com/blog',
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.5,
-    },
-    {
-      url: 'https://hunmogu.com/guestbook',
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.4,
-    },
-    ...(await fetchData('api/blog-ids')).map((o: any) => ({
-      url: `https://hunmogu.com/blog/${o.id}`,
-      lastModified: o.lastEditedTime,
-      priority: 0.3,
-    })),
+  const [blogs, projects] = await Promise.all([
+    fetchSitemapPages('8a3bdeb10ce94834a5ba6a8476f4d43c'),
+    fetchSitemapPages('68009bd6df9640f9b09322eb70a3dee5'),
+  ]);
 
-    ...(await fetchData('api/project-ids')).map((o: any) => ({
-      url: `https://hunmogu.com/project/${o.id}`,
-      lastModified: o.lastEditedTime,
-      priority: 0.3,
-    })),
+  // Static pages have no reliable modification date; omit rather than invent it.
+  return [
+    ...['', '/about-me', '/project', '/blog', '/guestbook'].map((path) => ({ url: `${SITE_URL}${path}` })),
+    ...blogs.map((page) => ({ url: `${SITE_URL}/blog/${page.id}`, lastModified: page.lastEditedTime })),
+    ...projects.map((page) => ({ url: `${SITE_URL}/project/${page.id}`, lastModified: page.lastEditedTime })),
   ];
 }

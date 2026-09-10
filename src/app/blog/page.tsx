@@ -1,3 +1,4 @@
+import { SITE_URL } from '@/lib/seo';
 import BlogMain from '@/components/blog/BlogMain';
 
 function BlogListPage() {
@@ -7,6 +8,7 @@ function BlogListPage() {
 export default BlogListPage;
 
 export const metadata = {
+  alternates: { canonical: '/blog' },
   title: '훈모구 블로그 - 프론트엔드 취업과 성장 기록',
   description:
     '프론트엔드 개발자를 준비하며 쌓아온 면접 후기, 포트폴리오 제작 과정, 코딩테스트 경험과 실전 기술을 공유하는 블로그입니다. 취준생에게 실질적인 도움이 되는 글들을 모았습니다.',
@@ -26,7 +28,7 @@ export const metadata = {
   openGraph: {
     title: '훈모구 블로그 - 면접과 취업 준비 이야기',
     description: '프론트엔드 개발자 취업을 준비하며 겪은 실제 경험과 정보를 정리한 블로그입니다. 포트폴리오, 자소서, 코테, 면접 후기가 가득합니다.',
-    url: 'https://hunmogu.com/blog',
+    url: `${SITE_URL}/blog`,
     type: 'website',
     images: [
       {
