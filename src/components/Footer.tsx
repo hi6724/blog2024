@@ -65,11 +65,8 @@ function Footer() {
         </div>
       </nav>
       <aside>
-        <p className='whitespace-break-spaces sm:whitespace-normal'>
-          {`하훈목 / 전화번호: 010-4362-6724
-        메일: hunmok1027@gmail.com`}
-        </p>
-        <p>© {new Date().getFullYear()} HAHUNMOK</p>
+        <p>메일: hunmok1027@gmail.com</p>
+        <p>© {new Date().getFullYear()} 훈모구</p>
       </aside>
     </footer>
   );

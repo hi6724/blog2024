@@ -17,7 +17,7 @@ const DESCRIPTION = {
     '잘 부탁드립니다.',
   ],
   pc: [
-    '동안 프론트엔드 개발자로 일하고 있는 하훈목입니다.',
+    '동안 프론트엔드 개발자로 일하고 있는 훈모구입니다.',
     '주로 react와 next를 사용해서 프로젝트를 진행하고 있습니다.',
     '트렌드와 프로덕션의 중간에서 효율점을 찾아가며 발전해 나가고 있습니다. 잘 부탁드립니다.',
   ],
@@ -61,7 +61,7 @@ export function MainContent({
       <div className='z-10 relative mt-12 ml-2'>
         <h1 className='text-title text-4xl pl-4 sm:text-6xl'>프론트엔드 개발자</h1>
         <h1 className='text-title font-aggro pl-4 sm:text-6xl text-4xl'>
-          <span className='text-accent my-text-shadow'>하훈목</span>입니다
+          <span className='text-accent my-text-shadow'>훈모구</span>입니다
         </h1>
         <div className='flex flex-col pr-4'>
           <p className='text-md mt-4 pl-4'>

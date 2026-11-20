@@ -28,7 +28,7 @@ function AboutmeHeader() {
       <div className={`${container}`}>
         <div className='mb-8'>
           <motion.h1 className='font-bold text-2xl md:text-3xl'>프론트엔드 개발자</motion.h1>
-          <motion.h1 className='font-bold text-2xl md:text-3xl'>하훈목입니다.</motion.h1>
+          <motion.h1 className='font-bold text-2xl md:text-3xl'>훈모구입니다.</motion.h1>
         </div>
 
         {isPending && <p role='status'>자기소개 항목을 불러오는 중입니다.</p>}

@@ -26,7 +26,7 @@ export default async function Main() {
 
 export const metadata: Metadata = {
   title: '훈모구 | 프론트엔드 개발 블로그와 포트폴리오',
-  description: '프론트엔드 개발자 하훈목의 기술 블로그와 포트폴리오입니다. React, Next.js 개발 경험과 프로젝트, 취업과 성장 기록을 공유합니다.',
+  description: '프론트엔드 개발자 훈모구의 기술 블로그와 포트폴리오입니다. React, Next.js 개발 경험과 프로젝트, 취업과 성장 기록을 공유합니다.',
   alternates: { canonical: '/' },
   openGraph: {
     title: '훈모구 | 프론트엔드 개발 블로그와 포트폴리오',
