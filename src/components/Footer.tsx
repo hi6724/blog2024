@@ -65,7 +65,7 @@ function Footer() {
         </div>
       </nav>
       <aside>
-        <p>메일: hunmok1027@gmail.com</p>
+        <p>메일: hi6724@gmail.com</p>
         <p>© {new Date().getFullYear()} 훈모구</p>
       </aside>
     </footer>
